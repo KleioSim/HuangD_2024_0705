@@ -23,7 +23,8 @@ public partial class TilemapTest : Control
 
             var random = new Random();
 
-            BlockBuilder.Build(TerrainMap, random);
+            TerrainBuilder.Build(TerrainMap, random);
+            //BlockBuilder.Build(TerrainMap, random);
 
 
             //var bpoint = BaseMap.GenerateMap();

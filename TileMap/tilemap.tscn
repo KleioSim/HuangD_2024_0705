@@ -1,12 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dt82a71estys7"]
+[gd_scene load_steps=5 format=3 uid="uid://dt82a71estys7"]
 
 [ext_resource type="Script" path="res://TileMap/TilemapTest.cs" id="1_bdrlg"]
 [ext_resource type="Script" path="res://TileMap/Button2.cs" id="2_cm34b"]
-[ext_resource type="Script" path="res://TileMap/TileMapBase.cs" id="3_q1n20"]
 [ext_resource type="Script" path="res://TileMap/TileMapTerrain.cs" id="5_gxg0y"]
-[ext_resource type="TileSet" uid="uid://dwhqpsv6ahtbf" path="res://TileMap/tilemap2048.tres" id="5_qd75u"]
-[ext_resource type="TileSet" uid="uid://b6p2r7rdmqkfp" path="res://TileMap/tiesets512.tres" id="6_3618c"]
-[ext_resource type="Script" path="res://TileMap/TileMap512.cs" id="7_4ht1w"]
 [ext_resource type="TileSet" uid="uid://bmyiahahd2yhc" path="res://tilesets128_2.tres" id="14_tg84x"]
 
 [node name="Test2" type="Control"]
@@ -34,25 +30,15 @@ follow_viewport_enabled = true
 offset = Vector2(500, 500)
 zoom = Vector2(0.03, 0.03)
 
-[node name="TileMap2048" type="TileMap" parent="CanvasLayer2"]
-visible = false
-modulate = Color(1, 1, 1, 0.0392157)
-tile_set = ExtResource("5_qd75u")
-format = 2
-layer_0/tile_data = PackedInt32Array(0, 3, 0)
-script = ExtResource("3_q1n20")
-
-[node name="TileMap512" type="TileMap" parent="CanvasLayer2"]
-visible = false
-modulate = Color(1, 1, 1, 0.0392157)
-tile_set = ExtResource("6_3618c")
-format = 2
-layer_0/tile_data = PackedInt32Array(0, 3, 0)
-script = ExtResource("7_4ht1w")
-
 [node name="TileMapTerrain" type="TileMap" parent="CanvasLayer2"]
-modulate = Color(1, 1, 1, 0.196078)
 tile_set = ExtResource("14_tg84x")
 format = 2
+layer_0/name = "sea"
 layer_0/tile_data = PackedInt32Array(0, 3, 0)
+layer_1/name = "land"
+layer_1/tile_data = PackedInt32Array()
+layer_2/name = "mount"
+layer_2/tile_data = PackedInt32Array()
+layer_3/name = "steppe"
+layer_3/tile_data = PackedInt32Array()
 script = ExtResource("5_gxg0y")

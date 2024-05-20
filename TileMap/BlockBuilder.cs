@@ -5,7 +5,7 @@ static class BlockBuilder
 {
     public static void Build(TileMap tilemap, Random random)
     {
-        var bluePoints = new[]
+        var startPoints = new[]
         {
             new Vector2I(0,0),
             new Vector2I(0,1),
@@ -13,42 +13,68 @@ static class BlockBuilder
             new Vector2I(1,1)
         };
 
-        var bluePoint = bluePoints[random.Next(0, bluePoints.Length)];
+        var startPoint = startPoints[random.Next(0, startPoints.Length)];
 
-        Build(tilemap, 64, bluePoint);
+        Build(tilemap, 64, startPoint, random);
     }
 
-    private static void Build(TileMap tilemap, int size, Vector2I bluePoint)
+    private static void Build(TileMap tilemap, int size, Vector2I startPoint, Random random)
     {
-        var blueWidth = 0.1;
-        bluePoint = bluePoint * size;
 
-        for (int i = 0; i < size; i++)
+        var landRate = 0.9;
+        var mountRate = 0.3;
+
+        startPoint = startPoint * size;
+
+        for(int i=0; i<size; i++)
         {
-            for (int j = 0; j < size * blueWidth; j++)
+            for(int j=0; j<size; j++)
             {
-                tilemap.SetCell(0, new Vector2I(Math.Abs(bluePoint.X - i), Math.Abs(bluePoint.Y - j)), 3, new Vector2I(0, 0), 0);
-                tilemap.SetCell(0, new Vector2I(Math.Abs(bluePoint.X - j), Math.Abs(bluePoint.Y - i)), 3, new Vector2I(0, 0), 0);
+                tilemap.SetCell(0, new Vector2I(i, j), 3, new Vector2I(0, 0), 0);
             }
         }
 
-        var peerPoint = new Vector2I(size - 1 - bluePoint.X, size - 1 - bluePoint.Y);
-        for (int i = 0; i < size * (1 - blueWidth); i++)
+        for (int i = 0; i < size * landRate; i++)
         {
-            for (int j = 0; j < size * (1 - blueWidth); j++)
+            for (int j = 0; j < size * landRate; j++)
             {
-                tilemap.SetCell(0, new Vector2I(Math.Abs(peerPoint.X - i), Math.Abs(peerPoint.Y - j)), 0, new Vector2I(0, 0), 0);
-                tilemap.SetCell(0, new Vector2I(Math.Abs(peerPoint.X - j), Math.Abs(peerPoint.Y - i)), 0, new Vector2I(0, 0), 0);
+                tilemap.SetCell(1, new Vector2I(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j)), 0, new Vector2I(0, 0), 0);
+                tilemap.SetCell(1, new Vector2I(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i)), 0, new Vector2I(0, 0), 0);
             }
         }
 
-        var purpleWidth = 0.25;
-        for (int i = 0; i < size * (1 - blueWidth); i++)
+        for (int i = 0; i < size * landRate; i++)
         {
-            for (int j = 0; j < size * purpleWidth; j++)
+            for (int j = 0; j < size * mountRate; j++)
             {
-                tilemap.SetCell(0, new Vector2I(Math.Abs(peerPoint.X - i), Math.Abs(peerPoint.Y - j)), 2, new Vector2I(0, 0), 0);
-                tilemap.SetCell(0, new Vector2I(Math.Abs(peerPoint.X - j), Math.Abs(peerPoint.Y - i)), 2, new Vector2I(0, 0), 0);
+                tilemap.SetCell(2, new Vector2I(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j)), 2, new Vector2I(0, 0), 0);
+                tilemap.SetCell(2, new Vector2I(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i)), 2, new Vector2I(0, 0), 0);
+            }
+        }
+
+
+        var row = 0.7;
+        var colum = 0.5;
+
+        if(random.Next(0,2) == 0)
+        {
+            row = 0.5;
+            colum = 0.7;
+        }
+
+        for (int j = 0; j < size * mountRate; j++)
+        {
+            for (int i = 0; i < size * landRate * row; i++)
+            {
+                tilemap.SetCell(3, new Vector2I(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i)), 1, new Vector2I(0, 0), 0);
+            }
+        }
+
+        for (int i = 0; i < size * mountRate; i++)
+        {
+            for (int j = 0; j < size * landRate * colum; j++)
+            {
+                tilemap.SetCell(3, new Vector2I(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i)), 1, new Vector2I(0, 0), 0);
             }
         }
     }

@@ -471,57 +471,6 @@ public partial class TileMapTerrain : TileMap
             return true;
         }
         return false;
-        //if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.LeftSide]) != 3 && GetCellSourceId(0, neighbors[TileSet.CellNeighbor.RightSide]) != 3)
-        //{
-        //    if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopSide]) == 3)
-        //    {
-        //        if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomRightCorner]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomSide]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomLeftCorner]) == 3)
-        //        {
-        //            return true;
-        //        }
-        //    }
-
-        //    if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomSide]) == 3)
-        //    {
-        //        if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopRightCorner]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopSide]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopLeftCorner]) == 3)
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //}
-
-        //if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomSide]) != 3 && GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopSide]) != 3)
-        //{
-        //    if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.LeftSide]) == 3)
-        //    {
-        //        if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomRightCorner]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.RightSide]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopRightCorner]) == 3)
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //    if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.RightSide]) == 3)
-        //    {
-        //        if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomLeftCorner]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.LeftSide]) == 3
-        //            || GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopLeftCorner]) == 3)
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //}
-
-        //if (GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopLeftCorner]) == 3 && GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomRightCorner]) == 3
-        //    && GetCellSourceId(0, neighbors[TileSet.CellNeighbor.TopRightCorner]) == 3 && GetCellSourceId(0, neighbors[TileSet.CellNeighbor.BottomLeftCorner]) == 3)
-        //{
-        //    return true;
-        //}
-        //return false;
     }
 }
 
@@ -529,7 +478,6 @@ public static class TileMapExtension
 {
     public static Dictionary<TileSet.CellNeighbor, Vector2I> GetNeighborCells_8(this TileMap tilemap, Vector2I index)
     {
-        //var dict = Enum.GetValues<TileSet.CellNeighbor>().ToDictionary(x => x, x => tilemap.GetNeighborCell(Vector2I.Zero, x));
         var directs = new[] {
             TileSet.CellNeighbor.TopSide,
             TileSet.CellNeighbor.TopLeftCorner,
@@ -544,7 +492,6 @@ public static class TileMapExtension
 
     public static Dictionary<TileSet.CellNeighbor, Vector2I> GetNeighborCells_4(this TileMap tilemap, Vector2I index)
     {
-        //var dict = Enum.GetValues<TileSet.CellNeighbor>().ToDictionary(x => x, x => tilemap.GetNeighborCell(Vector2I.Zero, x));
         var directs = new[] {
             TileSet.CellNeighbor.TopSide,
             TileSet.CellNeighbor.LeftSide,
@@ -558,5 +505,42 @@ public static class TileMapExtension
     public static IEnumerable<Vector2I> GetNeighbor4CellsById(this TileMap tilemap, Vector2I index, int id)
     {
         return tilemap.GetNeighborCells_4(index).Values.Where(x => tilemap.GetCellSourceId(0, x) == id);
+    }
+
+    public static bool IsConnectNode(this TileMap tilemap, Vector2I index, Func<Vector2I, bool> vaildChecker)
+    {
+        var neighbors = tilemap.GetNeighborCells_8(index);
+
+        if (vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.RightSide])
+            && !vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide]) && !vaildChecker(neighbors[TileSet.CellNeighbor.TopSide]))
+        {
+            return true;
+        }
+        if (!vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && !vaildChecker(neighbors[TileSet.CellNeighbor.RightSide])
+            && vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.TopSide]))
+        {
+            return true;
+        }
+        if (vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide])
+            && !vaildChecker(neighbors[TileSet.CellNeighbor.BottomLeftCorner]))
+        {
+            return true;
+        }
+        if (vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.TopSide])
+            && !vaildChecker(neighbors[TileSet.CellNeighbor.TopLeftCorner]))
+        {
+            return true;
+        }
+        if (vaildChecker(neighbors[TileSet.CellNeighbor.RightSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide])
+            && !vaildChecker(neighbors[TileSet.CellNeighbor.BottomRightCorner]))
+        {
+            return true;
+        }
+        if (vaildChecker(neighbors[TileSet.CellNeighbor.RightSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.TopSide])
+            && !vaildChecker(neighbors[TileSet.CellNeighbor.TopRightCorner]))
+        {
+            return true;
+        }
+        return false;
     }
 }
