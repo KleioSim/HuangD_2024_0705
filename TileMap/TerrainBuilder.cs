@@ -11,15 +11,7 @@ using static Godot.Time;
 class TerrainBuilder
 {
     const int maxSize = 64;
-    const int landSize = 60;
-
-    static Dictionary<string, int> layerName2Id = new ()
-    {
-        { "sea", 0 },
-        { "land", 1 },
-        { "mount", 2 },
-        { "steppe", 3 }
-    };
+    const int landSize = 63;
 
     enum TileSetType
     {
@@ -47,61 +39,59 @@ class TerrainBuilder
 
     public static void Build(TileMap tilemap, Random random)
     {
-        foreach(var pair in layerName2Id)
-        {
-            tilemap.SetLayerName(pair.Value, pair.Key);
-        }
-
-        BuildSea(tilemap);
-
         var startPoint = startPoints[random.Next(startPoints.Length)];
-        BuildLand(tilemap, startPoint, random);
+
+        BuildSea(tilemap, 0);
+        BuildLand(tilemap, 1, startPoint, random);
     }
 
-    private static void BuildLand(TileMap tilemap, Vector2I startPoint, Random random)
+    private static void BuildLand(TileMap tilemap, int layerId, Vector2I startPoint, Random random)
     {
         for (int i = 0; i < landSize; i++)
         {
             for (int j = 0; j < landSize; j++)
             {
-                tilemap.SetCell(layerName2Id["land"], new Vector2I(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j)), 0, new Vector2I(0, 0), 0);
+                tilemap.SetCell(layerId, 
+                    new Vector2I(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j)), 
+                    tileSet2Id[TileSetType.Land], 
+                    new Vector2I(0, 0), 0);
             }
         }
 
-        FlushLandEdge(tilemap, startPoint, random);
+        FlushLandEdge(tilemap, layerId, startPoint, random);
     }
 
-    private static void BuildSea(TileMap tilemap)
+    private static void BuildSea(TileMap tilemap, int layerId)
     {
         for (int i = 0; i < maxSize; i++)
         {
             for (int j = 0; j < maxSize; j++)
             {
-                tilemap.SetCell(layerName2Id["sea"], new Vector2I(i, j), 3, new Vector2I(0, 0), 0);
+                tilemap.SetCell(0, new Vector2I(i, j), 3, new Vector2I(0, 0), 0);
             }
         }
     }
 
-    private static void FlushLandEdge(TileMap tilemap, Vector2I startPoint, Random random)
+    private static void FlushLandEdge(TileMap tilemap, int layerId,  Vector2I startPoint, Random random)
     {
-        var layerId = layerName2Id["land"];
+        var usedSize = tilemap.GetUsedRect().Size;
 
         int max = tilemap.GetUsedCells(layerId).Select(x => x.X).Max();
         Dictionary<Vector2I, int> edgeIndexs = tilemap.GetUsedCells(layerId).Where(index =>
         {
-            if ((startPoint.X == index.X && index.Y != Math.Abs( startPoint.Y - (landSize - 1)))
-            || (startPoint.Y == index.Y && index.X != Math.Abs(startPoint.X - (landSize - 1))))
+            if (startPoint.X == index.X && index.Y != Math.Abs(startPoint.X - (usedSize.X - 1))
+            || startPoint.Y == index.Y && index.X != Math.Abs(startPoint.X - (usedSize.Y - 1)))
             {
                 return false;
             }
 
             var neighborDict = tilemap.GetNeighborCells_4(index);
-            if (neighborDict.Values.All(x => tilemap.GetCellSourceId(layerId, x) is not -1 and not 3))
+            if (neighborDict.Values.All(x => tilemap.IsCellUsed(layerId, x)))
             {
                 return false;
             }
 
-            if (tilemap.IsConnectNode(index, (cell) => tilemap.GetCellSourceId(layerId, cell) is not -1 and not 3))
+            if (tilemap.IsConnectNode(layerId, index))
             {
                 return false;
             }
@@ -112,7 +102,7 @@ class TerrainBuilder
 
         int eraseCount = 0;
         var gCount = tilemap.GetUsedCells(layerId).Count();
-        while (eraseCount * 100 / gCount < 15)
+        while (eraseCount * 100 / gCount < 25)
         {
             var eraserIndexs = new List<Vector2I>();
 
@@ -120,14 +110,14 @@ class TerrainBuilder
             {
                 var factor = edgeIndexs[index];
 
-                if (tilemap.IsConnectNode(index, (cell) => tilemap.GetCellSourceId(layerId, cell) is not -1 and not 3))
+                if (tilemap.IsConnectNode(layerId, index))
                 {
                     edgeIndexs.Remove(index);
                     continue;
                 }
 
-                var factor2 = tilemap.GetNeighborCells_8(index).Values.Where(x => tilemap.GetCellSourceId(layerId, x) is not - 1 and not 3).Count();
-                if (factor2 <= 3 || random.Next(0, 10000) <= 3000 / factor)
+                var factor2 = tilemap.GetNeighborCells_8(index).Values.Where(x => tilemap.IsCellUsed(layerId, x)).Count();
+                if (factor2 <= 3 || random.Next(0, 10000) <= 3000 / factor )
                 {
                     edgeIndexs.Remove(index);
                     tilemap.EraseCell(layerId, index);
@@ -140,15 +130,11 @@ class TerrainBuilder
             foreach (var key in edgeIndexs.Keys)
             {
                 edgeIndexs[key]++;
-                if (edgeIndexs[key] > 3000)
-                {
-                    edgeIndexs[key] = 3000;
-                }
             }
 
             foreach (var index in eraserIndexs)
             {
-                var neighbors = tilemap.GetNeighborCells_4(index).Values.Where(x => tilemap.GetCellSourceId(layerId, x) != -1 && tilemap.GetCellSourceId(layerId, x) != 3);
+                var neighbors = tilemap.GetNeighborCells_4(index).Values.Where(x => tilemap.IsCellUsed(layerId, x));
                 foreach (var neighbor in neighbors)
                 {
                     edgeIndexs.TryAdd(neighbor, 1);

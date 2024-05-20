@@ -507,40 +507,45 @@ public static class TileMapExtension
         return tilemap.GetNeighborCells_4(index).Values.Where(x => tilemap.GetCellSourceId(0, x) == id);
     }
 
-    public static bool IsConnectNode(this TileMap tilemap, Vector2I index, Func<Vector2I, bool> vaildChecker)
+    public static bool IsConnectNode(this TileMap tilemap, int layerId, Vector2I index)
     {
         var neighbors = tilemap.GetNeighborCells_8(index);
 
-        if (vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.RightSide])
-            && !vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide]) && !vaildChecker(neighbors[TileSet.CellNeighbor.TopSide]))
+        if (tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.LeftSide]) && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.RightSide])
+            && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.BottomSide]) && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.TopSide]))
         {
             return true;
         }
-        if (!vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && !vaildChecker(neighbors[TileSet.CellNeighbor.RightSide])
-            && vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.TopSide]))
+        if (!tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.LeftSide]) && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.RightSide])
+            && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.BottomSide]) && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.TopSide]))
         {
             return true;
         }
-        if (vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide])
-            && !vaildChecker(neighbors[TileSet.CellNeighbor.BottomLeftCorner]))
+        if (tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.LeftSide]) && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.BottomSide])
+            && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.BottomLeftCorner]))
         {
             return true;
         }
-        if (vaildChecker(neighbors[TileSet.CellNeighbor.LeftSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.TopSide])
-            && !vaildChecker(neighbors[TileSet.CellNeighbor.TopLeftCorner]))
+        if (tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.LeftSide]) && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.TopSide])
+            && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.TopLeftCorner]))
         {
             return true;
         }
-        if (vaildChecker(neighbors[TileSet.CellNeighbor.RightSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.BottomSide])
-            && !vaildChecker(neighbors[TileSet.CellNeighbor.BottomRightCorner]))
+        if (tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.RightSide]) && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.BottomSide])
+            && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.BottomRightCorner]))
         {
             return true;
         }
-        if (vaildChecker(neighbors[TileSet.CellNeighbor.RightSide]) && vaildChecker(neighbors[TileSet.CellNeighbor.TopSide])
-            && !vaildChecker(neighbors[TileSet.CellNeighbor.TopRightCorner]))
+        if (tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.RightSide]) && tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.TopSide])
+            && !tilemap.IsCellUsed(layerId, neighbors[TileSet.CellNeighbor.TopRightCorner]))
         {
             return true;
         }
         return false;
+    }
+
+    public static bool IsCellUsed(this TileMap tileMap, int layerId, Vector2I index)
+    {
+        return tileMap.GetCellSourceId(layerId, index) != -1;
     }
 }
