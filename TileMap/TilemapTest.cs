@@ -19,25 +19,16 @@ public partial class TilemapTest : Control
     {
         button.Pressed += () =>
         {
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    for (int j = 0; j < 4; j++)
-            //    {
-            //        TileMap2048.SetCell(0, new Vector2I(i, j), 3, new Vector2I(0, 0), 0);
-            //    }
-            //}
+            TerrainMap.Clear();
 
-            //TileMap2048.Generate();
+            var random = new Random();
 
-            //Terrain512.Generate(TileMap2048);
+            BlockBuilder.Build(TerrainMap, random);
 
-            //AutoMap.Generate2();
-            //AutoMap.Show(0.5);
 
-            var bpoint = BaseMap.GenerateMap();
-            //Terrain1024.GenerateMap(BaseMap);
-            Terrain512.GenerateMap(BaseMap, bpoint);
-            TerrainMap.GenerateMap(Terrain512, bpoint);
+            //var bpoint = BaseMap.GenerateMap();
+            //Terrain512.GenerateMap(BaseMap, bpoint);
+            //TerrainMap.GenerateMap(Terrain512, bpoint);
 
             //var landcount = TerrainMap.GetUsedCells(0).Where(x => TerrainMap.GetCellSourceId(0, x) != 3).Count();
 
@@ -45,10 +36,5 @@ public partial class TilemapTest : Control
 
 
         };
-
-        //slider.ValueChanged += (percent) =>
-        //{
-        //    AutoMap.Show(percent);
-        //};
     }
 }
