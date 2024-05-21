@@ -1,0 +1,12 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://18ru871xspdb"]
+
+[ext_resource type="Texture2D" uid="uid://c0t2eon4urjpj" path="res://TileMap/PopMap/128/whrite128.png" id="1_86pii"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lpxbn"]
+texture = ExtResource("1_86pii")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetAtlasSource_lpxbn")

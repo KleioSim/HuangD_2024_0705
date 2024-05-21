@@ -1,18 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://cjmfc2p2io1ku"]
 
-[ext_resource type="TileSet" uid="uid://bmyiahahd2yhc" path="res://tilesets128_2.tres" id="1_gya4p"]
+[ext_resource type="TileSet" uid="uid://18ru871xspdb" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_4nokr"]
 [ext_resource type="Script" path="res://TileMap/PopMap/TileMapPopCount.cs" id="2_m24vg"]
 
 [node name="TileMapPopCount" type="TileMap"]
-tile_set = ExtResource("1_gya4p")
+tile_set = ExtResource("1_4nokr")
 format = 2
-layer_0/name = "sea"
-layer_0/tile_data = PackedInt32Array(0, 3, 0)
-layer_1/name = "land"
-layer_1/tile_data = PackedInt32Array()
-layer_2/name = "mount"
-layer_2/tile_data = PackedInt32Array()
-layer_3/name = "steppe"
-layer_3/enabled = false
-layer_3/tile_data = PackedInt32Array()
+layer_0/tile_data = PackedInt32Array(0, 0, 0)
 script = ExtResource("2_m24vg")
