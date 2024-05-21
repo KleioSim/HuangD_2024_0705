@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4lfhv2weyhoi"
-path="res://.godot/imported/blue2048.png-9bb0d67faedf4313744e964af9034636.ctex"
+uid="uid://cxxs2yepcceh0"
+path="res://.godot/imported/purple512.png-de38d53433f8e3fbd519fbc8368318d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TileMap/2048/blue2048.png"
-dest_files=["res://.godot/imported/blue2048.png-9bb0d67faedf4313744e964af9034636.ctex"]
+source_file="res://TileMap/TerrainMap/512/purple512.png"
+dest_files=["res://.godot/imported/purple512.png-de38d53433f8e3fbd519fbc8368318d3.ctex"]
 
 [params]
 

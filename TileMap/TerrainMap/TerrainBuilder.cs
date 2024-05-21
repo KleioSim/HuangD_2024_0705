@@ -13,13 +13,13 @@ class TerrainBuilder
     const int maxSize = 64;
     const int landSize = 63;
     const int mountionWidth = 25;
-    const int mountionLong = 45;
+    const int mountionLong = 50;
 
     const int steppeWidth = 20;
     const int steppeLong0 = 25;
     const int steppeLong1 = 35;
 
-    enum TileType
+    public enum TileType
     {
         Water,
         Land,
@@ -53,9 +53,9 @@ class TerrainBuilder
         new Vector2I(1,1) * (maxSize-1)
     };
 
-    public static void Build(TileMap tilemap, Random random)
+    public static Dictionary<Vector2I, TileType> Build(TileMap tilemap, Random random)
     {
-        var startPoint = startPoints[random.Next(startPoints.Length)];
+        var startPoint = startPoints[0];
 
         BuildSea(tilemap);
 
@@ -63,6 +63,28 @@ class TerrainBuilder
         BuildMountion(tilemap, startPoint, random);
         BuildHill(tilemap, startPoint, random);
         BuildSteppe(tilemap, startPoint, random);
+
+        return tilemap.GetUsedCells(tile2LayerId[TileType.Water]).ToDictionary(k => k, v =>
+        {
+            if (tilemap.IsCellUsed(tile2LayerId[TileType.Mount], v))
+            {
+                if(tilemap.GetCellSourceId(tile2LayerId[TileType.Mount], v) == tile2sourceId[TileType.Mount])
+                {
+                    return TileType.Mount;
+                }
+                if (tilemap.GetCellSourceId(tile2LayerId[TileType.Mount], v) == tile2sourceId[TileType.Hill])
+                {
+                    return TileType.Hill;
+                }
+
+            }
+            if (tilemap.IsCellUsed(tile2LayerId[TileType.Land], v))
+            {
+                return TileType.Land;
+            }
+
+            return TileType.Water;
+        });
     }
 
     private static void BuildHill(TileMap tilemap, Vector2I startPoint, Random random)
@@ -77,23 +99,28 @@ class TerrainBuilder
         while (true)
         {
             var currentIndex = cellQueue.Dequeue();
+
             if (tilemap.GetCellSourceId(layerId, currentIndex) == hillSourceId)
             {
                 continue;
             }
 
-            var percent = 0;
-            foreach (var index in tilemap.GetNeighborCells_8(currentIndex).Values)
+            var percent = 5;
+            if (currentIndex.X == startPoint.X || currentIndex.Y == startPoint.Y)
             {
-                if (!tilemap.IsCellUsed(layerId, index))
-                {
-                    percent = 50;
-                    break;
-                }
-                if (tilemap.GetCellSourceId(layerId, index) == hillSourceId)
-                {
-                    percent = 20;
-                }
+                
+            }
+            else if (tilemap.GetNeighborCells_4(currentIndex).Values.All(index => !tilemap.IsCellUsed(layerId, index)))
+            {
+                percent = 100;
+            }
+            else if(tilemap.GetNeighborCells_4(currentIndex).Values.Any(index => !tilemap.IsCellUsed(layerId, index)))
+            {
+                percent = 70;
+            }
+            else if (tilemap.GetNeighbor4CellsById(currentIndex, hillSourceId).Any())
+            {
+                percent = 20;
             }
 
             if (random.Next(0, 100) < percent)
@@ -101,7 +128,7 @@ class TerrainBuilder
                 tilemap.SetCellEx(layerId, currentIndex, hillSourceId);
                 addCount++;
 
-                if (addCount > mountions.Count() * 0.5)
+                if (addCount > mountions.Count() * 0.75)
                 {
                     return;
                 }
@@ -204,7 +231,7 @@ class TerrainBuilder
                 tilemap.EraseCell(layerId, index);
                 addCount++;
 
-                if (addCount > mountions.Count() * 0.3)
+                if (addCount > mountions.Count() * 0.4)
                 {
                     return;
                 }
@@ -227,7 +254,7 @@ class TerrainBuilder
                 continue;
             }
 
-            foreach (var index in tilemap.Expend(currentIndex, 5))
+            foreach (var index in tilemap.Expend(currentIndex, 2))
             {
                 if (tilemap.GetCellSourceId(layerId, currentIndex) == sourceId)
                 {
@@ -245,7 +272,7 @@ class TerrainBuilder
                 tilemap.SetCellEx(layerId, index, sourceId);
                 addCount++;
 
-                if (addCount > plainCells.Count() * 0.3)
+                if (addCount > plainCells.Count() * 0.25)
                 {
                     return;
                 }
@@ -285,7 +312,7 @@ class TerrainBuilder
         }
     }
 
-    private static void FlushLandEdge(TileMap tilemap, int layerId, Vector2I startPoint, Random random, bool isContinue = false)
+    private static void FlushLandEdge(TileMap tilemap, int layerId, Vector2I startPoint, Random random)
     {
         var usedSize = tilemap.GetUsedRect().Size;
 
@@ -317,16 +344,12 @@ class TerrainBuilder
             {
                 var factor = edgeIndexs[index];
 
-                if (isContinue)
+                if (tilemap.IsConnectNode(layerId, index))
                 {
-                    if (tilemap.IsConnectNode(layerId, index))
-                    {
-                        edgeIndexs.Remove(index);
-                        continue;
+                    edgeIndexs.Remove(index);
+                    continue;
 
-                    }
                 }
-
 
                 var factor2 = tilemap.GetNeighborCells_8(index).Values.Where(x => tilemap.IsCellUsed(layerId, x)).Count();
                 if (factor2 <= 3 || random.Next(0, 10000) <= 3000 / factor)

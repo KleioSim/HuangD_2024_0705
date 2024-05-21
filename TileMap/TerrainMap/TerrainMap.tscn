@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0ysipcrwt24x"]
+
+[ext_resource type="TileSet" uid="uid://bmyiahahd2yhc" path="res://tilesets128_2.tres" id="1_2hb0o"]
+[ext_resource type="Script" path="res://TileMap/TerrainMap/TileMapTerrain.cs" id="2_yer7s"]
+
+[node name="TileMapTerrain" type="TileMap"]
+tile_set = ExtResource("1_2hb0o")
+format = 2
+layer_0/name = "sea"
+layer_0/tile_data = PackedInt32Array(0, 3, 0)
+layer_1/name = "land"
+layer_1/tile_data = PackedInt32Array()
+layer_2/name = "mount"
+layer_2/tile_data = PackedInt32Array()
+layer_3/name = "steppe"
+layer_3/enabled = false
+layer_3/tile_data = PackedInt32Array()
+layer_4/name = "hill"
+layer_4/tile_data = PackedInt32Array()
+script = ExtResource("2_yer7s")

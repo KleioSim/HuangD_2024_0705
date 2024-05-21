@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bddjlnhii6es8"
-path="res://.godot/imported/green128.png-0b5a1e6e6ebc5a0c262c1a00ab636a16.ctex"
+uid="uid://bxc82nyybqdhe"
+path="res://.godot/imported/yellow128.png-3f717711c409387b5a12344d0ce6511d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TileMap/128/green128.png"
-dest_files=["res://.godot/imported/green128.png-0b5a1e6e6ebc5a0c262c1a00ab636a16.ctex"]
+source_file="res://TileMap/TerrainMap/128/yellow128.png"
+dest_files=["res://.godot/imported/yellow128.png-3f717711c409387b5a12344d0ce6511d.ctex"]
 
 [params]
 
