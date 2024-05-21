@@ -548,4 +548,20 @@ public static class TileMapExtension
     {
         return tileMap.GetCellSourceId(layerId, index) != -1;
     }
+
+    public static void SetCellEx(this TileMap tileMap, int layerId, Vector2I index, int sourceId)
+    {
+        tileMap.SetCell(layerId, index, sourceId, Vector2I.Zero, 0);
+    }
+
+    public static IEnumerable<Vector2I> Expend(this TileMap tileMap, Vector2I index, int radius)
+    {
+        for (int i = radius * -1; i < radius + 1; i++)
+        {
+            for (int j = radius * -1; j < radius + 1; j++)
+            {
+                yield return index + new Vector2I(i, j);
+            }
+        }
+    }
 }

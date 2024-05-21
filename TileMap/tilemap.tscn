@@ -31,6 +31,7 @@ offset = Vector2(500, 500)
 zoom = Vector2(0.03, 0.03)
 
 [node name="TileMapTerrain" type="TileMap" parent="CanvasLayer2"]
+modulate = Color(1, 1, 1, 0.196078)
 tile_set = ExtResource("14_tg84x")
 format = 2
 layer_0/name = "sea"
