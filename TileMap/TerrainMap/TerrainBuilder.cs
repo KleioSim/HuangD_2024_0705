@@ -8,6 +8,15 @@ using System.Reflection;
 using static Godot.OpenXRInterface;
 using static Godot.Time;
 
+public enum TerrainType
+{
+    Water,
+    Land,
+    Mount,
+    Steppe,
+    Hill
+}
+
 class TerrainBuilder
 {
     const int maxSize = 64;
@@ -19,30 +28,21 @@ class TerrainBuilder
     const int steppeLong0 = 25;
     const int steppeLong1 = 35;
 
-    public enum TileType
+    static Dictionary<TerrainType, int> tile2sourceId = new()
     {
-        Water,
-        Land,
-        Mount,
-        Steppe,
-        Hill
-    }
-
-    static Dictionary<TileType, int> tile2sourceId = new()
-    {
-        { TileType.Land, 0 },
-        { TileType.Steppe, 1 },
-        { TileType.Mount, 2 },
-        { TileType.Water, 3 },
-        { TileType.Hill, 4 }
+        { TerrainType.Land, 0 },
+        { TerrainType.Steppe, 1 },
+        { TerrainType.Mount, 2 },
+        { TerrainType.Water, 3 },
+        { TerrainType.Hill, 4 }
     };
 
-    static Dictionary<TileType, int> tile2LayerId = new()
+    static Dictionary<TerrainType, int> tile2LayerId = new()
     {
-        { TileType.Land, 1 },
-        { TileType.Steppe, 3 },
-        { TileType.Mount, 2 },
-        { TileType.Water, 0 }
+        { TerrainType.Land, 1 },
+        { TerrainType.Steppe, 3 },
+        { TerrainType.Mount, 2 },
+        { TerrainType.Water, 0 }
     };
 
     static Vector2I[] startPoints = new[]
@@ -53,7 +53,7 @@ class TerrainBuilder
         new Vector2I(1,1) * (maxSize-1)
     };
 
-    public static Dictionary<Vector2I, TileType> Build(TileMap tilemap, Random random)
+    public static Dictionary<Vector2I, TerrainType> Build(TileMap tilemap, Random random)
     {
         var startPoint = startPoints[0];
 
@@ -64,34 +64,34 @@ class TerrainBuilder
         BuildHill(tilemap, startPoint, random);
         BuildSteppe(tilemap, startPoint, random);
 
-        return tilemap.GetUsedCells(tile2LayerId[TileType.Water]).ToDictionary(k => k, v =>
+        return tilemap.GetUsedCells(tile2LayerId[TerrainType.Water]).ToDictionary(k => k, v =>
         {
-            if (tilemap.IsCellUsed(tile2LayerId[TileType.Mount], v))
+            if (tilemap.IsCellUsed(tile2LayerId[TerrainType.Mount], v))
             {
-                if(tilemap.GetCellSourceId(tile2LayerId[TileType.Mount], v) == tile2sourceId[TileType.Mount])
+                if (tilemap.GetCellSourceId(tile2LayerId[TerrainType.Mount], v) == tile2sourceId[TerrainType.Mount])
                 {
-                    return TileType.Mount;
+                    return TerrainType.Mount;
                 }
-                if (tilemap.GetCellSourceId(tile2LayerId[TileType.Mount], v) == tile2sourceId[TileType.Hill])
+                if (tilemap.GetCellSourceId(tile2LayerId[TerrainType.Mount], v) == tile2sourceId[TerrainType.Hill])
                 {
-                    return TileType.Hill;
+                    return TerrainType.Hill;
                 }
 
             }
-            if (tilemap.IsCellUsed(tile2LayerId[TileType.Land], v))
+            if (tilemap.IsCellUsed(tile2LayerId[TerrainType.Land], v))
             {
-                return TileType.Land;
+                return TerrainType.Land;
             }
 
-            return TileType.Water;
+            return TerrainType.Water;
         });
     }
 
     private static void BuildHill(TileMap tilemap, Vector2I startPoint, Random random)
     {
-        int layerId = tile2LayerId[TileType.Mount];
-        int hillSourceId = tile2sourceId[TileType.Hill];
-        int mountSourceId = tile2sourceId[TileType.Mount];
+        int layerId = tile2LayerId[TerrainType.Mount];
+        int hillSourceId = tile2sourceId[TerrainType.Hill];
+        int mountSourceId = tile2sourceId[TerrainType.Mount];
 
         var mountions = tilemap.GetUsedCells(layerId);
         var cellQueue = new Queue<Vector2I>(mountions.OrderBy(_ => random.Next()));
@@ -108,13 +108,13 @@ class TerrainBuilder
             var percent = 5;
             if (currentIndex.X == startPoint.X || currentIndex.Y == startPoint.Y)
             {
-                
+
             }
             else if (tilemap.GetNeighborCells_4(currentIndex).Values.All(index => !tilemap.IsCellUsed(layerId, index)))
             {
                 percent = 100;
             }
-            else if(tilemap.GetNeighborCells_4(currentIndex).Values.Any(index => !tilemap.IsCellUsed(layerId, index)))
+            else if (tilemap.GetNeighborCells_4(currentIndex).Values.Any(index => !tilemap.IsCellUsed(layerId, index)))
             {
                 percent = 70;
             }
@@ -143,8 +143,8 @@ class TerrainBuilder
 
     private static void BuildSteppe(TileMap tilemap, Vector2I startPoint, Random random)
     {
-        int layerId = tile2LayerId[TileType.Steppe];
-        int sourceId = tile2sourceId[TileType.Steppe];
+        int layerId = tile2LayerId[TerrainType.Steppe];
+        int sourceId = tile2sourceId[TerrainType.Steppe];
 
         var long0 = steppeLong0;
         var long1 = steppeLong1;
@@ -177,10 +177,10 @@ class TerrainBuilder
 
     private static void BuildMountion(TileMap tilemap, Vector2I startPoint, Random random)
     {
-        var landCells = tilemap.GetUsedCells(tile2LayerId[TileType.Land]);
+        var landCells = tilemap.GetUsedCells(tile2LayerId[TerrainType.Land]);
 
-        int layerId = tile2LayerId[TileType.Mount];
-        int sourceId = tile2sourceId[TileType.Mount];
+        int layerId = tile2LayerId[TerrainType.Mount];
+        int sourceId = tile2sourceId[TerrainType.Mount];
 
         for (int i = 0; i < mountionLong; i++)
         {
@@ -201,7 +201,7 @@ class TerrainBuilder
 
     private static void AddIsolatePlains(TileMap tilemap, IEnumerable<Vector2I> mountions, Random random)
     {
-        int layerId = tile2LayerId[TileType.Mount];
+        int layerId = tile2LayerId[TerrainType.Mount];
 
         var cellQueue = new Queue<Vector2I>(mountions.OrderBy(_ => random.Next()));
         int addCount = 0;
@@ -241,8 +241,8 @@ class TerrainBuilder
 
     private static void AddIsolateMountions(TileMap tilemap, IEnumerable<Vector2I> plainCells, Random random)
     {
-        int layerId = tile2LayerId[TileType.Mount];
-        int sourceId = tile2sourceId[TileType.Mount];
+        int layerId = tile2LayerId[TerrainType.Mount];
+        int sourceId = tile2sourceId[TerrainType.Mount];
 
         var cellQueue = new Queue<Vector2I>(plainCells.OrderBy(_ => random.Next()));
         int addCount = 0;
@@ -282,8 +282,8 @@ class TerrainBuilder
 
     private static IEnumerable<Vector2I> BuildLand(TileMap tilemap, Vector2I startPoint, Random random)
     {
-        int layerId = tile2LayerId[TileType.Land];
-        int sourceId = tile2sourceId[TileType.Land];
+        int layerId = tile2LayerId[TerrainType.Land];
+        int sourceId = tile2sourceId[TerrainType.Land];
 
         for (int i = 0; i < landSize; i++)
         {
@@ -300,8 +300,8 @@ class TerrainBuilder
 
     private static void BuildSea(TileMap tilemap)
     {
-        int layerId = tile2LayerId[TileType.Water];
-        int sourceId = tile2sourceId[TileType.Water];
+        int layerId = tile2LayerId[TerrainType.Water];
+        int sourceId = tile2sourceId[TerrainType.Water];
 
         for (int i = 0; i < maxSize; i++)
         {

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2qbtw71qp1ws"]
+
+[ext_resource type="TileSet" uid="uid://dxpsh7numnhc6" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_kfwtp"]
+
+[node name="TileMapProvince" type="TileMap"]
+tile_set = ExtResource("1_kfwtp")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 0)
