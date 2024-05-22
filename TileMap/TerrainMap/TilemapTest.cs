@@ -25,7 +25,7 @@ public partial class TilemapTest : Control
             var pops = PopCountBuilder.Build(popCountMap, terrains, random);
             GD.Print($"total popCount:{pops.Values.Sum()}, max popCount {pops.Values.Max()}, min popCount {pops.Values.Min()}");
 
-            var provinceBlocks = ProvinceBuilder.Build(provinceMap, pops, random);
+            var provinceBlocks = ProvinceBlock.Builder.Build(provinceMap, pops, random);
             GD.Print($"total provCount:{provinceBlocks.Count()}, max provSize {provinceBlocks.Max(x => x.Cells.Count())}, min provSize {provinceBlocks.Min(x => x.Cells.Count())}");
 
             var countryBlocks = CountryBuilder.Build(countryMap, provinceBlocks, random);

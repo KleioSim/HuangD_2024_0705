@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cjmfc2p2io1ku"]
 
-[ext_resource type="TileSet" uid="uid://18ru871xspdb" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_4nokr"]
+[ext_resource type="TileSet" uid="uid://dxpsh7numnhc6" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_4nokr"]
 [ext_resource type="Script" path="res://TileMap/PopMap/TileMapPopCount.cs" id="2_m24vg"]
 
 [node name="TileMapPopCount" type="TileMap"]
