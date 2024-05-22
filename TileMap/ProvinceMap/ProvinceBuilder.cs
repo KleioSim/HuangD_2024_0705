@@ -29,6 +29,11 @@ internal class ProvinceBlock
             Add(tilemap, cell);
         }
     }
+
+    internal IEnumerable<ProvinceBlock> GetNeighbors(List<ProvinceBlock> provinceBlocks)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal class ProvinceBuilder

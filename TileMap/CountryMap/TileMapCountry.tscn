@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b22rjrpo2goh3"]
+
+[ext_resource type="TileSet" uid="uid://dxpsh7numnhc6" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_mod4d"]
+
+[node name="TileMapCountry" type="TileMap"]
+tile_set = ExtResource("1_mod4d")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 0)

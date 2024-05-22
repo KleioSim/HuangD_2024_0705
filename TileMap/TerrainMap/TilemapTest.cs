@@ -9,6 +9,7 @@ public partial class TilemapTest : Control
     public TileMapTerrain TerrainMap => GetNode<TileMapTerrain>("CanvasLayer2/TileMapTerrain");
     public TileMapPopCount popCountMap => GetNode<TileMapPopCount>("CanvasLayer2/TileMapPopCount");
     public TileMap provinceMap => GetNode<TileMap>("CanvasLayer2/TileMapProvince");
+    public TileMap countryMap => GetNode<TileMap>("CanvasLayer2/TileMapCountry");
 
     public override void _Ready()
     {
@@ -26,6 +27,9 @@ public partial class TilemapTest : Control
 
             var provinceBlocks = ProvinceBuilder.Build(provinceMap, pops, random);
             GD.Print($"total provCount:{provinceBlocks.Count()}, max provSize {provinceBlocks.Max(x => x.Cells.Count())}, min provSize {provinceBlocks.Min(x => x.Cells.Count())}");
+
+            var countryBlocks = CountryBuilder.Build(countryMap, provinceBlocks, random);
+            GD.Print($"total countryCount:{countryBlocks.Count()}, max countrySize {countryBlocks.Max(x => x.Provinces.Count())}, min countrySize {countryBlocks.Min(x => x.Provinces.Count())}");
         };
     }
 }
