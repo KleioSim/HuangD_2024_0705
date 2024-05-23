@@ -55,7 +55,7 @@ internal class ProvinceBlock
                 block.AddRange(tilemap, item.Cells);
             }
 
-            foreach(var block in provinceBlocks)
+            foreach (var block in provinceBlocks)
             {
                 var outter = block.Edges.SelectMany(edge => tilemap.GetNeighborCells_4(edge).Values.Except(block.Cells)).ToArray();
                 block._neighbors = provinceBlocks.Where(other => other != block && other.Edges.Intersect(outter).Any()).ToHashSet();

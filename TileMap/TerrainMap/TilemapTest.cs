@@ -6,8 +6,8 @@ using System.Reflection;
 public partial class TilemapTest : Control
 {
     public Button button => GetNode<Button>("CanvasLayer/Button");
-    public TileMapTerrain TerrainMap => GetNode<TileMapTerrain>("CanvasLayer2/TileMapTerrain");
-    public TileMapPopCount popCountMap => GetNode<TileMapPopCount>("CanvasLayer2/TileMapPopCount");
+    public TileMap TerrainMap => GetNode<TileMap>("CanvasLayer2/TileMapTerrain");
+    public TileMap popCountMap => GetNode<TileMap>("CanvasLayer2/TileMapPopCount");
     public TileMap provinceMap => GetNode<TileMap>("CanvasLayer2/TileMapProvince");
     public TileMap countryMap => GetNode<TileMap>("CanvasLayer2/TileMapCountry");
 

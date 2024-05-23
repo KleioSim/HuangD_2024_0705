@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dt82a71estys7"]
 
 [ext_resource type="Script" path="res://TileMap/TerrainMap/TilemapTest.cs" id="1_n7lco"]
-[ext_resource type="PackedScene" uid="uid://c0ysipcrwt24x" path="res://TileMap/TerrainMap/TerrainMap.tscn" id="3_24qln"]
-[ext_resource type="PackedScene" uid="uid://cjmfc2p2io1ku" path="res://TileMap/PopMap/TileMapPopCount.tscn" id="3_qale7"]
+[ext_resource type="PackedScene" uid="uid://2pokaljqhtrn" path="res://TileMap/TerrainMap/TerrainMap.tscn" id="3_24qln"]
+[ext_resource type="PackedScene" uid="uid://beerkild18pm7" path="res://TileMap/PopMap/TileMapPopCount.tscn" id="3_qale7"]
 [ext_resource type="PackedScene" uid="uid://b2qbtw71qp1ws" path="res://TileMap/ProvinceMap/TileMapProvince.tscn" id="4_7ag07"]
 [ext_resource type="PackedScene" uid="uid://b22rjrpo2goh3" path="res://TileMap/CountryMap/TileMapCountry.tscn" id="5_84wug"]
 
@@ -31,11 +31,14 @@ offset = Vector2(500, 500)
 zoom = Vector2(0.03, 0.03)
 
 [node name="TileMapTerrain" parent="CanvasLayer2" instance=ExtResource("3_24qln")]
+visible = false
 
 [node name="TileMapPopCount" parent="CanvasLayer2" instance=ExtResource("3_qale7")]
 visible = false
 modulate = Color(1, 1, 1, 0.196078)
 
 [node name="TileMapProvince" parent="CanvasLayer2" instance=ExtResource("4_7ag07")]
+visible = false
 
 [node name="TileMapCountry" parent="CanvasLayer2" instance=ExtResource("5_84wug")]
+modulate = Color(1, 1, 1, 0.196078)

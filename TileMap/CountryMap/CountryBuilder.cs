@@ -54,7 +54,7 @@ public static class CountryBuilder
 
 
         tilemap.Clear();
-        for (int i=0; i < tilemap.GetLayersCount(); i++)
+        for (int i = 0; i < tilemap.GetLayersCount(); i++)
         {
             tilemap.RemoveLayer(i);
         }
@@ -108,7 +108,5 @@ public static class CountryBuilder
                 }
             }
         }
-
-
     }
 }
