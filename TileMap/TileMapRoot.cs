@@ -1,6 +1,8 @@
 ﻿using Godot;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 public partial class TileMapRoot : Node2D
 {
@@ -9,9 +11,12 @@ public partial class TileMapRoot : Node2D
     public TileMap ProvinceMap => GetNode<TileMap>("ProvinceMap");
     public TileMap CountryMap => GetNode<TileMap>("CountryMap");
 
-    internal void BuildMap()
+    internal void BuildMap(string seed)
     {
-        var random = new Random();
+        var algo = SHA1.Create();
+        var hash = BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(seed)), 0);
+
+        var random = new Random(hash);
 
         var terrains = TerrainBuilder.Build(TerrainMap, random);
         GD.Print(String.Join(",", terrains.GroupBy(x => x.Value).Select(group => $"{group.Key}:{group.Count()}")));

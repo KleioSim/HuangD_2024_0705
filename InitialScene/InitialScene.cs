@@ -3,14 +3,20 @@ using System;
 
 public partial class InitialScene : Control
 {
-    public Button button => GetNode<Button>("CanvasLayer/Button");
     public TileMapRoot MapRoot => GetNode<TileMapRoot>("/root/MapScene/CanvasLayer/TileMapRoot");
+
+    public TextEdit Seed => GetNode<TextEdit>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/SeedEdit");
+    public Button BuildMap => GetNode<Button>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/Button");
+
+    private Random random = new Random();
 
     public override void _Ready()
     {
-        button.Pressed += () =>
+        Seed.Text = random.Next().ToString();
+
+        BuildMap.Pressed += () =>
         {
-            MapRoot.BuildMap();
+            MapRoot.BuildMap(Seed.Text);
         };
     }
 }

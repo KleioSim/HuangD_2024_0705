@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="HuangD"
-run/main_scene="res://TileMap/tilemap.tscn"
+run/main_scene="res://InitialScene/InitialScene.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 [autoload]
 
 MapScene="*res://AutoLoads/MapScene.tscn"
+
+[display]
+
+window/size/viewport_width=1366
+window/size/viewport_height=768
 
 [dotnet]
 

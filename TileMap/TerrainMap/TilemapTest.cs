@@ -12,7 +12,8 @@ public partial class TilemapTest : Control
     {
         button.Pressed += () =>
         {
-            MapRoot.BuildMap();
+            var random = new Random();
+            MapRoot.BuildMap(random.Next().ToString());
         };
     }
 }
