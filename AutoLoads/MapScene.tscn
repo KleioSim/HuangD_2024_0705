@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://ksgrcihga71w"]
+
+[ext_resource type="PackedScene" uid="uid://bcoh17c7hnevt" path="res://TileMap/TileMapRoot.tscn" id="1_kkttr"]
+
+[node name="MapScene" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="CanvasLayer"]
+offset = Vector2(500, 500)
+zoom = Vector2(0.03, 0.03)
+
+[node name="TileMapRoot" parent="CanvasLayer" instance=ExtResource("1_kkttr")]

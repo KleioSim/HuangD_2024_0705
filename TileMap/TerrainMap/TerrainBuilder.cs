@@ -55,6 +55,8 @@ class TerrainBuilder
 
     public static Dictionary<Vector2I, TerrainType> Build(TileMap tilemap, Random random)
     {
+        tilemap.Clear();
+
         var startPoint = startPoints[0];
 
         BuildSea(tilemap);

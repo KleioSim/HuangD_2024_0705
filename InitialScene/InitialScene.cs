@@ -1,12 +1,10 @@
 ﻿using Godot;
 using System;
-using System.Linq;
-using System.Reflection;
 
-public partial class TilemapTest : Control
+public partial class InitialScene : Control
 {
     public Button button => GetNode<Button>("CanvasLayer/Button");
-    public TileMapRoot MapRoot => GetNode<TileMapRoot>("CanvasLayer2/TileMapRoot");
+    public TileMapRoot MapRoot => GetNode<TileMapRoot>("/root/MapScene/CanvasLayer/TileMapRoot");
 
     public override void _Ready()
     {
