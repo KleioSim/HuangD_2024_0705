@@ -5,6 +5,7 @@
 [node name="MapScene" type="Node2D"]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
 
 [node name="Camera2D" type="Camera2D" parent="CanvasLayer"]
 offset = Vector2(500, 500)

@@ -16,6 +16,10 @@ config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
 
+[autoload]
+
+MapScene="*res://AutoLoads/MapScene.tscn"
+
 [dotnet]
 
 project/assembly_name="HuangD"
