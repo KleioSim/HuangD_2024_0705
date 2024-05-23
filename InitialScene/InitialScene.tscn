@@ -46,3 +46,9 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Confirm"
+
+[node name="SelectCountryPanel" type="PanelContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CountryName" type="Label" parent="CanvasLayer/VBoxContainer/SelectCountryPanel"]
+layout_mode = 2

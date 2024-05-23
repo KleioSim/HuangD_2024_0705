@@ -18,7 +18,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-MapScene="*res://AutoLoads/MapScene.tscn"
+MapScene="*res://AutoLoads/MapScene/MapScene.tscn"
+Global="*res://AutoLoads/Global/Global.tscn"
 
 [display]
 

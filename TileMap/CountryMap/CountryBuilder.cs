@@ -24,13 +24,14 @@ class CountryBlock
 public static class CountryBuilder
 {
 
-    internal static List<CountryBlock> Build(TileMap tilemap, List<ProvinceBlock> provinceBlocks, Random random)
+    internal static List<CountryBlock> Build(TileMap tilemap, IEnumerable<ProvinceBlock> provinceBlocks, Random random)
     {
 
+        var blockList = provinceBlocks.ToList();
         var countryBlocks = new List<CountryBlock>();
-        while (provinceBlocks.Count > 0)
+        while (blockList.Count > 0)
         {
-            var country = BuildCountry(tilemap, provinceBlocks, random);
+            var country = BuildCountry(tilemap, blockList, random);
             countryBlocks.Add(country);
         }
 
