@@ -1,8 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://ksgrcihga71w"]
+[gd_scene load_steps=5 format=3 uid="uid://ksgrcihga71w"]
 
 [ext_resource type="PackedScene" uid="uid://bcoh17c7hnevt" path="res://TileMap/TileMapRoot.tscn" id="1_2x2o3"]
+[ext_resource type="Script" path="res://AutoLoads/MapScene/MapCamera.cs" id="1_eqpeg"]
+[ext_resource type="Script" path="res://addons/CameraMoveControl/CameraMoveControl.cs" id="2_iakxp"]
 
-[node name="MapScene" type="Node2D"]
+[sub_resource type="CSharpScript" id="CSharpScript_87md2"]
+script/source = "using Godot;
+using System;
+
+public partial class MapScene : Control
+{
+}
+"
+
+[node name="MapScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("CSharpScript_87md2")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
@@ -10,5 +28,22 @@ follow_viewport_enabled = true
 [node name="Camera2D" type="Camera2D" parent="CanvasLayer"]
 offset = Vector2(500, 500)
 zoom = Vector2(0.03, 0.03)
+position_smoothing_enabled = true
+script = ExtResource("1_eqpeg")
+ZoomMin = 0.03
+ZoomMax = 0.1
+ZoomStep = 0.01
 
 [node name="TileMapRoot" parent="CanvasLayer" instance=ExtResource("1_2x2o3")]
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="CameraMoveControl" type="Control" parent="CanvasLayer2" node_paths=PackedStringArray("Camera")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_iakxp")
+Camera = NodePath("../../CanvasLayer/Camera2D")
