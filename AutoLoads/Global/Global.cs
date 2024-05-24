@@ -31,6 +31,12 @@ public partial class Global : Node2D
             var coutryBlock = block2Country.Single(x => x.Value == country).Key;
             return coutryBlock.Provinces.Select(x => block2Province[x]);
         };
+
+        Province.FindPopCount = (prov) =>
+        {
+            var provBlock = block2Province.Single(x => x.Value == prov).Key;
+            return provBlock.Cells.Sum(x => MapRoot.Pops[x]);
+        };
     }
 
 

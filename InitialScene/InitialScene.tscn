@@ -68,6 +68,10 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 
+[node name="PopCount" type="Label" parent="CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
 [node name="Button" type="Button" parent="CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(60, 30)
 layout_mode = 2
