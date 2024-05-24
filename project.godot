@@ -29,3 +29,7 @@ window/size/viewport_height=768
 [dotnet]
 
 project/assembly_name="HuangD"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/CameraMoveControl/plugin.cfg")
