@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class Session
@@ -18,7 +19,11 @@ public class Session
 public class Country
 {
     static int count;
+
+    public static Func<Country, IEnumerable<Province>> FindProvinces;
+
     public string Name { get; private set; }
+    public IEnumerable<Province> Provinces => FindProvinces(this);
 
     public Country()
     {
@@ -29,6 +34,11 @@ public class Country
 public class Province
 {
     static int count;
+
+    public static Func<Province, int> FindPopCount;
+
+    public int PopCount => FindPopCount(this);
+
     public string Name { get; private set; }
 
     public Province()

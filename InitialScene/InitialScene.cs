@@ -10,6 +10,8 @@ public partial class InitialScene : Control
     public Button BuildMap => GetNode<Button>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/Button");
 
     public Label CountryName => GetNode<Label>("CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer/CountryName");
+    public Label ProvinceCount => GetNode<Label>("CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer/ProvinceCount");
+    public Label PopCount => GetNode<Label>("CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer/PopCount");
     public Button ConfirmCountry => GetNode<Button>("CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer/Button");
 
     private Random random = new Random();
@@ -33,6 +35,9 @@ public partial class InitialScene : Control
         Global.MapClick += (cell, province, country) =>
         {
             CountryName.Text = country != null ? country.Name : "--";
+            ProvinceCount.Text = country != null ? country.Provinces.Count().ToString() : "--";
+            PopCount.Text = country != null ? country.Provinces.Sum(x => x.PopCount).ToString() : "--";
+
             ConfirmCountry.Disabled = country == null;
         };
     }

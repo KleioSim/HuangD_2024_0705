@@ -16,7 +16,6 @@ public partial class Global : Node2D
 
     public override void _Ready()
     {
-
         MapRoot.ClickTile += (index) =>
         {
             var provinceBlock = MapRoot.ProvinceBlocks.SingleOrDefault(x => x.Cells.Contains(index));
@@ -25,6 +24,12 @@ public partial class Global : Node2D
             MapClick?.Invoke(index,
                 provinceBlock == null ? null : block2Province[provinceBlock],
                 countryBlock == null ? null : block2Country[countryBlock]);
+        };
+
+        Country.FindProvinces = (country) =>
+        {
+            var coutryBlock = block2Country.Single(x => x.Value == country).Key;
+            return coutryBlock.Provinces.Select(x => block2Province[x]);
         };
     }
 

@@ -18,24 +18,31 @@ public partial class MapCamera : Camera2D
         {
             if (eventKey.Pressed)
             {
-                var changed = Vector2.One * ZoomStep;
-                if (eventKey.ButtonIndex == MouseButton.WheelDown)
+                if (eventKey.ButtonIndex == MouseButton.WheelDown
+                    || eventKey.ButtonIndex == MouseButton.WheelUp)
                 {
-
-                }
-                else if (eventKey.ButtonIndex == MouseButton.WheelUp)
-                {
-                    changed *= -1;
-                }
-
-                if (Zoom + changed <= ZoomMax * Vector2.One
-                    && Zoom + changed >= ZoomMin * Vector2.One)
-                {
-                    Zoom += changed;
+                    ZoomMap((ZoomType)eventKey.ButtonIndex);
                 }
             }
 
             return;
+        }
+    }
+
+    enum ZoomType
+    {
+        In = (int)MouseButton.WheelDown,
+        Out = (int)MouseButton.WheelUp
+    }
+
+    private void ZoomMap(ZoomType zoomType)
+    {
+        var changed = Vector2.One * ZoomStep * (zoomType == ZoomType.Out ? -1 : 1);
+
+        if (Zoom + changed <= ZoomMax * Vector2.One
+            && Zoom + changed >= ZoomMin * Vector2.One)
+        {
+            Zoom += changed;
         }
     }
 }
