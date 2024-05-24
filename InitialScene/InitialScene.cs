@@ -26,14 +26,14 @@ public partial class InitialScene : Control
         ConfirmCountry.Pressed += () =>
         {
             Global.Session.Player = Global.Session.Countries.Single(x => x.Name == CountryName.Text);
+
+            GetTree().ChangeSceneToFile("res://MainScene/MainScene.tscn");
         };
 
         Global.MapClick += (cell, province, country) =>
         {
-            if (country != null)
-            {
-                CountryName.Text = country.Name;
-            }
+            CountryName.Text = country != null ? country.Name : "--";
+            ConfirmCountry.Disabled = country == null;
         };
     }
 }
