@@ -5,6 +5,7 @@ public class Session
 {
     public IEnumerable<Province> Provinces { get; set; }
     public IEnumerable<Country> Countries { get; set; }
+    public Country Player { get; internal set; }
 
     public Session(int provinceCount, int countryCount)
     {

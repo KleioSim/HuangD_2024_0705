@@ -1,17 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ksgrcihga71w"]
+[gd_scene load_steps=4 format=3 uid="uid://ksgrcihga71w"]
 
 [ext_resource type="PackedScene" uid="uid://bcoh17c7hnevt" path="res://TileMap/TileMapRoot.tscn" id="1_2x2o3"]
 [ext_resource type="Script" path="res://AutoLoads/MapScene/MapCamera.cs" id="1_eqpeg"]
 [ext_resource type="Script" path="res://addons/CameraMoveControl/CameraMoveControl.cs" id="2_iakxp"]
-
-[sub_resource type="CSharpScript" id="CSharpScript_87md2"]
-script/source = "using Godot;
-using System;
-
-public partial class MapScene : Control
-{
-}
-"
 
 [node name="MapScene" type="Control"]
 layout_mode = 3
@@ -20,7 +11,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = SubResource("CSharpScript_87md2")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true

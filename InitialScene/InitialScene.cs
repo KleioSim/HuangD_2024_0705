@@ -1,5 +1,6 @@
 ﻿using Godot;
 using System;
+using System.Linq;
 
 public partial class InitialScene : Control
 {
@@ -8,11 +9,10 @@ public partial class InitialScene : Control
     public TextEdit Seed => GetNode<TextEdit>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/SeedEdit");
     public Button BuildMap => GetNode<Button>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/Button");
 
-    public Label CountryName => GetNode<Label>("CanvasLayer/VBoxContainer/SelectCountryPanel/CountryName");
+    public Label CountryName => GetNode<Label>("CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer/CountryName");
+    public Button ConfirmCountry => GetNode<Button>("CanvasLayer/VBoxContainer/SelectCountryPanel/MarginContainer/VBoxContainer/Button");
 
     private Random random = new Random();
-
-    private Session session;
 
     public override void _Ready()
     {
@@ -21,6 +21,11 @@ public partial class InitialScene : Control
         BuildMap.Pressed += () =>
         {
             Global.BuildGame(Seed.Text);
+        };
+
+        ConfirmCountry.Pressed += () =>
+        {
+            Global.Session.Player = Global.Session.Countries.Single(x => x.Name == CountryName.Text);
         };
 
         Global.MapClick += (cell, province, country) =>
