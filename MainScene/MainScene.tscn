@@ -7,3 +7,267 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Country" type="PanelContainer" parent="CanvasLayer"]
+offset_right = 120.0
+offset_bottom = 80.0
+
+[node name="Name" type="Label" parent="CanvasLayer/Country"]
+custom_minimum_size = Vector2(120, 80)
+layout_mode = 2
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Player" type="Button" parent="CanvasLayer"]
+custom_minimum_size = Vector2(120, 150)
+offset_top = 80.0
+offset_right = 120.0
+offset_bottom = 230.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Player"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Player/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+text = "EMP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Name" type="Label" parent="CanvasLayer/Player/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 8.0
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Offices" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 130.0
+offset_right = 330.0
+offset_bottom = 60.0
+theme_override_constants/separation = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Offices"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Offices/PanelContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "PROV"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="CanvasLayer/Offices"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Offices/PanelContainer2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "CENT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer3" type="PanelContainer" parent="CanvasLayer/Offices"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Offices/PanelContainer3"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+text = "HARE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopInfos" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 350.0
+offset_right = 958.0
+offset_bottom = 60.0
+
+[node name="PopCount" type="PanelContainer" parent="CanvasLayer/TopInfos"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TopInfos/PopCount"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CanvasLayer/TopInfos/PopCount/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Pop:"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[node name="Value" type="Label" parent="CanvasLayer/TopInfos/PopCount/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+vertical_alignment = 1
+
+[node name="Money" type="PanelContainer" parent="CanvasLayer/TopInfos"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TopInfos/Money"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CanvasLayer/TopInfos/Money/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Money:"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[node name="Value" type="Label" parent="CanvasLayer/TopInfos/Money/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+vertical_alignment = 1
+
+[node name="Army" type="PanelContainer" parent="CanvasLayer/TopInfos"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TopInfos/Army"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Name" type="Label" parent="CanvasLayer/TopInfos/Army/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Army:"
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 1
+
+[node name="Value" type="Label" parent="CanvasLayer/TopInfos/Army/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+vertical_alignment = 1
+
+[node name="Partys" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -264.0
+offset_top = -114.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Partys"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Partys/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Partys"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Party" type="HBoxContainer" parent="CanvasLayer/Partys/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Name" type="Label" parent="CanvasLayer/Partys/VBoxContainer/Party"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/Partys/VBoxContainer/Party"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="Date" type="PanelContainer" parent="CanvasLayer"]
+offset_left = 980.0
+offset_right = 1020.0
+offset_bottom = 40.0
+
+[node name="HoxContainer" type="HBoxContainer" parent="CanvasLayer/Date"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+
+[node name="Year" type="HBoxContainer" parent="CanvasLayer/Date/HoxContainer"]
+layout_mode = 2
+
+[node name="Value" type="Label" parent="CanvasLayer/Date/HoxContainer/Year"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/Date/HoxContainer/Year"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Y"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Month" type="HBoxContainer" parent="CanvasLayer/Date/HoxContainer"]
+layout_mode = 2
+
+[node name="Value" type="Label" parent="CanvasLayer/Date/HoxContainer/Month"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/Date/HoxContainer/Month"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "M"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Day" type="HBoxContainer" parent="CanvasLayer/Date/HoxContainer"]
+layout_mode = 2
+
+[node name="Value" type="Label" parent="CanvasLayer/Date/HoxContainer/Day"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "--"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/Date/HoxContainer/Day"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "D"
+horizontal_alignment = 1
+vertical_alignment = 1
