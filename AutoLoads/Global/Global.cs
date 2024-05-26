@@ -5,11 +5,13 @@ using System.Linq;
 
 public partial class Global : Node2D
 {
+    [Signal]
+    public delegate void MapClickEventHandler(Vector2I index, string provinceName, string country);
+
     public TileMapRoot MapRoot => GetNode<TileMapRoot>("/root/MapScene/CanvasLayer/TileMapRoot");
+    public Camera2D Camera => GetNode<Camera2D>("CanvasLayer/Camera2D");
 
     public Session Session { get; private set; }
-
-    public Action<Vector2I, Province, Country> MapClick { get; set; }
 
     private Dictionary<ProvinceBlock, Province> block2Province = new Dictionary<ProvinceBlock, Province>();
     private Dictionary<CountryBlock, Country> block2Country = new Dictionary<CountryBlock, Country>();
@@ -21,9 +23,9 @@ public partial class Global : Node2D
             var provinceBlock = MapRoot.ProvinceBlocks.SingleOrDefault(x => x.Cells.Contains(index));
             var countryBlock = provinceBlock == null ? null : MapRoot.CountryBlocks.SingleOrDefault(x => x.Provinces.Contains(provinceBlock));
 
-            MapClick?.Invoke(index,
-                provinceBlock == null ? null : block2Province[provinceBlock],
-                countryBlock == null ? null : block2Country[countryBlock]);
+            EmitSignal(SignalName.MapClick, index,
+                provinceBlock == null ? null : block2Province[provinceBlock].Name,
+                countryBlock == null ? null : block2Country[countryBlock].Name);
         };
 
         Country.FindProvinces = (country) =>

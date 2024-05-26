@@ -7,6 +7,9 @@ using System.Text;
 
 public partial class TileMapRoot : Node2D
 {
+    [Export]
+    Camera2D Camera { get; set; }
+
     internal TileMap TerrainMap => GetNode<TileMap>("TerrainMap");
     internal TileMap PopCountMap => GetNode<TileMap>("PopCountMap");
     internal TileMap ProvinceMap => GetNode<TileMap>("ProvinceMap");
@@ -38,6 +41,13 @@ public partial class TileMapRoot : Node2D
 
         CountryBlocks = CountryBuilder.Build(CountryMap, ProvinceBlocks, random);
         GD.Print($"total countryCount:{CountryBlocks.Count()}, max countrySize {CountryBlocks.Max(x => x.Provinces.Count())}, min countrySize {CountryBlocks.Min(x => x.Provinces.Count())}");
+
+        if(Camera != null)
+        {
+            Camera.Position = TerrainMap.MapToLocal(TerrainMap.GetUsedRect().GetCenter());
+            Camera.Zoom = new Vector2(0.5f, 0.5f);
+        }
+
     }
 
     public override void _UnhandledInput(InputEvent @event)

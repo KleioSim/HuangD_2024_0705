@@ -10,7 +10,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Top" type="Panel" parent="."]
-custom_minimum_size = Vector2(3, 100)
+custom_minimum_size = Vector2(3, 3)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -18,7 +18,7 @@ grow_horizontal = 2
 mouse_filter = 1
 
 [node name="Bottom" type="Panel" parent="."]
-custom_minimum_size = Vector2(3, 100)
+custom_minimum_size = Vector2(3, 3)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -29,7 +29,7 @@ grow_vertical = 0
 mouse_filter = 1
 
 [node name="Left" type="Panel" parent="."]
-custom_minimum_size = Vector2(100, 3)
+custom_minimum_size = Vector2(3, 3)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -37,7 +37,7 @@ grow_vertical = 2
 mouse_filter = 1
 
 [node name="Right" type="Panel" parent="."]
-custom_minimum_size = Vector2(100, 3)
+custom_minimum_size = Vector2(3, 3)
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
