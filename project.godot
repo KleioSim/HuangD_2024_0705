@@ -23,8 +23,11 @@ Global="*res://AutoLoads/Global/Global.tscn"
 
 [display]
 
-window/size/viewport_width=1366
-window/size/viewport_height=768
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/size/window_width_override=1366
+window/size/window_height_override=768
+window/stretch/mode="canvas_items"
 
 [dotnet]
 
@@ -32,4 +35,4 @@ project/assembly_name="HuangD"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/CameraMoveControl/plugin.cfg")
+enabled=PackedStringArray("res://addons/CameraMoveControl/plugin.cfg", "res://addons/MVP/plugin.cfg")

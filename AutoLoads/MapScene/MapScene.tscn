@@ -25,6 +25,7 @@ ZoomStep = 0.01
 Camera = NodePath("../Camera2D")
 
 [node name="CanvasLayer2" type="CanvasLayer" parent="."]
+layer = 99
 
 [node name="CameraMoveControl" type="Control" parent="CanvasLayer2" node_paths=PackedStringArray("Camera")]
 layout_mode = 3
