@@ -2,18 +2,18 @@
 using System;
 using System.Linq;
 
-public partial class MainScene : ViewControl
+public partial class MainScene : Control
 {
-    public Global Global;
+    public Global Global => GetNode<Global>("/root/Global");
 
     public override void _Ready()
     {
         CommandConsole.IsVaild = true;
-        Global = GetNode<Global>("/root/Global");
+
+        CommandConsole.AddCommand("testing", testing);
     }
 
 
-    [AddCommand("testing")]
     public void testing(string provName, string countryName)
     {
         var prov = Global.Session.Provinces.Single(x => x.Name == provName);
