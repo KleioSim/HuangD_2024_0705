@@ -11,7 +11,6 @@ script = ExtResource("1_02pok")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 10
-visible = false
 
 [node name="Country" type="PanelContainer" parent="CanvasLayer"]
 offset_right = 120.0
@@ -174,7 +173,8 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -264.0
-offset_top = -74.0
+offset_top = -200.0
+offset_bottom = -126.0
 grow_horizontal = 0
 grow_vertical = 0
 
@@ -292,3 +292,19 @@ layout_mode = 2
 [node name="Panel2" type="Panel" parent="CanvasLayer/Detail/HBoxContainer"]
 custom_minimum_size = Vector2(200, 500)
 layout_mode = 2
+
+[node name="NextTurn" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Button" type="Button" parent="CanvasLayer/NextTurn"]
+custom_minimum_size = Vector2(120, 60)
+layout_mode = 2
+text = "NextTurn"

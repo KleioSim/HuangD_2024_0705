@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-public partial class MainScene : Control
+public partial class MainScene : ViewControl
 {
     public Global Global => GetNode<Global>("/root/Global");
 
@@ -13,6 +13,10 @@ public partial class MainScene : Control
         CommandConsole.AddCommand("testing", testing);
     }
 
+    public void OnNextTurn()
+    {
+
+    }
 
     public void testing(string provName, string countryName)
     {
