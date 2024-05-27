@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://MainScene/MainScene.cs" id="1_02pok"]
 
-[node name="Control" type="Control"]
+[node name="MainScene" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -308,3 +308,5 @@ grow_vertical = 0
 custom_minimum_size = Vector2(120, 60)
 layout_mode = 2
 text = "NextTurn"
+
+[connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="." method="OnNextTurn"]
