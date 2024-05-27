@@ -61,4 +61,12 @@ public partial class Global : Node2D
             block2Country.Add(MapRoot.CountryBlocks[i], Session.Countries.ElementAt(i));
         }
     }
+
+    internal void ChangeProvinceOwner(Province prov, Country country)
+    {
+        var provBlock = block2Province.SingleOrDefault(x => x.Value == prov).Key;
+        var newCountryBlock = block2Country.SingleOrDefault(x => x.Value == country).Key;
+
+        MapRoot.ChangeProvinceOwner(provBlock, newCountryBlock);
+    }
 }

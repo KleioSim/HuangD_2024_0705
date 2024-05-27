@@ -13,6 +13,7 @@ script = ExtResource("1_02pok")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 10
+visible = false
 
 [node name="Country" type="PanelContainer" parent="CanvasLayer"]
 offset_right = 120.0

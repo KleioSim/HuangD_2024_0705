@@ -27,7 +27,8 @@ public class Country
 
     public Country()
     {
-        Name = count++.ToString();
+        Name = $"C{count}";
+        count++;
     }
 }
 
@@ -43,6 +44,7 @@ public class Province
 
     public Province()
     {
-        Name = count++.ToString();
+        Name = $"P{count}";
+        count++;
     }
 }

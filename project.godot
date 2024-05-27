@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 MapScene="*res://AutoLoads/MapScene/MapScene.tscn"
 Global="*res://AutoLoads/Global/Global.tscn"
+CommandConsole="*res://addons/csharpConsole/CommandConsole.cs"
 
 [display]
 
@@ -35,4 +36,4 @@ project/assembly_name="HuangD"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/CameraMoveControl/plugin.cfg", "res://addons/MVP/plugin.cfg")
+enabled=PackedStringArray("res://addons/CameraMoveControl/plugin.cfg", "res://addons/MVP/plugin.cfg", "res://addons/csharpConsole/plugin.cfg")

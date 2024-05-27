@@ -11,6 +11,7 @@ class CountryBlock
     private HashSet<ProvinceBlock> _province = new HashSet<ProvinceBlock>();
     private HashSet<ProvinceBlock> _edges = new HashSet<ProvinceBlock>();
 
+
     internal void Add(ProvinceBlock provinceBlock)
     {
         _province.Add(provinceBlock);
@@ -19,19 +20,27 @@ class CountryBlock
         var needRemove = _edges.Where(x => x.Neighbors.Except(_province).Count() == 0).ToArray();
         _edges.ExceptWith(needRemove);
     }
+
+    internal void Remove(ProvinceBlock provinceBlock)
+    {
+        _province.Remove(provinceBlock);
+        _edges.Remove(provinceBlock);
+
+        _edges.UnionWith(_province.Intersect(provinceBlock.Neighbors));
+    }
 }
 
 public static class CountryBuilder
 {
 
-    internal static List<CountryBlock> Build(TileMap tilemap, IEnumerable<ProvinceBlock> provinceBlocks, Random random)
+    internal static List<CountryBlock> Build(IEnumerable<ProvinceBlock> provinceBlocks, Random random)
     {
 
         var blockList = provinceBlocks.ToList();
         var countryBlocks = new List<CountryBlock>();
         while (blockList.Count > 0)
         {
-            var country = BuildCountry(tilemap, blockList, random);
+            var country = BuildCountry(blockList, random);
             countryBlocks.Add(country);
         }
 
@@ -47,34 +56,10 @@ public static class CountryBuilder
             }
         }
 
-        var colors = new HashSet<Color>();
-        while (colors.Count < countryBlocks.Count)
-        {
-            colors.Add(new Color(random.Next(0, 10) / 10.0f, random.Next(0, 10) / 10.0f, random.Next(0, 10) / 10.0f));
-        }
-
-
-        tilemap.Clear();
-        for (int i = 0; i < tilemap.GetLayersCount(); i++)
-        {
-            tilemap.RemoveLayer(i);
-        }
-
-        for (int i = 0; i < countryBlocks.Count; i++)
-        {
-            tilemap.AddLayer(i);
-            tilemap.SetLayerModulate(i, colors.ElementAt(i));
-
-            foreach (var cell in countryBlocks[i].Provinces.SelectMany(x => x.Cells))
-            {
-                tilemap.SetCellEx(i, cell, 0);
-            }
-        }
-
         return countryBlocks;
     }
 
-    private static CountryBlock BuildCountry(TileMap tilemap, List<ProvinceBlock> provinceBlocks, Random random)
+    private static CountryBlock BuildCountry(List<ProvinceBlock> provinceBlocks, Random random)
     {
         var maxSize = random.Next(3, 10);
 

@@ -20,6 +20,8 @@ public partial class TileMapRoot : Node2D
     internal List<ProvinceBlock> ProvinceBlocks { get; private set; }
     internal List<CountryBlock> CountryBlocks { get; private set; }
 
+    private Dictionary<CountryBlock, int> block2LayerId = new Dictionary<CountryBlock, int>();
+
     [Signal]
     public delegate void ClickTileEventHandler(Vector2I index);
 
@@ -39,10 +41,38 @@ public partial class TileMapRoot : Node2D
         ProvinceBlocks = ProvinceBlock.Builder.Build(ProvinceMap, Pops, random);
         GD.Print($"total provCount:{ProvinceBlocks.Count()}, max provSize {ProvinceBlocks.Max(x => x.Cells.Count())}, min provSize {ProvinceBlocks.Min(x => x.Cells.Count())}");
 
-        CountryBlocks = CountryBuilder.Build(CountryMap, ProvinceBlocks, random);
+        CountryBlocks = CountryBuilder.Build(ProvinceBlocks, random);
         GD.Print($"total countryCount:{CountryBlocks.Count()}, max countrySize {CountryBlocks.Max(x => x.Provinces.Count())}, min countrySize {CountryBlocks.Min(x => x.Provinces.Count())}");
 
-        if(Camera != null)
+
+        block2LayerId.Clear();
+
+        var colors = new HashSet<Color>();
+        while (colors.Count < CountryBlocks.Count)
+        {
+            colors.Add(new Color(random.Next(0, 10) / 10.0f, random.Next(0, 10) / 10.0f, random.Next(0, 10) / 10.0f));
+        }
+
+        CountryMap.Clear();
+        for (int i = 0; i < CountryMap.GetLayersCount(); i++)
+        {
+            CountryMap.RemoveLayer(i);
+        }
+
+        for (int i = 0; i < CountryBlocks.Count; i++)
+        {
+            block2LayerId.Add(CountryBlocks[i], i);
+
+            CountryMap.AddLayer(i);
+            CountryMap.SetLayerModulate(i, colors.ElementAt(i));
+
+            foreach (var cell in CountryBlocks[i].Provinces.SelectMany(x => x.Cells))
+            {
+                CountryMap.SetCellEx(i, cell, 0);
+            }
+        }
+
+        if (Camera != null)
         {
             Camera.Position = TerrainMap.MapToLocal(TerrainMap.GetUsedRect().GetCenter());
             Camera.Zoom = new Vector2(0.5f, 0.5f);
@@ -68,6 +98,29 @@ public partial class TileMapRoot : Node2D
                 }
             }
             return;
+        }
+    }
+
+    internal void Redraw()
+    {
+
+    }
+
+    internal void ChangeProvinceOwner(ProvinceBlock provBlock, CountryBlock newCountryBlock)
+    {
+        var oldCountryBlock = CountryBlocks.SingleOrDefault(x => x.Provinces.Contains(provBlock));
+        oldCountryBlock.Remove(provBlock);
+
+        newCountryBlock.Add(provBlock);
+
+        foreach (var cell in provBlock.Cells)
+        {
+            CountryMap.EraseCell(block2LayerId[oldCountryBlock], cell);
+        }
+
+        foreach (var cell in provBlock.Cells)
+        {
+            CountryMap.SetCellEx(block2LayerId[newCountryBlock], cell, 0);
         }
     }
 }
