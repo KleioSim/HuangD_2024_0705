@@ -29,16 +29,52 @@ public partial class Global : Node2D
                 countryBlock == null ? null : block2Country[countryBlock].Name);
         };
 
+        Session.LOG = (log) =>
+        {
+            GD.Print(log);
+        };
+
+        Session.ChangeProvinceOwner = (province, country) =>
+        {
+            var provBlock = block2Province.SingleOrDefault(x => x.Value == province).Key;
+            var newCountryBlock = block2Country.SingleOrDefault(x => x.Value == country).Key;
+
+            MapRoot.ChangeProvinceOwner(provBlock, newCountryBlock);
+        };
+
         Country.FindProvinces = (country) =>
         {
             var coutryBlock = block2Country.Single(x => x.Value == country).Key;
             return coutryBlock.Provinces.Select(x => block2Province[x]);
         };
 
+        Country.FindNeighbors = (country) =>
+        {
+            var coutryBlock = block2Country.Single(x => x.Value == country).Key;
+
+            return MapRoot.CountryBlocks.Where(x => x != coutryBlock)
+                        .Where(x => coutryBlock.Edges.SelectMany(x => x.Neighbors).Intersect(x.Edges).Any())
+                        .Select(x => block2Country[x]);
+        };
+
         Province.FindPopCount = (prov) =>
         {
             var provBlock = block2Province.Single(x => x.Value == prov).Key;
             return provBlock.Cells.Sum(x => MapRoot.Pops[x]);
+        };
+
+        Province.FindOwner = (prov) =>
+        {
+            var provBlock = block2Province.Single(x => x.Value == prov).Key;
+
+            var countryBlock = MapRoot.CountryBlocks.Single(x => x.Provinces.Contains(provBlock));
+            return block2Country[countryBlock];
+        };
+
+        Province.FindNeighbors = (prov) =>
+        {
+            var provBlock = block2Province.Single(x => x.Value == prov).Key;
+            return provBlock.Neighbors.Select(x => block2Province[x]);
         };
     }
 
@@ -61,13 +97,5 @@ public partial class Global : Node2D
         {
             block2Country.Add(MapRoot.CountryBlocks[i], Session.Countries.ElementAt(i));
         }
-    }
-
-    internal void ChangeProvinceOwner(Province prov, Country country)
-    {
-        var provBlock = block2Province.SingleOrDefault(x => x.Value == prov).Key;
-        var newCountryBlock = block2Country.SingleOrDefault(x => x.Value == country).Key;
-
-        MapRoot.ChangeProvinceOwner(provBlock, newCountryBlock);
     }
 }

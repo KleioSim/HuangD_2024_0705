@@ -1,4 +1,5 @@
 ﻿using Godot;
+using HuangD.Sessions;
 using System;
 using System.Linq;
 
@@ -15,7 +16,7 @@ public partial class MainScene : ViewControl
 
     public void OnNextTurn()
     {
-
+        Global.Session.OnMessage(new Message_NextTurn());
     }
 
     public void testing(string provName, string countryName)
@@ -23,6 +24,6 @@ public partial class MainScene : ViewControl
         var prov = Global.Session.Provinces.Single(x => x.Name == provName);
         var country = Global.Session.Countries.Single(x => x.Name == countryName);
 
-        Global.ChangeProvinceOwner(prov, country);
+        Global.Session.OnMessage(new Message_ChangeProvinceOwner(prov, country));
     }
 }
