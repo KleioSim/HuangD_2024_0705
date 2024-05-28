@@ -129,12 +129,12 @@ public class Country
         var random = new Random();
         if (random.Next(0, 100) < 30)
         {
-            var province = Edges.Where(x=>x.IsConnectToCapital)
+            var province = Edges.Where(x=> x !=Capital && x.IsConnectToCapital)
                 .SelectMany(x=>x.Neighbors)
                 .Except(Provinces)
-                .OrderBy(_ => random.Next()).First();
+                .OrderBy(_ => random.Next()).FirstOrDefault();
 
-            yield return new Message_ChangeProvinceOwner(province, this);
+            yield return new Message_ChangeProvinceOwner(province != null ? province : Capital, this);
         }
     }
 }
