@@ -309,4 +309,8 @@ custom_minimum_size = Vector2(120, 60)
 layout_mode = 2
 text = "NextTurn"
 
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
 [connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="." method="OnNextTurn"]
+[connection signal="timeout" from="Timer" to="." method="OnNextTurn"]

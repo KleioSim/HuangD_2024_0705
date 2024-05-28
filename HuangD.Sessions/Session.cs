@@ -6,12 +6,13 @@ namespace HuangD.Sessions;
 
 public interface IMessage
 {
+    string Desc { get; }
 
 }
 
 public class Message_NextTurn : IMessage
 {
-
+    public string Desc => "NexTurn";
 }
 
 public class Message_ChangeProvinceOwner : IMessage
@@ -24,6 +25,21 @@ public class Message_ChangeProvinceOwner : IMessage
         province = prov;
         owner = country;
     }
+
+    public string Desc => $"{province.Name} owner is changed from {province.Owner.Name} to {owner.Name}";
+
+}
+
+public class Message_CountryDestroyed : IMessage
+{
+    public readonly Country country;
+
+    public Message_CountryDestroyed(Country country)
+    {
+        this.country = country;
+    }
+
+    public string Desc => $"{country.Name} is destroyed";
 }
 
 public class Session
@@ -31,26 +47,31 @@ public class Session
     public static Action<string> LOG;
     public static Action<Province, Country> ChangeProvinceOwner;
 
-    public IEnumerable<Province> Provinces { get; set; }
-    public IEnumerable<Country> Countries { get; set; }
+    public IEnumerable<Province> Provinces => provinces;
+    public IEnumerable<Country> Countries => countries;
     public Country Player { get; set; }
     public Date Date { get; set; }
+
+    private List<Country> countries = new List<Country>();
+    private List<Province> provinces = new List<Province>();
 
     public Session(int provinceCount, int countryCount)
     {
         Date = new Date();
 
-        Provinces = Enumerable.Range(0, provinceCount).Select(_ => new Province()).ToArray();
-        Countries = Enumerable.Range(0, countryCount).Select(_ => new Country()).ToArray();
+        countries.AddRange(Enumerable.Range(0, countryCount).Select(_ => new Country()));
+        provinces.AddRange(Enumerable.Range(0, provinceCount).Select(_ => new Province()));
     }
 
     public void OnMessage(IMessage message)
     {
+        LOG(message.Desc);
+
         switch (message)
         {
             case Message_NextTurn:
                 Date.MonthsInc();
-                foreach (var country in Countries)
+                foreach (var country in Countries.ToArray())
                 {
                     foreach (var newMessage in country.NexTurn())
                     {
@@ -60,15 +81,26 @@ public class Session
                 break;
             case Message_ChangeProvinceOwner changeProvinceOwner:
                 {
-                    LOG($"{changeProvinceOwner.province.Name} owner is changed from {changeProvinceOwner.province.Owner.Name} to {changeProvinceOwner.owner.Name}");
+                    var province = changeProvinceOwner.province;
+                    var oldOwner = province.Owner;
+                    var newOwner = changeProvinceOwner.owner;
 
                     ChangeProvinceOwner(changeProvinceOwner.province, changeProvinceOwner.owner);
+
+                    if (oldOwner.Provinces.Count() == 0)
+                    {
+                        OnMessage(new Message_CountryDestroyed(oldOwner));
+                    }
+                }
+                break;
+            case Message_CountryDestroyed countryDestroyed:
+                {
+                    countries.Remove(countryDestroyed.country);
                 }
                 break;
         }
     }
 }
-
 
 public class Country
 {
