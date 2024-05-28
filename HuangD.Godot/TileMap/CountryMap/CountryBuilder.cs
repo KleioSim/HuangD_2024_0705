@@ -8,12 +8,19 @@ class CountryBlock
     public IEnumerable<ProvinceBlock> Edges => _edges;
     public IEnumerable<ProvinceBlock> Provinces => _province;
 
+    public ProvinceBlock Capital { get; set; }
+
     private HashSet<ProvinceBlock> _province = new HashSet<ProvinceBlock>();
     private HashSet<ProvinceBlock> _edges = new HashSet<ProvinceBlock>();
 
 
     internal void Add(ProvinceBlock provinceBlock)
     {
+        if(_province.Count == 0)
+        {
+            Capital = provinceBlock;
+        }
+
         _province.Add(provinceBlock);
         _edges.Add(provinceBlock);
 

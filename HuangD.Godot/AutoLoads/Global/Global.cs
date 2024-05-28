@@ -42,6 +42,12 @@ public partial class Global : Node2D
             MapRoot.ChangeProvinceOwner(provBlock, newCountryBlock);
         };
 
+        Country.FindCapital = (country) =>
+        {
+            var coutryBlock = block2Country.Single(x => x.Value == country).Key;
+            return block2Province[coutryBlock.Capital];
+        };
+
         Country.FindProvinces = (country) =>
         {
             var coutryBlock = block2Country.Single(x => x.Value == country).Key;
@@ -55,6 +61,12 @@ public partial class Global : Node2D
             return MapRoot.CountryBlocks.Where(x => x != coutryBlock)
                         .Where(x => coutryBlock.Edges.SelectMany(x => x.Neighbors).Intersect(x.Edges).Any())
                         .Select(x => block2Country[x]);
+        };
+
+        Country.FindEdges = (country) =>
+        {
+            var coutryBlock = block2Country.Single(x => x.Value == country).Key;
+            return coutryBlock.Edges.Select(x => block2Province[x]);
         };
 
         Province.FindPopCount = (prov) =>
@@ -75,6 +87,41 @@ public partial class Global : Node2D
         {
             var provBlock = block2Province.Single(x => x.Value == prov).Key;
             return provBlock.Neighbors.Select(x => block2Province[x]);
+        };
+
+        Province.CheckIsConnectToCapital = (prov) =>
+        {
+            var provBlock = block2Province.Single(x => x.Value == prov).Key;
+
+            var countryBlock = MapRoot.CountryBlocks.Single(x => x.Provinces.Contains(provBlock));
+            if(provBlock == countryBlock.Capital)
+            {
+                return true;
+            }
+
+            var searched = new HashSet<ProvinceBlock>();
+
+            var queue = new Queue<ProvinceBlock>();
+            queue.Enqueue(countryBlock.Capital);
+
+            while(queue.Count > 0) 
+            {
+                var current = queue.Dequeue();
+                var neighbors = current.Neighbors.Intersect(countryBlock.Provinces)
+                    .Except(searched).ToArray();
+                if (neighbors.Contains(provBlock))
+                {
+                    return true;
+                }
+                foreach(var  neighbor in neighbors)
+                {
+                    queue.Enqueue(neighbor);
+                    searched.Add(neighbor);
+                }
+            }
+
+            return false;
+
         };
     }
 

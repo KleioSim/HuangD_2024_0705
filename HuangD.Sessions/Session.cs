@@ -108,10 +108,15 @@ public class Country
 
     public static Func<Country, IEnumerable<Province>> FindProvinces;
     public static Func<Country, IEnumerable<Country>> FindNeighbors;
+    public static Func<Country, IEnumerable<Province>> FindEdges;
+    public static Func<Country, Province> FindCapital;
 
     public string Name { get; private set; }
     public IEnumerable<Province> Provinces => FindProvinces(this);
+    public IEnumerable<Province> Edges => FindEdges(this);
     public IEnumerable<Country> Neighbors => FindNeighbors(this);
+    public Province Capital => FindCapital(this);
+
 
     public Country()
     {
@@ -124,9 +129,10 @@ public class Country
         var random = new Random();
         if (random.Next(0, 100) < 30)
         {
-            var neighor = Neighbors.OrderBy(_ => random.Next()).First();
-
-            var province = neighor.Provinces.First(x => x.Neighbors.Intersect(Provinces).Any());
+            var province = Edges.Where(x=>x.IsConnectToCapital)
+                .SelectMany(x=>x.Neighbors)
+                .Except(Provinces)
+                .OrderBy(_ => random.Next()).First();
 
             yield return new Message_ChangeProvinceOwner(province, this);
         }
@@ -140,10 +146,11 @@ public class Province
     public static Func<Province, int> FindPopCount;
     public static Func<Province, IEnumerable<Province>> FindNeighbors;
     public static Func<Province, Country> FindOwner;
-
+    public static Func<Province, bool> CheckIsConnectToCapital;
     public int PopCount => FindPopCount(this);
     public IEnumerable<Province> Neighbors => FindNeighbors(this);
     public Country Owner => FindOwner(this);
+    public bool IsConnectToCapital => CheckIsConnectToCapital(this);
 
     public string Name { get; private set; }
 
