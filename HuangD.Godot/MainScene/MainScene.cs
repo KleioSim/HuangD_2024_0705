@@ -6,7 +6,7 @@ using System.Linq;
 public partial class MainScene : ViewControl
 {
     public Global Global => GetNode<Global>("/root/Global");
-    public Label CurrCountry => GetNode<Label>("CurrCountry");
+    public Control CurrCountry => GetNode<Control>("CanvasLayer/CurrentCountry");
 
     public override void _Ready()
     {
@@ -32,9 +32,10 @@ public partial class MainScene : ViewControl
     {
         base._Process(delta);
 
-        if (Global.Session.currCountry != null)
+        CurrCountry.Visible = Global.Session.currCountry != null;
+        if (CurrCountry.Visible)
         {
-            GD.Print(Global.Session.currCountry.Name);
+            CurrCountry.GetNode<Label>("Label").Text = Global.Session.currCountry.Name;
         }
     }
 }

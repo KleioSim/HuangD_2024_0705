@@ -309,7 +309,7 @@ custom_minimum_size = Vector2(120, 60)
 layout_mode = 2
 text = "NextTurn"
 
-[node name="CurrentTurn" type="PanelContainer" parent="CanvasLayer"]
+[node name="CurrentCountry" type="PanelContainer" parent="CanvasLayer"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -322,14 +322,13 @@ offset_bottom = 35.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/CurrentTurn"]
+[node name="Label" type="Label" parent="CanvasLayer/CurrentCountry"]
 layout_mode = 2
 text = "--"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Timer" type="Timer" parent="."]
-autostart = true
 
 [connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="." method="OnNextTurn"]
 [connection signal="timeout" from="Timer" to="." method="OnNextTurn"]

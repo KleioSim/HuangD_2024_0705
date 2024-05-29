@@ -100,12 +100,14 @@ public class Session
         {
             currCountry = country;
 
-            foreach (var newMessage in country.NexTurn())
+            foreach (var newMessage in currCountry.NexTurn())
             {
                 OnMessage(newMessage);
             }
 
             await Task.Delay(1000);
+
+            LOG("Task.Delay");
         }
 
         currCountry = null;
