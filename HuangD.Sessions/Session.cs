@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HuangD.Sessions;
 
@@ -50,6 +51,7 @@ public class Session
     public IEnumerable<Province> Provinces => provinces;
     public IEnumerable<Country> Countries => countries;
     public Country Player { get; set; }
+    public Country currCountry { get; set; }
     public Date Date { get; set; }
 
     private List<Country> countries = new List<Country>();
@@ -69,16 +71,6 @@ public class Session
 
         switch (message)
         {
-            case Message_NextTurn:
-                Date.MonthsInc();
-                foreach (var country in Countries.ToArray())
-                {
-                    foreach (var newMessage in country.NexTurn())
-                    {
-                        OnMessage(newMessage);
-                    }
-                }
-                break;
             case Message_ChangeProvinceOwner changeProvinceOwner:
                 {
                     var province = changeProvinceOwner.province;
@@ -99,6 +91,25 @@ public class Session
                 }
                 break;
         }
+    }
+
+    public async void OnNextTurn()
+    {
+        Date.MonthsInc();
+        foreach (var country in Countries.ToArray())
+        {
+            currCountry = country;
+
+            foreach (var newMessage in country.NexTurn())
+            {
+                OnMessage(newMessage);
+            }
+
+            await Task.Delay(1000);
+        }
+
+        currCountry = null;
+        return;
     }
 }
 
@@ -129,8 +140,8 @@ public class Country
         var random = new Random();
         if (random.Next(0, 100) < 30)
         {
-            var province = Edges.Where(x=> x !=Capital && x.IsConnectToCapital)
-                .SelectMany(x=>x.Neighbors)
+            var province = Edges.Where(x => x != Capital && x.IsConnectToCapital)
+                .SelectMany(x => x.Neighbors)
                 .Except(Provinces)
                 .OrderBy(_ => random.Next()).FirstOrDefault();
 

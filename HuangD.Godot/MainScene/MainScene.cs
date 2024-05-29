@@ -6,6 +6,7 @@ using System.Linq;
 public partial class MainScene : ViewControl
 {
     public Global Global => GetNode<Global>("/root/Global");
+    public Label CurrCountry => GetNode<Label>("CurrCountry");
 
     public override void _Ready()
     {
@@ -16,7 +17,7 @@ public partial class MainScene : ViewControl
 
     public void OnNextTurn()
     {
-        Global.Session.OnMessage(new Message_NextTurn());
+        Global.Session.OnNextTurn();
     }
 
     public void testing(string provName, string countryName)
@@ -25,5 +26,15 @@ public partial class MainScene : ViewControl
         var country = Global.Session.Countries.Single(x => x.Name == countryName);
 
         Global.Session.OnMessage(new Message_ChangeProvinceOwner(prov, country));
+    }
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+
+        if (Global.Session.currCountry != null)
+        {
+            GD.Print(Global.Session.currCountry.Name);
+        }
     }
 }
