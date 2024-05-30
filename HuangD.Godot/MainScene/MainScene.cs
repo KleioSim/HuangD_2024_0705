@@ -7,6 +7,8 @@ public partial class MainScene : ViewControl
 {
     public Global Global => GetNode<Global>("/root/Global");
     public Control CurrCountry => GetNode<Control>("CanvasLayer/CurrentCountry");
+    public Control eventDialog => GetNode<Control>("CanvasLayer/EventDialog");
+    public Timer timer => GetNode<Timer>("Timer");
 
     public override void _Ready()
     {
@@ -15,9 +17,15 @@ public partial class MainScene : ViewControl
         CommandConsole.AddCommand("testing", testing);
     }
 
-    public void OnNextTurn()
+    public async void OnNextTurn()
     {
-        Global.Session.OnNextTurn();
+        timer.Stop();
+        foreach (var eventObj in Global.Session.OnNextTurn())
+        {
+            eventDialog.Visible = true;
+            await ToSignal(eventDialog, Control.SignalName.VisibilityChanged);
+        }
+        timer.Start();
     }
 
     public void testing(string provName, string countryName)
@@ -38,4 +46,9 @@ public partial class MainScene : ViewControl
             CurrCountry.GetNode<Label>("Label").Text = Global.Session.currCountry.Name;
         }
     }
+}
+
+public partial class EventDialog : Control
+{
+
 }

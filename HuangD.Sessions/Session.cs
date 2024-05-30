@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ namespace HuangD.Sessions;
 public interface IMessage
 {
     string Desc { get; }
-
 }
 
 public class Message_NextTurn : IMessage
@@ -43,6 +43,27 @@ public class Message_CountryDestroyed : IMessage
     public string Desc => $"{country.Name} is destroyed";
 }
 
+public interface IEvent
+{
+    Country From { get; }
+    Country To { get; }
+
+    void Process(Session session);
+}
+
+
+public class Event : IEvent
+{
+    public Country From { get; set; }
+
+    public Country To { get; set; }
+
+    public void Process(Session session)
+    {
+        session.AddWar(From, To);
+    }
+}
+
 public class Session
 {
     public static Action<string> LOG;
@@ -56,9 +77,12 @@ public class Session
 
     private List<Country> countries = new List<Country>();
     private List<Province> provinces = new List<Province>();
+    private List<War> wars = new List<War>();
 
     public Session(int provinceCount, int countryCount)
     {
+        Country.FindWars = (country) => wars.Where(x => x.From == country || x.To == country);
+
         Date = new Date();
 
         countries.AddRange(Enumerable.Range(0, countryCount).Select(_ => new Country()));
@@ -93,26 +117,39 @@ public class Session
         }
     }
 
-    public async void OnNextTurn()
+    public IEnumerable<IEvent> OnNextTurn()
     {
         Date.MonthsInc();
         foreach (var country in Countries.ToArray())
         {
             currCountry = country;
 
-            foreach (var newMessage in currCountry.NexTurn())
+            foreach (var eventObj in currCountry.NexTurn2())
             {
-                OnMessage(newMessage);
+                if (eventObj.To == Player)
+                {
+                    yield return eventObj;
+                }
+
+                eventObj.Process(this);
             }
-
-            await Task.Delay(1000);
-
-            LOG("Task.Delay");
         }
 
         currCountry = null;
-        return;
     }
+
+    internal void AddWar(Country from, Country to)
+    {
+        LOG($"{from.Name} start war to {to.Name}");
+
+        wars.Add(new War() { From = from, To = to });
+    }
+}
+
+public class War
+{
+    public Country From { get; init; }
+    public Country To { get; init; }
 }
 
 public class Country
@@ -123,13 +160,14 @@ public class Country
     public static Func<Country, IEnumerable<Country>> FindNeighbors;
     public static Func<Country, IEnumerable<Province>> FindEdges;
     public static Func<Country, Province> FindCapital;
+    public static Func<Country, IEnumerable<War>> FindWars;
 
     public string Name { get; private set; }
     public IEnumerable<Province> Provinces => FindProvinces(this);
     public IEnumerable<Province> Edges => FindEdges(this);
     public IEnumerable<Country> Neighbors => FindNeighbors(this);
     public Province Capital => FindCapital(this);
-
+    public IEnumerable<War> Wars => FindWars(this);
 
     public Country()
     {
@@ -148,6 +186,20 @@ public class Country
                 .OrderBy(_ => random.Next()).FirstOrDefault();
 
             yield return new Message_ChangeProvinceOwner(province != null ? province : Capital, this);
+        }
+    }
+
+    internal IEnumerable<IEvent> NexTurn2()
+    {
+        if (Wars.Any())
+        {
+            yield break;
+        }
+
+        var random = new Random();
+        if (random.Next(0, 100) < 30)
+        {
+            yield return new Event() { From = this, To = Neighbors.OrderBy(_ => random.Next()).First() };
         }
     }
 }
