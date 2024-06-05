@@ -1,3 +1,6 @@
 [submodule "Chrona.Engine.Core"]
 	path = Chrona.Engine.Core
 	url = git@github.com:KleioSim/Chrona.Engine.Core.git
+[submodule "HuangD.Godot/addons/Chrona.Engine.Godot"]
+	path = HuangD.Godot/addons/Chrona.Engine.Godot
+	url = git@github.com:KleioSim/Chrona.Engine.Godot.git
