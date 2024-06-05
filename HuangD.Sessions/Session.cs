@@ -70,7 +70,7 @@ public class EventDef : IEventDef
 {
     public ICondition Condition { get; } = new TrueCondtion();
 
-    public ITargetFinder TargetFinder => null;
+    public ITargetFinder TargetFinder { get; } = new TargetSelf();
 }
 
 public class Session : ABSSession
@@ -80,22 +80,26 @@ public class Session : ABSSession
 
     public IEnumerable<Province> Provinces => provinces;
     public IEnumerable<Country> Countries => countries;
-    public Country Player { get; set; }
+
     public Country currCountry { get; set; }
     public Date Date { get; set; }
 
     public override IEnumerable<IEntity> Entities => countries;
 
+    public override IEntity Player { get => player; set => player = (Country)value; }
+
     private List<Country> countries = new List<Country>();
     private List<Province> provinces = new List<Province>();
     private List<War> wars = new List<War>();
+
+    private Country player;
 
     public Session(int provinceCount, int countryCount)
     {
         Country.FindWars = (country) => wars.Where(x => x.From == country || x.To == country);
 
+        player = null;
         Date = new Date();
-
         countries.AddRange(Enumerable.Range(0, countryCount).Select(_ => new Country()));
         provinces.AddRange(Enumerable.Range(0, provinceCount).Select(_ => new Province()));
     }
