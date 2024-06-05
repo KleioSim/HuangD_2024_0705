@@ -79,7 +79,7 @@ public class EventDef : IEventDef
             new CondtionFactor()
             {
                 Condition = new TrueCondtion(),
-                Factor = 1.0
+                Factor = 0.3
             }
         }
     };
@@ -120,11 +120,13 @@ public class Session : ABSSession
 
     public IEnumerable<Province> Provinces => provinces;
     public IEnumerable<Country> Countries => countries;
-    public Country Player { get; set; }
+    public Country player { get; set; }
     public Country currCountry { get; set; }
     public Date Date { get; set; }
 
     public override IEnumerable<IEntity> Entities => countries;
+
+    public override IEntity Player { get => player; set { player = (Country)value; } }
 
     private List<Country> countries = new List<Country>();
     private List<Province> provinces = new List<Province>();
