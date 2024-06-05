@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace HuangD.Sessions;
@@ -70,7 +71,46 @@ public class EventDef : IEventDef
 {
     public ICondition Condition { get; } = new TrueCondtion();
 
-    public ITargetFinder TargetFinder => null;
+    public ITargetFinder TargetFinder { get; } = new TargetFinder()
+    {
+        Targets = new NeighorCountires(),
+        ConditionFactors = new ICondtionFactor[]
+        { 
+            new CondtionFactor()
+            {
+                Condition = new TrueCondtion(),
+                Factor = 1.0
+            }
+        }
+    };
+}
+
+internal class CondtionFactor : ICondtionFactor
+{
+    public ICondition Condition { get; set;}
+
+    public double Factor { get; set; }
+}
+
+internal class NeighorCountires : IEventTarget
+{
+    public IEnumerable<IEntity> Get(IEntity entity, ISession session)
+    {
+        var country = (Country)entity;
+        return country.Neighbors;
+    }
+}
+
+public class TargetFinder : ITargetFinder
+{
+    public IEnumerable<ICondtionFactor> ConditionFactors { get; set; }
+
+    public IEventTarget Targets { get; set; }
+
+    public IEntity Find(IEntity entity, ABSSession session)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public class Session : ABSSession
