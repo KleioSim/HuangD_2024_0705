@@ -5,7 +5,9 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuangD.Godot", "HuangD.Godot.csproj", "{B5B40D1E-0A92-40D7-91B5-2D1D56E38912}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuangD.Sessions", "..\HuangD.Sessions\HuangD.Sessions.csproj", "{0F737470-7C78-485F-A5FD-3B0133AD3BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuangD.Sessions", "..\HuangD.Sessions\HuangD.Sessions.csproj", "{0F737470-7C78-485F-A5FD-3B0133AD3BB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chrona.Engine.Core", "..\Chrona.Engine.Core\Chrona.Engine.Core.csproj", "{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{0F737470-7C78-485F-A5FD-3B0133AD3BB9}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
 		{0F737470-7C78-485F-A5FD-3B0133AD3BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F737470-7C78-485F-A5FD-3B0133AD3BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EED7DE6-686D-4531-BDB5-1B3A4DE8EAFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
