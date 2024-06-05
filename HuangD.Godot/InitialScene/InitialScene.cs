@@ -1,11 +1,14 @@
-﻿using Godot;
+﻿using Chrona.Engine.Godot;
+using Godot;
+using HuangD.Sessions;
 using System;
 using System.Diagnostics.Metrics;
 using System.Linq;
 
 public partial class InitialScene : Control
 {
-    public Global Global => GetNode<Global>("/root/Global");
+    public GameBuilder Builder => GetNode<GameBuilder>("/root/GameBuilder");
+    public Global Global => GetNode<Global>("/root/Chrona_Global");
 
     public TextEdit Seed => GetNode<TextEdit>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/SeedEdit");
     public Button BuildMap => GetNode<Button>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/Button");
@@ -23,17 +26,17 @@ public partial class InitialScene : Control
 
         BuildMap.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.BuildGame));
         ConfirmCountry.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.ConfirmPlayCountry));
-        Global.Connect(Global.SignalName.MapClick, new Callable(this, MethodName.SelectCountry));
+        Builder.Connect(GameBuilder.SignalName.MapClick, new Callable(this, MethodName.SelectCountry));
     }
 
     private void BuildGame()
     {
-        Global.BuildGame(Seed.Text);
+        Builder.BuildGame(Seed.Text);
     }
 
     private void ConfirmPlayCountry()
     {
-        Global.Session.Player = Global.Session.Countries.Single(x => x.Name == CountryName.Text);
+        Global.GetSession<Session>().Player = Global.GetSession<Session>().Countries.Single(x => x.Name == CountryName.Text);
 
         GetTree().ChangeSceneToFile("res://MainScene/MainScene.tscn");
     }
@@ -43,7 +46,7 @@ public partial class InitialScene : Control
         ConfirmCountry.Disabled = countryName == "";
         CountryName.Text = countryName != "" ? countryName : "--";
 
-        var selectCountry = countryName == "" ? null: Global.Session.Countries.Single(x => x.Name == CountryName.Text);
+        var selectCountry = countryName == "" ? null : Global.GetSession<Session>().Countries.Single(x => x.Name == CountryName.Text);
         ProvinceCount.Text = selectCountry != null ? selectCountry.Provinces.Count().ToString() : "--";
         PopCount.Text = selectCountry != null ? selectCountry.Provinces.Sum(x => x.PopCount).ToString() : "--";
 

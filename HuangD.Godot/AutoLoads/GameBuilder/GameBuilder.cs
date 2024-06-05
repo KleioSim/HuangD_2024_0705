@@ -1,18 +1,17 @@
-﻿using Godot;
+﻿using Chrona.Engine.Godot;
+using Godot;
 using HuangD.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class Global : Node2D
+public partial class GameBuilder : Node2D
 {
     [Signal]
     public delegate void MapClickEventHandler(Vector2I index, string provinceName, string country);
 
     public TileMapRoot MapRoot => GetNode<TileMapRoot>("/root/MapScene/CanvasLayer/TileMapRoot");
     public Camera2D Camera => GetNode<Camera2D>("CanvasLayer/Camera2D");
-
-    public Session Session { get; private set; }
 
     private Dictionary<ProvinceBlock, Province> block2Province = new Dictionary<ProvinceBlock, Province>();
     private Dictionary<CountryBlock, Country> block2Country = new Dictionary<CountryBlock, Country>();
@@ -94,7 +93,7 @@ public partial class Global : Node2D
             var provBlock = block2Province.Single(x => x.Value == prov).Key;
 
             var countryBlock = MapRoot.CountryBlocks.Single(x => x.Provinces.Contains(provBlock));
-            if(provBlock == countryBlock.Capital)
+            if (provBlock == countryBlock.Capital)
             {
                 return true;
             }
@@ -104,7 +103,7 @@ public partial class Global : Node2D
             var queue = new Queue<ProvinceBlock>();
             queue.Enqueue(countryBlock.Capital);
 
-            while(queue.Count > 0) 
+            while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
                 var neighbors = current.Neighbors.Intersect(countryBlock.Provinces)
@@ -113,7 +112,7 @@ public partial class Global : Node2D
                 {
                     return true;
                 }
-                foreach(var  neighbor in neighbors)
+                foreach (var neighbor in neighbors)
                 {
                     queue.Enqueue(neighbor);
                     searched.Add(neighbor);
@@ -130,19 +129,21 @@ public partial class Global : Node2D
     {
         MapRoot.BuildMap(seed);
 
-        Session = new Session(MapRoot.ProvinceBlocks.Count, MapRoot.CountryBlocks.Count);
+        var session = new Session(MapRoot.ProvinceBlocks.Count, MapRoot.CountryBlocks.Count);
 
         block2Province.Clear();
         block2Country.Clear();
 
         for (int i = 0; i < MapRoot.ProvinceBlocks.Count; i++)
         {
-            block2Province.Add(MapRoot.ProvinceBlocks[i], Session.Provinces.ElementAt(i));
+            block2Province.Add(MapRoot.ProvinceBlocks[i], session.Provinces.ElementAt(i));
         }
 
         for (int i = 0; i < MapRoot.CountryBlocks.Count; i++)
         {
-            block2Country.Add(MapRoot.CountryBlocks[i], Session.Countries.ElementAt(i));
+            block2Country.Add(MapRoot.CountryBlocks[i], session.Countries.ElementAt(i));
         }
+
+        GetNode<Global>("/root/Chrona_Global").SetSession(session);
     }
 }

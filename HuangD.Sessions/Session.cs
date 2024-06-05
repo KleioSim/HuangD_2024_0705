@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chrona.Engine.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,65 +7,73 @@ using System.Threading.Tasks;
 
 namespace HuangD.Sessions;
 
-public interface IMessage
+//public interface IMessage
+//{
+//    string Desc { get; }
+//}
+
+//public class Message_NextTurn : IMessage
+//{
+//    public string Desc => "NexTurn";
+//}
+
+//public class Message_ChangeProvinceOwner : IMessage
+//{
+//    public readonly Province province;
+//    public readonly Country owner;
+
+//    public Message_ChangeProvinceOwner(Province prov, Country country)
+//    {
+//        province = prov;
+//        owner = country;
+//    }
+
+//    public string Desc => $"{province.Name} owner is changed from {province.Owner.Name} to {owner.Name}";
+
+//}
+
+//public class Message_CountryDestroyed : IMessage
+//{
+//    public readonly Country country;
+
+//    public Message_CountryDestroyed(Country country)
+//    {
+//        this.country = country;
+//    }
+
+//    public string Desc => $"{country.Name} is destroyed";
+//}
+
+//public interface IEvent
+//{
+//    Country From { get; }
+//    Country To { get; }
+
+//    void Process(Session session);
+//}
+
+
+//public class Event : IEvent
+//{
+//    public Country From { get; set; }
+
+//    public Country To { get; set; }
+
+//    public void Process(Session session)
+//    {
+//        session.AddWar(From, To);
+//    }
+//}
+
+[DefTo(typeof(Country))]
+public class EventDef : IEventDef
 {
-    string Desc { get; }
+    public ICondition Condition { get; } = new TrueCondtion();
+
+    public ITargetFinder TargetFinder => null;
 }
 
-public class Message_NextTurn : IMessage
-{
-    public string Desc => "NexTurn";
-}
-
-public class Message_ChangeProvinceOwner : IMessage
-{
-    public readonly Province province;
-    public readonly Country owner;
-
-    public Message_ChangeProvinceOwner(Province prov, Country country)
-    {
-        province = prov;
-        owner = country;
-    }
-
-    public string Desc => $"{province.Name} owner is changed from {province.Owner.Name} to {owner.Name}";
-
-}
-
-public class Message_CountryDestroyed : IMessage
-{
-    public readonly Country country;
-
-    public Message_CountryDestroyed(Country country)
-    {
-        this.country = country;
-    }
-
-    public string Desc => $"{country.Name} is destroyed";
-}
-
-public interface IEvent
-{
-    Country From { get; }
-    Country To { get; }
-
-    void Process(Session session);
-}
-
-
-public class Event : IEvent
-{
-    public Country From { get; set; }
-
-    public Country To { get; set; }
-
-    public void Process(Session session)
-    {
-        session.AddWar(From, To);
-    }
-}
-
-public class Session
+public class Session : ABSSession
 {
     public static Action<string> LOG;
     public static Action<Province, Country> ChangeProvinceOwner;
@@ -74,6 +83,8 @@ public class Session
     public Country Player { get; set; }
     public Country currCountry { get; set; }
     public Date Date { get; set; }
+
+    public override IEnumerable<IEntity> Entities => countries;
 
     private List<Country> countries = new List<Country>();
     private List<Province> provinces = new List<Province>();
@@ -89,61 +100,61 @@ public class Session
         provinces.AddRange(Enumerable.Range(0, provinceCount).Select(_ => new Province()));
     }
 
-    public void OnMessage(IMessage message)
-    {
-        LOG(message.Desc);
+    //public void OnMessage(IMessage message)
+    //{
+    //    LOG(message.Desc);
 
-        switch (message)
-        {
-            case Message_ChangeProvinceOwner changeProvinceOwner:
-                {
-                    var province = changeProvinceOwner.province;
-                    var oldOwner = province.Owner;
-                    var newOwner = changeProvinceOwner.owner;
+    //    switch (message)
+    //    {
+    //        case Message_ChangeProvinceOwner changeProvinceOwner:
+    //            {
+    //                var province = changeProvinceOwner.province;
+    //                var oldOwner = province.Owner;
+    //                var newOwner = changeProvinceOwner.owner;
 
-                    ChangeProvinceOwner(changeProvinceOwner.province, changeProvinceOwner.owner);
+    //                ChangeProvinceOwner(changeProvinceOwner.province, changeProvinceOwner.owner);
 
-                    if (oldOwner.Provinces.Count() == 0)
-                    {
-                        OnMessage(new Message_CountryDestroyed(oldOwner));
-                    }
-                }
-                break;
-            case Message_CountryDestroyed countryDestroyed:
-                {
-                    countries.Remove(countryDestroyed.country);
-                }
-                break;
-        }
-    }
+    //                if (oldOwner.Provinces.Count() == 0)
+    //                {
+    //                    OnMessage(new Message_CountryDestroyed(oldOwner));
+    //                }
+    //            }
+    //            break;
+    //        case Message_CountryDestroyed countryDestroyed:
+    //            {
+    //                countries.Remove(countryDestroyed.country);
+    //            }
+    //            break;
+    //    }
+    //}
 
-    public IEnumerable<IEvent> OnNextTurn()
-    {
-        Date.MonthsInc();
-        foreach (var country in Countries.ToArray())
-        {
-            currCountry = country;
+    //public IEnumerable<IEvent> OnNextTurn()
+    //{
+    //    Date.MonthsInc();
+    //    foreach (var country in Countries.ToArray())
+    //    {
+    //        currCountry = country;
 
-            foreach (var eventObj in currCountry.NexTurn2())
-            {
-                if (eventObj.To == Player)
-                {
-                    yield return eventObj;
-                }
+    //        foreach (var eventObj in currCountry.NexTurn2())
+    //        {
+    //            if (eventObj.To == Player)
+    //            {
+    //                yield return eventObj;
+    //            }
 
-                eventObj.Process(this);
-            }
-        }
+    //            eventObj.Process(this);
+    //        }
+    //    }
 
-        currCountry = null;
-    }
+    //    currCountry = null;
+    //}
 
-    internal void AddWar(Country from, Country to)
-    {
-        LOG($"{from.Name} start war to {to.Name}");
+    //internal void AddWar(Country from, Country to)
+    //{
+    //    LOG($"{from.Name} start war to {to.Name}");
 
-        wars.Add(new War() { From = from, To = to });
-    }
+    //    wars.Add(new War() { From = from, To = to });
+    //}
 }
 
 public class War
@@ -152,7 +163,7 @@ public class War
     public Country To { get; init; }
 }
 
-public class Country
+public class Country : IEntity
 {
     static int count;
 
@@ -175,33 +186,33 @@ public class Country
         count++;
     }
 
-    internal IEnumerable<IMessage> NexTurn()
-    {
-        var random = new Random();
-        if (random.Next(0, 100) < 30)
-        {
-            var province = Edges.Where(x => x != Capital && x.IsConnectToCapital)
-                .SelectMany(x => x.Neighbors)
-                .Except(Provinces)
-                .OrderBy(_ => random.Next()).FirstOrDefault();
+    //internal IEnumerable<IMessage> NexTurn()
+    //{
+    //    var random = new Random();
+    //    if (random.Next(0, 100) < 30)
+    //    {
+    //        var province = Edges.Where(x => x != Capital && x.IsConnectToCapital)
+    //            .SelectMany(x => x.Neighbors)
+    //            .Except(Provinces)
+    //            .OrderBy(_ => random.Next()).FirstOrDefault();
 
-            yield return new Message_ChangeProvinceOwner(province != null ? province : Capital, this);
-        }
-    }
+    //        yield return new Message_ChangeProvinceOwner(province != null ? province : Capital, this);
+    //    }
+    //}
 
-    internal IEnumerable<IEvent> NexTurn2()
-    {
-        if (Wars.Any())
-        {
-            yield break;
-        }
+    //internal IEnumerable<IEvent> NexTurn2()
+    //{
+    //    if (Wars.Any())
+    //    {
+    //        yield break;
+    //    }
 
-        var random = new Random();
-        if (random.Next(0, 100) < 30)
-        {
-            yield return new Event() { From = this, To = Neighbors.OrderBy(_ => random.Next()).First() };
-        }
-    }
+    //    var random = new Random();
+    //    if (random.Next(0, 100) < 30)
+    //    {
+    //        yield return new Event() { From = this, To = Neighbors.OrderBy(_ => random.Next()).First() };
+    //    }
+    //}
 }
 
 public class Province

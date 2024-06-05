@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cepmtjiuop5l1"]
+[gd_scene load_steps=3 format=3 uid="uid://cepmtjiuop5l1"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.cs" id="1_02pok"]
+[ext_resource type="Script" path="res://addons/Chrona.Engine.Godot/EventDialog/DialogFacade.cs" id="2_51s2u"]
 
 [node name="MainScene" type="Control"]
 layout_mode = 3
@@ -345,9 +346,20 @@ offset_right = 832.0
 offset_bottom = 395.0
 text = "Button"
 
+[node name="Chrona_EventDialog" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_51s2u")
+
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
 [connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="." method="OnNextTurn"]
 [connection signal="pressed" from="CanvasLayer/EventDialog/Button" to="CanvasLayer/EventDialog" method="set_visible" binds= [false]]
-[connection signal="timeout" from="Timer" to="." method="OnNextTurn"]
+[connection signal="TurnEnd" from="CanvasLayer/Chrona_EventDialog" to="Timer" method="set_paused" binds= [false]]
+[connection signal="TurnStart" from="CanvasLayer/Chrona_EventDialog" to="Timer" method="set_paused" binds= [true]]
+[connection signal="timeout" from="Timer" to="CanvasLayer/Chrona_EventDialog" method="OnNextTurn"]

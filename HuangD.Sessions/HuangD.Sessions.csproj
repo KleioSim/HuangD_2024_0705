@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Chrona.Engine.Core\Chrona.Engine.Core.csproj" />
+  </ItemGroup>
+
 </Project>
