@@ -91,8 +91,8 @@ public class EventDef : IEventDef
             new MessageBind()
             {
                 MessageType = typeof(Message_Start),
-                TargetVisitor = new EventFromVisitor(),
-                ValueVisitor = new EventTargetVisitor()
+                TargetVisitor = new EventTargetVisitor(),
+                ValueVisitor = new EventFromVisitor()
             }
         }
     };
@@ -135,11 +135,6 @@ public class TargetFinder : ITargetFinder
     public IEnumerable<ICondtionFactor> ConditionFactors { get; set; }
 
     public IEventTarget Targets { get; set; }
-
-    public IEntity Find(IEntity entity, ABSSession session)
-    {
-        throw new NotImplementedException();
-    }
 }
 
 public class Message_Start : IMessage
@@ -177,13 +172,15 @@ public class Session : ABSSession
         Date = new Date();
         countries.AddRange(Enumerable.Range(0, countryCount).Select(_ => new Country()));
         provinces.AddRange(Enumerable.Range(0, provinceCount).Select(_ => new Province()));
-
-        dictMessageProcess.Add(typeof(Message_Start), (msg) => TestStart(msg as Message_Start));
     }
 
+    [MessageProcess]
     public void TestStart(Message_Start msg)
     {
-        LOG(msg.GetType().Name);
+        var target = msg.Target as Country;
+        var from = msg.Value as Country;
+
+        LOG($"Message_Start from:{from.Name} target:{target.Name}");
     }
 
     //public void OnMessage(IMessage message)
