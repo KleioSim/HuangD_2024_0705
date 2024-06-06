@@ -36,7 +36,8 @@ public partial class InitialScene : Control
 
     private void ConfirmPlayCountry()
     {
-        Global.GetSession<Session>().Player = Global.GetSession<Session>().Countries.Single(x => x.Name == CountryName.Text);
+        var session = Global.Chroncle.Session as Session;
+        session.Player = session.Countries.Single(x => x.Name == CountryName.Text);
 
         GetTree().ChangeSceneToFile("res://MainScene/MainScene.tscn");
     }
@@ -46,7 +47,9 @@ public partial class InitialScene : Control
         ConfirmCountry.Disabled = countryName == "";
         CountryName.Text = countryName != "" ? countryName : "--";
 
-        var selectCountry = countryName == "" ? null : Global.GetSession<Session>().Countries.Single(x => x.Name == CountryName.Text);
+        var session = Global.Chroncle.Session as Session;
+
+        var selectCountry = countryName == "" ? null : session.Countries.Single(x => x.Name == CountryName.Text);
         ProvinceCount.Text = selectCountry != null ? selectCountry.Provinces.Count().ToString() : "--";
         PopCount.Text = selectCountry != null ? selectCountry.Provinces.Sum(x => x.PopCount).ToString() : "--";
 

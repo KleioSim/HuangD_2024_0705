@@ -144,6 +144,6 @@ public partial class GameBuilder : Node2D
             block2Country.Add(MapRoot.CountryBlocks[i], session.Countries.ElementAt(i));
         }
 
-        GetNode<Global>("/root/Chrona_Global").SetSession(session);
+        GetNode<Global>("/root/Chrona_Global").Chroncle.Session = session;
     }
 }
