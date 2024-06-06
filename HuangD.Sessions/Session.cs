@@ -75,7 +75,7 @@ public class EventDef : IEventDef
     {
         Targets = new NeighorCountires(),
         ConditionFactors = new ICondtionFactor[]
-        { 
+        {
             new CondtionFactor()
             {
                 Condition = new TrueCondtion(),
@@ -83,11 +83,40 @@ public class EventDef : IEventDef
             }
         }
     };
+
+    public IOption Option { get; } = new Option()
+    {
+        MessageBinds = new IMessageBind[]
+        {
+            new MessageBind()
+            {
+                MessageType = typeof(Message_Start),
+                TargetVisitor = new EventFromVisitor(),
+                ValueVisitor = new EventTargetVisitor()
+            }
+        }
+    };
+}
+
+internal class EventTargetVisitor : DataVisitor
+{
+    public object Get(IEvent @event)
+    {
+        return @event.To;
+    }
+}
+
+internal class EventFromVisitor : DataVisitor
+{
+    public object Get(IEvent @event)
+    {
+        return @event.From;
+    }
 }
 
 internal class CondtionFactor : ICondtionFactor
 {
-    public ICondition Condition { get; set;}
+    public ICondition Condition { get; set; }
 
     public double Factor { get; set; }
 }
@@ -111,6 +140,12 @@ public class TargetFinder : ITargetFinder
     {
         throw new NotImplementedException();
     }
+}
+
+public class Message_Start : IMessage
+{
+    public object Target { get; set; }
+    public object Value { get; set; }
 }
 
 public class Session : ABSSession
@@ -142,6 +177,13 @@ public class Session : ABSSession
         Date = new Date();
         countries.AddRange(Enumerable.Range(0, countryCount).Select(_ => new Country()));
         provinces.AddRange(Enumerable.Range(0, provinceCount).Select(_ => new Province()));
+
+        dictMessageProcess.Add(typeof(Message_Start), (msg) => TestStart(msg as Message_Start));
+    }
+
+    public void TestStart(Message_Start msg)
+    {
+        LOG(msg.GetType().Name);
     }
 
     //public void OnMessage(IMessage message)
