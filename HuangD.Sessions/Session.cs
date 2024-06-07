@@ -1,6 +1,4 @@
-﻿using Chrona.Engine.Core.Events;
-using Chrona.Engine.Core.Interfaces;
-using Chrona.Engine.Core.Modders;
+﻿using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Core.Sessions;
 using System;
 using System.Collections.Generic;
@@ -66,39 +64,8 @@ namespace HuangD.Sessions;
 //    }
 //}
 
-[DefTo(typeof(Country))]
-public class EventDef : IEventDef
-{
-    public ICondition Condition { get; } = new TrueCondtion();
 
-    public ITargetFinder TargetFinder { get; } = new TargetFinder()
-    {
-        Targets = new NeighorCountires(),
-        ConditionFactors = new ICondtionFactor[]
-        {
-            new CondtionFactor()
-            {
-                Condition = new TrueCondtion(),
-                Factor = 0.3
-            }
-        }
-    };
-
-    public IOption Option { get; } = new Option()
-    {
-        MessageBinds = new IMessageBind[]
-        {
-            new MessageBind()
-            {
-                MessageType = typeof(Message_Start),
-                TargetVisitor = new EventTargetVisitor(),
-                ValueVisitor = new EventFromVisitor()
-            }
-        }
-    };
-}
-
-internal class EventTargetVisitor : DataVisitor
+public class EventTargetVisitor : DataVisitor
 {
     public object Get(IEvent @event)
     {
@@ -106,7 +73,7 @@ internal class EventTargetVisitor : DataVisitor
     }
 }
 
-internal class EventFromVisitor : DataVisitor
+public class EventFromVisitor : DataVisitor
 {
     public object Get(IEvent @event)
     {
@@ -114,14 +81,14 @@ internal class EventFromVisitor : DataVisitor
     }
 }
 
-internal class CondtionFactor : ICondtionFactor
+public class CondtionFactor : ICondtionFactor
 {
     public ICondition Condition { get; set; }
 
     public double Factor { get; set; }
 }
 
-internal class NeighorCountires : IEventTarget
+public class NeighorCountires : IEventTarget
 {
     public IEnumerable<IEntity> Get(IEntity entity, ISession session)
     {
@@ -152,7 +119,6 @@ public class Session : ABSSession
     public IEnumerable<Country> Countries => countries;
 
     public Country player { get; set; }
-    public Country currCountry { get; set; }
     public Date Date { get; set; }
 
     public override IEnumerable<IEntity> Entities => countries;
