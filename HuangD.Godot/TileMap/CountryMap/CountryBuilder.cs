@@ -5,6 +5,7 @@ using System.Linq;
 
 class CountryBlock
 {
+    public readonly string id;
     public IEnumerable<ProvinceBlock> Edges => _edges;
     public IEnumerable<ProvinceBlock> Provinces => _province;
 
@@ -16,7 +17,7 @@ class CountryBlock
 
     internal void Add(ProvinceBlock provinceBlock)
     {
-        if(_province.Count == 0)
+        if (_province.Count == 0)
         {
             Capital = provinceBlock;
         }
@@ -35,69 +36,76 @@ class CountryBlock
 
         _edges.UnionWith(_province.Intersect(provinceBlock.Neighbors));
     }
-}
 
-public static class CountryBuilder
-{
+    static int count = 0;
 
-    internal static List<CountryBlock> Build(IEnumerable<ProvinceBlock> provinceBlocks, Random random)
+    public CountryBlock(string id)
     {
-
-        var blockList = provinceBlocks.ToList();
-        var countryBlocks = new List<CountryBlock>();
-        while (blockList.Count > 0)
-        {
-            var country = BuildCountry(blockList, random);
-            countryBlocks.Add(country);
-        }
-
-        var needUnions = countryBlocks.Where(x => x.Provinces.Count() < 3).ToArray();
-        countryBlocks = countryBlocks.Except(needUnions).ToList();
-
-        foreach (var item in needUnions)
-        {
-            var countryBlock = countryBlocks.First(x => x.Provinces.Intersect(item.Provinces.SelectMany(x => x.Neighbors)).Any());
-            foreach (var province in item.Provinces)
-            {
-                countryBlock.Add(province);
-            }
-        }
-
-        return countryBlocks;
+        this.id = id;
     }
 
-    private static CountryBlock BuildCountry(List<ProvinceBlock> provinceBlocks, Random random)
+    public static class Builder
     {
-        var maxSize = random.Next(3, 10);
 
-        var countryBlock = new CountryBlock();
-        countryBlock.Add(provinceBlocks[0]);
-        provinceBlocks.Remove(provinceBlocks[0]);
-
-        while (true)
+        internal static Dictionary<string, CountryBlock> Build(IEnumerable<ProvinceBlock> provinceBlocks, Random random)
         {
-            var outters = countryBlock.Edges.SelectMany(x => x.Neighbors.Intersect(provinceBlocks)).ToArray();
-            if (outters.Count() == 0)
+
+            var blockList = provinceBlocks.ToList();
+            var countryBlocks = new List<CountryBlock>();
+            while (blockList.Count > 0)
             {
-                return countryBlock;
+                var country = BuildCountry(blockList, random);
+                countryBlocks.Add(country);
             }
 
-            foreach (var outter in outters)
+            var needUnions = countryBlocks.Where(x => x.Provinces.Count() < 3).ToArray();
+            countryBlocks = countryBlocks.Except(needUnions).ToList();
+
+            foreach (var item in needUnions)
             {
-                if (random.Next(0, 100) < 50)
+                var countryBlock = countryBlocks.First(x => x.Provinces.Intersect(item.Provinces.SelectMany(x => x.Neighbors)).Any());
+                foreach (var province in item.Provinces)
                 {
-                    countryBlock.Add(outter);
-                    provinceBlocks.Remove(outter);
+                    countryBlock.Add(province);
                 }
+            }
 
-                if (countryBlock.Provinces.Count() > maxSize)
+            return countryBlocks.ToDictionary(k => k.id, v => v);
+        }
+
+        private static CountryBlock BuildCountry(List<ProvinceBlock> provinceBlocks, Random random)
+        {
+            var maxSize = random.Next(3, 10);
+
+            var countryBlock = new CountryBlock($"COUNTRY_{count++}");
+            countryBlock.Add(provinceBlocks[0]);
+            provinceBlocks.Remove(provinceBlocks[0]);
+
+            while (true)
+            {
+                var outters = countryBlock.Edges.SelectMany(x => x.Neighbors.Intersect(provinceBlocks)).ToArray();
+                if (outters.Count() == 0)
                 {
                     return countryBlock;
                 }
 
-                if (provinceBlocks.Count() == 0)
+                foreach (var outter in outters)
                 {
-                    return countryBlock;
+                    if (random.Next(0, 100) < 50)
+                    {
+                        countryBlock.Add(outter);
+                        provinceBlocks.Remove(outter);
+                    }
+
+                    if (countryBlock.Provinces.Count() > maxSize)
+                    {
+                        return countryBlock;
+                    }
+
+                    if (provinceBlocks.Count() == 0)
+                    {
+                        return countryBlock;
+                    }
                 }
             }
         }

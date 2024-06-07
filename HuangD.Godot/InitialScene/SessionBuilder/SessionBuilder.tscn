@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://drnylml1arx5c"]
+
+[ext_resource type="Script" path="res://InitialScene/SessionBuilder/SessionBuilder.cs" id="1_h27ay"]
+
+[node name="SessionBuilder" type="Node2D"]
+script = ExtResource("1_h27ay")

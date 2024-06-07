@@ -20,7 +20,6 @@ config/icon="res://icon.svg"
 
 MapScene="*res://AutoLoads/MapScene/MapScene.tscn"
 CommandConsole="*res://addons/csharpConsole/CommandConsole.cs"
-GameBuilder="*res://AutoLoads/GameBuilder/GameBuilder.cs"
 Chrona_Global="*res://addons/Chrona.Engine.Godot/Global.cs"
 
 [display]

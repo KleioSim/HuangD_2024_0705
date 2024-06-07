@@ -6,6 +6,8 @@ using System.Reflection;
 
 internal class ProvinceBlock
 {
+    public readonly string id;
+
     public IEnumerable<ProvinceBlock> Neighbors => _neighbors;
     public IEnumerable<Vector2I> Edges => _edges;
     public IEnumerable<Vector2I> Cells => _cells;
@@ -13,6 +15,11 @@ internal class ProvinceBlock
     private HashSet<Vector2I> _edges = new HashSet<Vector2I>();
     private HashSet<Vector2I> _cells = new HashSet<Vector2I>();
     private HashSet<ProvinceBlock> _neighbors = new HashSet<ProvinceBlock>();
+
+    public ProvinceBlock(string id)
+    {
+        this.id = id;
+    }
 
     internal void Add(TileMap tilemap, Vector2I index)
     {
@@ -35,7 +42,7 @@ internal class ProvinceBlock
 
     internal class Builder
     {
-        internal static List<ProvinceBlock> Build(TileMap tilemap, Dictionary<Vector2I, int> pops, Random random)
+        internal static Dictionary<string, ProvinceBlock> Build(TileMap tilemap, Dictionary<Vector2I, int> pops, Random random)
         {
             var provinceBlocks = new List<ProvinceBlock>();
 
@@ -85,15 +92,15 @@ internal class ProvinceBlock
                 }
             }
 
-            return provinceBlocks;
+            return provinceBlocks.ToDictionary(k => k.id, v => v);
         }
 
-
+        static int count = 0;
         static ProvinceBlock BuildProvinceBlock(TileMap tilemap, List<Vector2I> cells, Random random)
         {
             var maxSize = random.Next(8, 40);
 
-            var block = new ProvinceBlock();
+            var block = new ProvinceBlock($"PROV_{count++}");
 
             block.Add(tilemap, cells[0]);
 

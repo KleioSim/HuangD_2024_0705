@@ -1,5 +1,6 @@
 ﻿using Chrona.Engine.Godot;
 using Godot;
+using HuangD.Godot.Utilties;
 using HuangD.Sessions;
 using System;
 using System.Diagnostics.Metrics;
@@ -7,8 +8,10 @@ using System.Linq;
 
 public partial class InitialScene : Control
 {
-    public GameBuilder Builder => GetNode<GameBuilder>("/root/GameBuilder");
+    public MapScene MapScene => GetNode<MapScene>("/root/MapScene");
     public Global Global => GetNode<Global>("/root/Chrona_Global");
+
+    public SessionBuilder SessionBuilder => GetNode<SessionBuilder>("SessionBuilder");
 
     public TextEdit Seed => GetNode<TextEdit>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/SeedEdit");
     public Button BuildMap => GetNode<Button>("CanvasLayer/VBoxContainer/BuildMapPanel/VBoxContainer/Button");
@@ -26,12 +29,12 @@ public partial class InitialScene : Control
 
         BuildMap.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.BuildGame));
         ConfirmCountry.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.ConfirmPlayCountry));
-        Builder.Connect(GameBuilder.SignalName.MapClick, new Callable(this, MethodName.SelectCountry));
+        MapScene.Connect(MapScene.SignalName.MapClick, new Callable(this, MethodName.SelectCountry));
     }
 
     private void BuildGame()
     {
-        Builder.BuildGame(Seed.Text);
+        SessionBuilder.BuildGame(Seed.Text);
     }
 
     private void ConfirmPlayCountry()

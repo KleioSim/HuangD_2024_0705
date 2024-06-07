@@ -164,14 +164,14 @@ public class Session : ABSSession
     private List<War> wars = new List<War>();
 
 
-    public Session(int provinceCount, int countryCount)
+    public Session(IEnumerable<string> provinceIds, IEnumerable<string> countryIds)
     {
         Country.FindWars = (country) => wars.Where(x => x.From == country || x.To == country);
 
         player = null;
         Date = new Date();
-        countries.AddRange(Enumerable.Range(0, countryCount).Select(_ => new Country()));
-        provinces.AddRange(Enumerable.Range(0, provinceCount).Select(_ => new Province()));
+        countries.AddRange(countryIds.Select(id => new Country(id)));
+        provinces.AddRange(provinceIds.Select(id => new Province(id)));
     }
 
     [MessageProcess]
@@ -250,6 +250,8 @@ public class Country : IEntity
 {
     static int count;
 
+    public readonly string id;
+
     public static Func<Country, IEnumerable<Province>> FindProvinces;
     public static Func<Country, IEnumerable<Country>> FindNeighbors;
     public static Func<Country, IEnumerable<Province>> FindEdges;
@@ -263,8 +265,9 @@ public class Country : IEntity
     public Province Capital => FindCapital(this);
     public IEnumerable<War> Wars => FindWars(this);
 
-    public Country()
+    public Country(string id)
     {
+        this.id = id;
         Name = $"C{count}";
         count++;
     }
@@ -302,6 +305,8 @@ public class Province
 {
     static int count;
 
+    public readonly string id;
+
     public static Func<Province, int> FindPopCount;
     public static Func<Province, IEnumerable<Province>> FindNeighbors;
     public static Func<Province, Country> FindOwner;
@@ -313,8 +318,9 @@ public class Province
 
     public string Name { get; private set; }
 
-    public Province()
+    public Province(string id)
     {
+        this.id = id;
         Name = $"P{count}";
         count++;
     }

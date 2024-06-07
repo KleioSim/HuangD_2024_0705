@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://7n7c1uabcp0x"]
+[gd_scene load_steps=3 format=3 uid="uid://7n7c1uabcp0x"]
 
 [ext_resource type="Script" path="res://InitialScene/InitialScene.cs" id="1_jajna"]
+[ext_resource type="PackedScene" uid="uid://drnylml1arx5c" path="res://InitialScene/SessionBuilder/SessionBuilder.tscn" id="2_n71ku"]
 
 [node name="InitialScene" type="Control"]
 layout_mode = 3
@@ -79,3 +80,5 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 disabled = true
 text = "Confirm"
+
+[node name="SessionBuilder" parent="." instance=ExtResource("2_n71ku")]

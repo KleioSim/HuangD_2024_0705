@@ -17,8 +17,12 @@ public partial class TileMapRoot : Node2D
 
     internal Dictionary<Vector2I, TerrainType> Terrains { get; private set; }
     internal Dictionary<Vector2I, int> Pops { get; private set; }
-    internal List<ProvinceBlock> ProvinceBlocks { get; private set; }
-    internal List<CountryBlock> CountryBlocks { get; private set; }
+
+    internal Dictionary<string, ProvinceBlock> ProvinceBlocks { get; private set; }
+    internal Dictionary<string, CountryBlock> CountryBlocks { get; private set; }
+
+    //internal List<ProvinceBlock> ProvinceBlocks { get; private set; }
+    //internal List<CountryBlock> CountryBlocks { get; private set; }
 
     private Dictionary<CountryBlock, int> block2LayerId = new Dictionary<CountryBlock, int>();
 
@@ -39,10 +43,10 @@ public partial class TileMapRoot : Node2D
         GD.Print($"total popCount:{Pops.Values.Sum()}, max popCount {Pops.Values.Max()}, min popCount {Pops.Values.Min()}");
 
         ProvinceBlocks = ProvinceBlock.Builder.Build(ProvinceMap, Pops, random);
-        GD.Print($"total provCount:{ProvinceBlocks.Count()}, max provSize {ProvinceBlocks.Max(x => x.Cells.Count())}, min provSize {ProvinceBlocks.Min(x => x.Cells.Count())}");
+        GD.Print($"total provCount:{ProvinceBlocks.Count()}, max provSize {ProvinceBlocks.Values.Max(x => x.Cells.Count())}, min provSize {ProvinceBlocks.Values.Min(x => x.Cells.Count())}");
 
-        CountryBlocks = CountryBuilder.Build(ProvinceBlocks, random);
-        GD.Print($"total countryCount:{CountryBlocks.Count()}, max countrySize {CountryBlocks.Max(x => x.Provinces.Count())}, min countrySize {CountryBlocks.Min(x => x.Provinces.Count())}");
+        CountryBlocks = CountryBlock.Builder.Build(ProvinceBlocks.Values, random);
+        GD.Print($"total countryCount:{CountryBlocks.Count()}, max countrySize {CountryBlocks.Values.Max(x => x.Provinces.Count())}, min countrySize {CountryBlocks.Values.Min(x => x.Provinces.Count())}");
 
 
         block2LayerId.Clear();
@@ -61,12 +65,12 @@ public partial class TileMapRoot : Node2D
 
         for (int i = 0; i < CountryBlocks.Count; i++)
         {
-            block2LayerId.Add(CountryBlocks[i], i);
+            block2LayerId.Add(CountryBlocks.Values.ElementAt(i), i);
 
             CountryMap.AddLayer(i);
             CountryMap.SetLayerModulate(i, colors.ElementAt(i));
 
-            foreach (var cell in CountryBlocks[i].Provinces.SelectMany(x => x.Cells))
+            foreach (var cell in CountryBlocks.Values.ElementAt(i).Provinces.SelectMany(x => x.Cells))
             {
                 CountryMap.SetCellEx(i, cell, 0);
             }
@@ -101,14 +105,10 @@ public partial class TileMapRoot : Node2D
         }
     }
 
-    internal void Redraw()
-    {
-
-    }
 
     internal void ChangeProvinceOwner(ProvinceBlock provBlock, CountryBlock newCountryBlock)
     {
-        var oldCountryBlock = CountryBlocks.SingleOrDefault(x => x.Provinces.Contains(provBlock));
+        var oldCountryBlock = CountryBlocks.Values.SingleOrDefault(x => x.Provinces.Contains(provBlock));
         oldCountryBlock.Remove(provBlock);
 
         newCountryBlock.Add(provBlock);
