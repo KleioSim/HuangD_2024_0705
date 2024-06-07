@@ -1,5 +1,6 @@
 ﻿using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Core.Sessions;
+using HuangD.Sessions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -212,7 +213,7 @@ public class War
     public Country To { get; init; }
 }
 
-public class Country : IEntity
+public class Country : ICountry
 {
     static int count;
 
@@ -225,9 +226,9 @@ public class Country : IEntity
     public static Func<Country, IEnumerable<War>> FindWars;
 
     public string Name { get; private set; }
-    public IEnumerable<Province> Provinces => FindProvinces(this);
+    public IEnumerable<IProvince> Provinces => FindProvinces(this);
     public IEnumerable<Province> Edges => FindEdges(this);
-    public IEnumerable<Country> Neighbors => FindNeighbors(this);
+    public IEnumerable<ICountry> Neighbors => FindNeighbors(this);
     public Province Capital => FindCapital(this);
     public IEnumerable<War> Wars => FindWars(this);
 
@@ -267,7 +268,7 @@ public class Country : IEntity
     //}
 }
 
-public class Province
+public class Province : IProvince
 {
     static int count;
 
@@ -278,8 +279,8 @@ public class Province
     public static Func<Province, Country> FindOwner;
     public static Func<Province, bool> CheckIsConnectToCapital;
     public int PopCount => FindPopCount(this);
-    public IEnumerable<Province> Neighbors => FindNeighbors(this);
-    public Country Owner => FindOwner(this);
+    public IEnumerable<IProvince> Neighbors => FindNeighbors(this);
+    public ICountry Owner => FindOwner(this);
     public bool IsConnectToCapital => CheckIsConnectToCapital(this);
 
     public string Name { get; private set; }
