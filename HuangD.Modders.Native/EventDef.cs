@@ -44,7 +44,7 @@ public class EventDef2 : IEventDef2
     public IOption2 Option { get; } = new Option2()
     {
         Desc = "Test",
-    }
+    };
 
     private Random random = new Random();
 
