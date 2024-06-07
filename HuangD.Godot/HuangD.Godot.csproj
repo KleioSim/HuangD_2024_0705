@@ -7,7 +7,9 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chrona.Engine.Core\Chrona.Engine.Core.csproj" />
-    <ProjectReference Include="..\HuangD.Modders.Native\HuangD.Modders.Native.csproj" />
+    <ProjectReference Include="..\HuangD.Modders.Native\HuangD.Modders.Native.csproj">
+      <Private></Private>
+    </ProjectReference>
     <ProjectReference Include="..\HuangD.Sessions\HuangD.Sessions.csproj" />
   </ItemGroup>
 </Project>

@@ -4,11 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <BaseOutputPath></BaseOutputPath>
+    <AssemblyName>Native</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chrona.Engine.Core\Chrona.Engine.Core.csproj" />
-    <ProjectReference Include="..\HuangD.Sessions\HuangD.Sessions.csproj" />
+    <ProjectReference Include="..\Chrona.Engine.Core\Chrona.Engine.Core.csproj">
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\HuangD.Sessions\HuangD.Sessions.csproj">
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
