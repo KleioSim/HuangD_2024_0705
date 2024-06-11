@@ -7,105 +7,13 @@ using System.Linq;
 
 namespace HuangD.Sessions;
 
-//public interface IMessage
-//{
-//    string Desc { get; }
-//}
-
-//public class Message_NextTurn : IMessage
-//{
-//    public string Desc => "NexTurn";
-//}
-
-//public class Message_ChangeProvinceOwner : IMessage
-//{
-//    public readonly Province province;
-//    public readonly Country owner;
-
-//    public Message_ChangeProvinceOwner(Province prov, Country country)
-//    {
-//        province = prov;
-//        owner = country;
-//    }
-
-//    public string Desc => $"{province.Name} owner is changed from {province.Owner.Name} to {owner.Name}";
-
-//}
-
-//public class Message_CountryDestroyed : IMessage
-//{
-//    public readonly Country country;
-
-//    public Message_CountryDestroyed(Country country)
-//    {
-//        this.country = country;
-//    }
-
-//    public string Desc => $"{country.Name} is destroyed";
-//}
-
-//public interface IEvent
-//{
-//    Country From { get; }
-//    Country To { get; }
-
-//    void Process(Session session);
-//}
-
-
-//public class Event : IEvent
-//{
-//    public Country From { get; set; }
-
-//    public Country To { get; set; }
-
-//    public void Process(Session session)
-//    {
-//        session.AddWar(From, To);
-//    }
-//}
-
-
-//public class EventTargetVisitor : DataVisitor
-//{
-//    public object Get(IEvent @event)
-//    {
-//        return @event.To;
-//    }
-//}
-
-//public class EventFromVisitor : DataVisitor
-//{
-//    public object Get(IEvent @event)
-//    {
-//        return @event.From;
-//    }
-//}
-
-public class CondtionFactor : ICondtionFactor
-{
-    public ICondition Condition { get; set; }
-
-    public double Factor { get; set; }
-}
-
-public class NeighorCountires : IEventTarget
-{
-    public IEnumerable<IEntity> Get(IEntity entity, ISession session)
-    {
-        var country = (Country)entity;
-        return country.Neighbors;
-    }
-}
-
-public class TargetFinder : ITargetFinder
-{
-    public IEnumerable<ICondtionFactor> ConditionFactors { get; set; }
-
-    public IEventTarget Targets { get; set; }
-}
-
 public class Message_Start : IMessage
+{
+    public object Target { get; set; }
+    public object Value { get; set; }
+}
+
+public class Message_Peace : IMessage
 {
     public object Target { get; set; }
     public object Value { get; set; }
@@ -148,6 +56,20 @@ public class Session : ABSSession
         var from = msg.Value as Country;
 
         LOG($"Message_Start from:{from.Name} target:{target.Name}");
+
+        wars.Add(new War() { To = target, From = from });
+    }
+
+    [MessageProcess]
+    public void Message_PeaceProcess(Message_Peace msg)
+    {
+        var county1 = msg.Target as Country;
+        var county2 = msg.Value as Country;
+
+        LOG($"Message_Peace from:{county1.Name} target:{county2.Name}");
+
+        var war = wars.Single(x => (x.From == county1 && x.To == county2) || (x.From == county2 && x.To == county1));
+        wars.Remove(war);
     }
 
     //public void OnMessage(IMessage message)
@@ -207,10 +129,10 @@ public class Session : ABSSession
     //}
 }
 
-public class War
+public class War : IWar
 {
-    public Country From { get; init; }
-    public Country To { get; init; }
+    public ICountry From { get; init; }
+    public ICountry To { get; init; }
 }
 
 public class Country : ICountry
@@ -230,7 +152,7 @@ public class Country : ICountry
     public IEnumerable<Province> Edges => FindEdges(this);
     public IEnumerable<ICountry> Neighbors => FindNeighbors(this);
     public Province Capital => FindCapital(this);
-    public IEnumerable<War> Wars => FindWars(this);
+    public IEnumerable<IWar> Wars => FindWars(this);
 
     public Country(string id)
     {

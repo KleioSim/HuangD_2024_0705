@@ -5,6 +5,14 @@ namespace HuangD.Sessions.Interfaces;
 
 public interface ICountry : IEntity
 {
-    public IEnumerable<IProvince> Provinces { get; }
-    public IEnumerable<ICountry> Neighbors { get; }
+    IEnumerable<IProvince> Provinces { get; }
+    IEnumerable<ICountry> Neighbors { get; }
+
+    IEnumerable<IWar> Wars { get; }
+}
+
+public interface IWar
+{
+    ICountry From { get; }
+    ICountry To { get; }
 }

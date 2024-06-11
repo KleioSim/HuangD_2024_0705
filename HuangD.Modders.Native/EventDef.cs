@@ -45,7 +45,53 @@ public class EventDef2 : EventDef
 
         IsSatisfied = (from, session) =>
         {
-            return true;
+            var country = from as ICountry;
+            return !country.Wars.Any();
+        };
+    }
+}
+
+
+[DefTo(typeof(Country))]
+public class PeaceEventDef : EventDef
+{
+    private Random random = new Random();
+
+    public override IOptionDef OptionDef { get; }
+    public override Func<IEntity, ISession, bool> IsSatisfied { get; }
+    public override Func<IEntity, ISession, IEntity> FindTarget { get; }
+
+    public PeaceEventDef()
+    {
+        OptionDef = new OptionDef()
+        {
+            GetDesc = (context) => "Test",
+
+            ProductMessage = (context) =>
+            {
+                return new[] { new Message_Peace() { Target = context.To, Value = context.From } };
+            }
+        };
+
+        FindTarget = (from, session) =>
+        {
+            var country = from as ICountry;
+
+            foreach (var war in country.Wars)
+            {
+                if (random.Next(0, 100) < 30)
+                {
+                    return country != war.From ? war.From : war.To;
+                }
+            }
+
+            return null;
+        };
+
+        IsSatisfied = (from, session) =>
+        {
+            var country = from as ICountry;
+            return country.Wars.Any();
         };
     }
 }
