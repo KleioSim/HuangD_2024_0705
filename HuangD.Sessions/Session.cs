@@ -66,21 +66,21 @@ namespace HuangD.Sessions;
 //}
 
 
-public class EventTargetVisitor : DataVisitor
-{
-    public object Get(IEvent @event)
-    {
-        return @event.To;
-    }
-}
+//public class EventTargetVisitor : DataVisitor
+//{
+//    public object Get(IEvent @event)
+//    {
+//        return @event.To;
+//    }
+//}
 
-public class EventFromVisitor : DataVisitor
-{
-    public object Get(IEvent @event)
-    {
-        return @event.From;
-    }
-}
+//public class EventFromVisitor : DataVisitor
+//{
+//    public object Get(IEvent @event)
+//    {
+//        return @event.From;
+//    }
+//}
 
 public class CondtionFactor : ICondtionFactor
 {

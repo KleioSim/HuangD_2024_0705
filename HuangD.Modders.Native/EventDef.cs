@@ -1,43 +1,51 @@
 ﻿using Chrona.Engine.Core.Events;
 using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Core.Modders;
+using Chrona.Engine.Core.Sessions;
 using HuangD.Sessions;
 using HuangD.Sessions.Interfaces;
 
 namespace HuangD.Modders.Native;
 
 [DefTo(typeof(Country))]
-public class EventDef2 : IEventDef
+public class EventDef2 : EventDef
 {
-    public IOption Option { get; } = new Option()
-    {
-        Desc = "Test",
-
-        ProductMessage = (entity, to, session) =>
-        {
-            return new[] { new Message_Start() { Target = entity, Value = to } };
-        }
-    };
-
     private Random random = new Random();
 
-    public IEntity FindTarget(IEntity entity, ISession session)
-    {
-        var country = entity as ICountry;
+    public override IOptionDef OptionDef { get; }
+    public override Func<IEntity, ISession, bool> IsSatisfied { get; }
+    public override Func<IEntity, ISession, IEntity> FindTarget { get; }
 
-        foreach (var neighbor in country.Neighbors)
+    public EventDef2()
+    {
+        OptionDef = new OptionDef()
         {
-            if (random.Next(0, 100) < 30)
+            GetDesc = (context) => "Test",
+
+            ProductMessage = (context) =>
             {
-                return neighbor;
+                return new[] { new Message_Start() { Target = context.To, Value = context.From } };
             }
-        }
+        };
 
-        return null;
-    }
+        FindTarget = (from, session) =>
+        {
+            var country = from as ICountry;
 
-    public bool IsSatisfied(IEntity entity, ISession session)
-    {
-        return true;
+            foreach (var neighbor in country.Neighbors)
+            {
+                if (random.Next(0, 100) < 30)
+                {
+                    return neighbor;
+                }
+            }
+
+            return null;
+        };
+
+        IsSatisfied = (from, session) =>
+        {
+            return true;
+        };
     }
 }
