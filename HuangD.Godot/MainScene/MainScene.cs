@@ -4,7 +4,7 @@ using HuangD.Sessions;
 using System;
 using System.Linq;
 
-public partial class MainScene : ViewControl
+public partial class MainScene : Control
 {
     public Global Global => GetNode<Global>("/root/Chrona_Global");
     public Control CurrCountry => GetNode<Control>("CanvasLayer/CurrentCountry");

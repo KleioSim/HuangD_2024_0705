@@ -19,6 +19,12 @@ public class Message_Peace : IMessage
     public object Value { get; set; }
 }
 
+public class Message_ChangePlayCountry : IMessage
+{
+    public object Target { get; set; }
+    public object Value { get; set; }
+}
+
 public class Session : ABSSession
 {
     public static Action<string> LOG;
@@ -72,61 +78,11 @@ public class Session : ABSSession
         wars.Remove(war);
     }
 
-    //public void OnMessage(IMessage message)
-    //{
-    //    LOG(message.Desc);
-
-    //    switch (message)
-    //    {
-    //        case Message_ChangeProvinceOwner changeProvinceOwner:
-    //            {
-    //                var province = changeProvinceOwner.province;
-    //                var oldOwner = province.Owner;
-    //                var newOwner = changeProvinceOwner.owner;
-
-    //                ChangeProvinceOwner(changeProvinceOwner.province, changeProvinceOwner.owner);
-
-    //                if (oldOwner.Provinces.Count() == 0)
-    //                {
-    //                    OnMessage(new Message_CountryDestroyed(oldOwner));
-    //                }
-    //            }
-    //            break;
-    //        case Message_CountryDestroyed countryDestroyed:
-    //            {
-    //                countries.Remove(countryDestroyed.country);
-    //            }
-    //            break;
-    //    }
-    //}
-
-    //public IEnumerable<IEvent> OnNextTurn()
-    //{
-    //    Date.MonthsInc();
-    //    foreach (var country in Countries.ToArray())
-    //    {
-    //        currCountry = country;
-
-    //        foreach (var eventObj in currCountry.NexTurn2())
-    //        {
-    //            if (eventObj.To == Player)
-    //            {
-    //                yield return eventObj;
-    //            }
-
-    //            eventObj.Process(this);
-    //        }
-    //    }
-
-    //    currCountry = null;
-    //}
-
-    //internal void AddWar(Country from, Country to)
-    //{
-    //    LOG($"{from.Name} start war to {to.Name}");
-
-    //    wars.Add(new War() { From = from, To = to });
-    //}
+    [MessageProcess]
+    public void Message_ChangePlayCountryProcess(Message_ChangePlayCountry msg)
+    {
+        Player = msg.Target as Country;
+    }
 }
 
 public class War : IWar
