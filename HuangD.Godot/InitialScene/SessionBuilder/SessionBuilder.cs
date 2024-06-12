@@ -12,7 +12,9 @@ public partial class SessionBuilder : Node2D
     {
         MapScene.MapRoot.BuildMap(seed);
 
-        var session = new Session(MapScene.MapRoot.ProvinceBlocks.Keys, MapScene.MapRoot.CountryBlocks.Keys);
+        var session = new Session(MapScene.MapRoot.ProvinceBlocks.Keys,
+            MapScene.MapRoot.CountryBlocks.Keys,
+            GetNode<Global>("/root/Chrona_Global").Chroncle.Modder.InteractionDefs);
 
         GetNode<Global>("/root/Chrona_Global").Chroncle.Session = session;
     }

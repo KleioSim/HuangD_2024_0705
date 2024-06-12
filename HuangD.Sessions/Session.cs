@@ -45,13 +45,14 @@ public class Session : ABSSession
     private List<War> wars = new List<War>();
 
 
-    public Session(IEnumerable<string> provinceIds, IEnumerable<string> countryIds)
+    public Session(IEnumerable<string> provinceIds, IEnumerable<string> countryIds, IReadOnlyDictionary<Type, IEnumerable<IInteractionDef>> interactionDefs)
     {
         Country.FindWars = (country) => wars.Where(x => x.From == country || x.To == country);
 
         player = null;
         Date = new Date();
-        countries.AddRange(countryIds.Select(id => new Country(id)));
+
+        countries.AddRange(countryIds.Select(id => new Country(id, interactionDefs[typeof(Country)])));
         provinces.AddRange(provinceIds.Select(id => new Province(id)));
     }
 
@@ -110,16 +111,15 @@ public class Country : ICountry
     public Province Capital => FindCapital(this);
     public IEnumerable<IWar> Wars => FindWars(this);
 
-    public IEnumerable<IInteraction> Interactions => interactions;
-    private List<IInteraction> interactions = new List<IInteraction>();
+    public IEnumerable<IInteraction> Interactions { get; }
 
-    public Country(string id)
+    public Country(string id, IEnumerable<IInteractionDef> interactionDefs)
     {
         this.id = id;
         Name = $"C{count}";
         count++;
 
-        interactions.Add(new Interaction() { Desc = "TEST" });
+        Interactions = interactionDefs.Select(def => new Interaction(def, this));
     }
 
     //internal IEnumerable<IMessage> NexTurn()
@@ -153,7 +153,16 @@ public class Country : ICountry
 
 public class Interaction : IInteraction
 {
-    public string Desc { get; set; }
+    public string Desc => def.GetDesc(owner);
+
+    private readonly IInteractionDef def;
+    private readonly ICountry owner;
+
+    public Interaction(IInteractionDef def, ICountry owner)
+    {
+        this.def = def;
+        this.owner = owner;
+    }
 }
 
 public class Province : IProvince

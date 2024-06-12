@@ -1,5 +1,6 @@
 ﻿using Chrona.Engine.Godot;
 using Godot;
+using HuangD.Sessions;
 using HuangD.Sessions.Interfaces;
 using System;
 using System.Linq;
@@ -19,7 +20,8 @@ public partial class CountryDetail : ViewControl
             }
 
             country = value;
-            IsDirty = true;
+
+            SendCommand(new Message_UIRefresh());
         }
     }
 
