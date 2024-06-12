@@ -10,6 +10,8 @@ namespace HuangD.Modders.Native;
 [DefTo(typeof(Country))]
 public class EventDef2 : EventDef
 {
+    public override PlayerFlag playerFlag { get; } = PlayerFlag.ForAI;
+
     private Random random = new Random();
 
     public override IOptionDef OptionDef { get; }
@@ -34,7 +36,7 @@ public class EventDef2 : EventDef
 
             foreach (var neighbor in country.Neighbors)
             {
-                if (random.Next(0, 100) < 30)
+                if (random.Next(0, 100) < 5)
                 {
                     return neighbor;
                 }
@@ -55,6 +57,8 @@ public class EventDef2 : EventDef
 [DefTo(typeof(Country))]
 public class PeaceEventDef : EventDef
 {
+    public override PlayerFlag playerFlag { get; } = PlayerFlag.ForAI;
+
     private Random random = new Random();
 
     public override IOptionDef OptionDef { get; }
@@ -79,7 +83,7 @@ public class PeaceEventDef : EventDef
 
             foreach (var war in country.Wars)
             {
-                if (random.Next(0, 100) < 30)
+                if (random.Next(0, 100) < 10)
                 {
                     return country != war.From ? war.From : war.To;
                 }
