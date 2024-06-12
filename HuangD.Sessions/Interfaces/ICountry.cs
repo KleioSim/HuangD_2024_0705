@@ -10,10 +10,16 @@ public interface ICountry : IEntity
     IEnumerable<ICountry> Neighbors { get; }
 
     IEnumerable<IWar> Wars { get; }
+    IEnumerable<IInteraction> Interactions { get; }
 }
 
 public interface IWar
 {
     ICountry From { get; }
     ICountry To { get; }
+}
+
+public interface IInteraction
+{
+    string Desc { get; }
 }

@@ -12,7 +12,7 @@ public partial class MainScene : ViewControl
 
     public Timer timer => GetNode<Timer>("Timer");
     public MapScene MapScene => GetNode<MapScene>("/root/MapScene");
-    public CountryDetail CountryDetail => GetNode<CountryDetail>("CanvasLayer/Detail");
+    public CountryDetail CountryDetail => GetNode<CountryDetail>("CanvasLayer/CountryDetail");
 
     public override void _Ready()
     {
@@ -30,10 +30,10 @@ public partial class MainScene : ViewControl
 
     protected override void Update()
     {
-        throw new NotImplementedException();
+
     }
 
-    void OnMapSelect(Vector2I index, string provinceName, string countryName)
+    async void OnMapSelect(Vector2I index, string provinceName, string countryName)
     {
         var session = Session as HuangD.Sessions.Session;
         CountryDetail.Country = session.Countries.Single(x => x.Name == countryName);

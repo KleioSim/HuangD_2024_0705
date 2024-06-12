@@ -110,11 +110,16 @@ public class Country : ICountry
     public Province Capital => FindCapital(this);
     public IEnumerable<IWar> Wars => FindWars(this);
 
+    public IEnumerable<IInteraction> Interactions => interactions;
+    private List<IInteraction> interactions = new List<IInteraction>();
+
     public Country(string id)
     {
         this.id = id;
         Name = $"C{count}";
         count++;
+
+        interactions.Add(new Interaction() { Desc = "TEST" });
     }
 
     //internal IEnumerable<IMessage> NexTurn()
@@ -144,6 +149,11 @@ public class Country : ICountry
     //        yield return new Event() { From = this, To = Neighbors.OrderBy(_ => random.Next()).First() };
     //    }
     //}
+}
+
+public class Interaction : IInteraction
+{
+    public string Desc { get; set; }
 }
 
 public class Province : IProvince
