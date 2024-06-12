@@ -4,20 +4,40 @@ using HuangD.Sessions;
 using System;
 using System.Linq;
 
-public partial class MainScene : Control
+public partial class MainScene : ViewControl
 {
-    public Global Global => GetNode<Global>("/root/Chrona_Global");
-    public Control CurrCountry => GetNode<Control>("CanvasLayer/CurrentCountry");
-    public Control eventDialog => GetNode<Control>("CanvasLayer/EventDialog");
+    //public Global Global => GetNode<Global>("/root/Chrona_Global");
+    //public Control CurrCountry => GetNode<Control>("CanvasLayer/CurrentCountry");
+    //public Control eventDialog => GetNode<Control>("CanvasLayer/EventDialog");
+
     public Timer timer => GetNode<Timer>("Timer");
+    public MapScene MapScene => GetNode<MapScene>("/root/MapScene");
+    public CountryDetail CountryDetail => GetNode<CountryDetail>("CanvasLayer/Detail");
 
     public override void _Ready()
     {
-        CommandConsole.IsVaild = true;
-
-        //Global.Session = new Session();
-
         //CommandConsole.AddCommand("testing", testing);
+
+        CommandConsole.IsVaild = true;
+        CountryDetail.Visible = false;
+
+    }
+
+    protected override void Initialize()
+    {
+        MapScene.Connect(MapScene.SignalName.MapClick, new Callable(this, MethodName.OnMapSelect));
+    }
+
+    protected override void Update()
+    {
+        throw new NotImplementedException();
+    }
+
+    void OnMapSelect(Vector2I index, string provinceName, string countryName)
+    {
+        var session = Session as HuangD.Sessions.Session;
+        CountryDetail.Country = session.Countries.Single(x => x.Name == countryName);
+        CountryDetail.Visible = true;
     }
 
     //public async void OnNextTurn()
@@ -49,9 +69,4 @@ public partial class MainScene : Control
     //        CurrCountry.GetNode<Label>("Label").Text = Global.Session.currCountry.Name;
     //    }
     //}
-}
-
-public partial class EventDialog : Control
-{
-
 }

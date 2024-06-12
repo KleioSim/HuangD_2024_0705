@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://cepmtjiuop5l1"]
+[gd_scene load_steps=5 format=3 uid="uid://cepmtjiuop5l1"]
 
 [ext_resource type="Script" path="res://MainScene/MainScene.cs" id="1_02pok"]
+[ext_resource type="Script" path="res://MainScene/CountryDetail.cs" id="2_4mjlk"]
 [ext_resource type="Script" path="res://addons/Chrona.Engine.Godot/EventDialog/DialogFacade.cs" id="2_51s2u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ygtwr"]
+font_size = 25
 
 [node name="MainScene" type="Control"]
 layout_mode = 3
@@ -276,22 +280,60 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Detail" type="PanelContainer" parent="CanvasLayer"]
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -237.0
+offset_top = -150.0
+offset_right = 237.0
+offset_bottom = 114.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_4mjlk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Detail"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Detail/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "--"
+label_settings = SubResource("LabelSettings_ygtwr")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/Detail/VBoxContainer/Label"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -18.0
+offset_bottom = 31.0
+grow_horizontal = 0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "X"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Detail/VBoxContainer"]
+layout_mode = 2
+
+[node name="Data" type="Panel" parent="CanvasLayer/Detail/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(350, 200)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Detail/VBoxContainer/HBoxContainer/Data"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -500.0
-offset_right = 504.0
-grow_vertical = 0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Detail"]
-layout_mode = 2
-
-[node name="Panel" type="Panel" parent="CanvasLayer/Detail/HBoxContainer"]
-custom_minimum_size = Vector2(300, 500)
-layout_mode = 2
-
-[node name="Panel2" type="Panel" parent="CanvasLayer/Detail/HBoxContainer"]
-custom_minimum_size = Vector2(200, 500)
+[node name="Interactions" type="Panel" parent="CanvasLayer/Detail/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
 [node name="NextTurn" type="PanelContainer" parent="CanvasLayer"]
@@ -311,6 +353,7 @@ layout_mode = 2
 text = "NextTurn"
 
 [node name="CurrentCountry" type="PanelContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -329,24 +372,8 @@ text = "--"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EventDialog" type="Control" parent="CanvasLayer"]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Button" type="Button" parent="CanvasLayer/EventDialog"]
-layout_mode = 0
-offset_left = 770.0
-offset_top = 364.0
-offset_right = 832.0
-offset_bottom = 395.0
-text = "Button"
-
 [node name="Chrona_EventDialog" type="Control" parent="CanvasLayer"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -359,8 +386,8 @@ script = ExtResource("2_51s2u")
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
+[connection signal="pressed" from="CanvasLayer/Detail/VBoxContainer/Label/Button" to="CanvasLayer/Detail" method="set_visible" binds= [false]]
 [connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="." method="OnNextTurn"]
-[connection signal="pressed" from="CanvasLayer/EventDialog/Button" to="CanvasLayer/EventDialog" method="set_visible" binds= [false]]
 [connection signal="TurnEnd" from="CanvasLayer/Chrona_EventDialog" to="Timer" method="set_paused" binds= [false]]
 [connection signal="TurnStart" from="CanvasLayer/Chrona_EventDialog" to="Timer" method="set_paused" binds= [true]]
 [connection signal="timeout" from="Timer" to="CanvasLayer/Chrona_EventDialog" method="OnNextTurn"]
