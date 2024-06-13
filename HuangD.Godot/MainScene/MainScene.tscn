@@ -326,9 +326,8 @@ mouse_filter = 2
 script = ExtResource("2_51s2u")
 
 [node name="Timer" type="Timer" parent="."]
-autostart = true
 
-[connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="." method="OnNextTurn"]
+[connection signal="pressed" from="CanvasLayer/NextTurn/Button" to="CanvasLayer/Chrona_EventDialog" method="OnNextTurn"]
 [connection signal="TurnEnd" from="CanvasLayer/Chrona_EventDialog" to="Timer" method="set_paused" binds= [false]]
 [connection signal="TurnStart" from="CanvasLayer/Chrona_EventDialog" to="Timer" method="set_paused" binds= [true]]
 [connection signal="timeout" from="Timer" to="CanvasLayer/Chrona_EventDialog" method="OnNextTurn"]

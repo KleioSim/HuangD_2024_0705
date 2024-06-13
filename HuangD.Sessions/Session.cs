@@ -1,4 +1,6 @@
-﻿using Chrona.Engine.Core.Interfaces;
+﻿using Chrona.Engine.Core;
+using Chrona.Engine.Core.Events;
+using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Core.Sessions;
 using HuangD.Sessions.Interfaces;
 using System;
@@ -122,6 +124,7 @@ public class Country : ICountry
         Interactions = interactionDefs.Select(def => new Interaction(def, this));
     }
 
+
     //internal IEnumerable<IMessage> NexTurn()
     //{
     //    var random = new Random();
@@ -151,19 +154,6 @@ public class Country : ICountry
     //}
 }
 
-public class Interaction : IInteraction
-{
-    public string Desc => def.GetDesc(owner);
-
-    private readonly IInteractionDef def;
-    private readonly ICountry owner;
-
-    public Interaction(IInteractionDef def, ICountry owner)
-    {
-        this.def = def;
-        this.owner = owner;
-    }
-}
 
 public class Province : IProvince
 {

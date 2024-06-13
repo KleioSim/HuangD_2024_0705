@@ -20,11 +20,9 @@ public partial class CountryDetail : ViewControl
             }
 
             country = value;
-
             SendCommand(new Message_UIRefresh());
         }
     }
-
 
     public ItemContainer<CountryInteraction> CountryIteractions;
 

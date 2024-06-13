@@ -99,13 +99,3 @@ public class PeaceEventDef : EventDef
         };
     }
 }
-
-[DefTo(typeof(Country))]
-public class CountryInteraction : IInteractionDef
-{
-    public string GetDesc(IEntity owner)
-    {
-        var country = owner as ICountry;
-        return $"TEST1_{country.Name}";
-    }
-}

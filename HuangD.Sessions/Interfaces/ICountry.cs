@@ -1,4 +1,5 @@
 ﻿using Chrona.Engine.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace HuangD.Sessions.Interfaces;
@@ -17,9 +18,4 @@ public interface IWar
 {
     ICountry From { get; }
     ICountry To { get; }
-}
-
-public interface IInteraction
-{
-    string Desc { get; }
 }
