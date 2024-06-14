@@ -1,12 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://sps3svra730l"]
+[gd_scene load_steps=3 format=3 uid="uid://sps3svra730l"]
 
-[ext_resource type="Script" path="res://MainScene/CountryDetails/CountryInteraction.cs" id="1_dblmj"]
+[ext_resource type="Script" path="res://MainScene/CountryDetails/CountryInteraction.cs" id="1_5sp2j"]
+[ext_resource type="Script" path="res://addons/Chrona.Engine.Godot/TooltipTriggers/TooltipTrigger.cs" id="1_xms5o"]
 
 [node name="CountryInteraction" type="Control"]
-custom_minimum_size = Vector2(0, 30)
+custom_minimum_size = Vector2(120, 30)
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_dblmj")
+script = ExtResource("1_5sp2j")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(0, 30)
@@ -16,14 +17,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+text = "--"
 
-[node name="Label" type="Label" parent="Button"]
+[node name="ToolTipTrigger" type="Control" parent="Button"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "--"
-horizontal_alignment = 1
-vertical_alignment = 1
+script = ExtResource("1_xms5o")

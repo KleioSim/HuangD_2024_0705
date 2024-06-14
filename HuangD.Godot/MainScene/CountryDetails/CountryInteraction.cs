@@ -9,10 +9,15 @@ public partial class CountryInteraction : ViewControl, IItemView
     public object Id { get; set; }
 
     private Button Button => GetNode<Button>("Button");
+    private TooltipTrigger TooltipTrigger => GetNode<TooltipTrigger>("Button/ToolTipTrigger");
 
     protected override void Initialize()
     {
         Button.Connect(Button.SignalName.ButtonDown, new Callable(this, MethodName.OnInvoke));
+        TooltipTrigger.funcGetToolTipString = () =>
+        {
+            return "Test";
+        };
     }
 
     protected override void Update()
