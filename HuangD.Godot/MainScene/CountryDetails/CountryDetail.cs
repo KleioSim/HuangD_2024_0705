@@ -7,7 +7,10 @@ using System.Linq;
 
 public partial class CountryDetail : ViewControl
 {
-    public Label Name => GetNode<Label>("VBoxContainer/Label");
+    public Label Label => GetNode<Label>("VBoxContainer/Label");
+
+    public Control PlayerMask => GetNode<Control>("VBoxContainer/HBoxContainer/Interactions/PlayerMask");
+    public Control OutDateMask => GetNode<Control>("VBoxContainer/Label");
 
     public ICountry Country
     {
@@ -38,8 +41,13 @@ public partial class CountryDetail : ViewControl
 
     protected override void Update()
     {
-        Name.Text = Country.Name;
+        Label.Text = Country.Name;
 
-        CountryIteractions.Refresh(Country.Interactions.Select(x => (object)x).ToHashSet());
+        PlayerMask.Visible = Country == Session.Player;
+
+        if (!PlayerMask.Visible)
+        {
+            CountryIteractions.Refresh(Country.Interactions.Select(x => (object)x).ToHashSet());
+        }
     }
 }

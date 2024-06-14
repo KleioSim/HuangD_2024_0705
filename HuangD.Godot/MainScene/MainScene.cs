@@ -33,7 +33,7 @@ public partial class MainScene : ViewControl
 
     }
 
-    async void OnMapSelect(Vector2I index, string provinceName, string countryName)
+    void OnMapSelect(Vector2I index, string provinceName, string countryName)
     {
         var session = Session as HuangD.Sessions.Session;
         CountryDetail.Country = session.Countries.Single(x => x.Name == countryName);

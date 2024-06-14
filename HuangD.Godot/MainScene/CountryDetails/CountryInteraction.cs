@@ -1,12 +1,16 @@
 ﻿using Chrona.Engine.Core.Events;
 using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Godot;
+using Chrona.Engine.Godot.TooltipTrigger;
 using Godot;
 using HuangD.Sessions.Interfaces;
+using System.Linq;
 
 public partial class CountryInteraction : ViewControl, IItemView
 {
     public object Id { get; set; }
+
+    IInteraction Interaction => Id as IInteraction;
 
     private Button Button => GetNode<Button>("Button");
     private TooltipTrigger TooltipTrigger => GetNode<TooltipTrigger>("Button/ToolTipTrigger");
@@ -16,22 +20,21 @@ public partial class CountryInteraction : ViewControl, IItemView
         Button.Connect(Button.SignalName.ButtonDown, new Callable(this, MethodName.OnInvoke));
         TooltipTrigger.funcGetToolTipString = () =>
         {
-            return "Test";
+            var vaildGroup = Interaction.GetVaildGroups(Session);
+            return string.Join("\n", vaildGroup.Select(x => $"{x.flag} {x.desc}"));
         };
     }
 
     protected override void Update()
     {
-        var interaction = Id as IInteraction;
 
-        Button.Text = interaction.Desc;
-        Button.Disabled = !interaction.IsVaild(Session);
+        Button.Text = Interaction.Desc;
+        Button.Disabled = !Interaction.GetVaildGroups(Session).All(x => x.flag);
     }
 
     private void OnInvoke()
     {
-        var interaction = Id as IInteraction;
-        interaction.Invoke(Session);
+        Interaction.Invoke(Session);
 
         SendCommand(new Message_UIRefresh());
     }
