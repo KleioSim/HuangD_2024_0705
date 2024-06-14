@@ -2,8 +2,10 @@
 using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Godot;
 using Chrona.Engine.Godot.TooltipTrigger;
+using Chrona.Engine.Godot.UBBCodes;
 using Godot;
 using HuangD.Sessions.Interfaces;
+using System;
 using System.Linq;
 
 public partial class CountryInteraction : ViewControl, IItemView
@@ -21,7 +23,7 @@ public partial class CountryInteraction : ViewControl, IItemView
         TooltipTrigger.funcGetToolTipString = () =>
         {
             var vaildGroup = Interaction.GetVaildGroups(Session);
-            return string.Join("\n", vaildGroup.Select(x => $"{x.flag} {x.desc}"));
+            return string.Join("\n", vaildGroup.Select(x => new UBBCore($"{x.flag} {x.desc}").Color(x.flag ? UBBColor.GREEN : UBBColor.RED)));
         };
     }
 
