@@ -11,7 +11,6 @@ public interface ICountry : IEntity
     IEnumerable<ICountry> Neighbors { get; }
 
     IEnumerable<IWar> Wars { get; }
-    IEnumerable<IInteraction> Interactions { get; }
 }
 
 public interface IWar

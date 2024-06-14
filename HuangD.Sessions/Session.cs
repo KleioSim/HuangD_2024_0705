@@ -113,6 +113,7 @@ public class Country : ICountry
     public Province Capital => FindCapital(this);
     public IEnumerable<IWar> Wars => FindWars(this);
 
+    public bool IsInteractionDateOut { get; set; }
     public IEnumerable<IInteraction> Interactions { get; }
 
     public Country(string id, IEnumerable<IInteractionDef> interactionDefs)
@@ -123,6 +124,8 @@ public class Country : ICountry
 
         Interactions = interactionDefs.Select(def => new Interaction(def, this));
     }
+
+
 
 
     //internal IEnumerable<IMessage> NexTurn()

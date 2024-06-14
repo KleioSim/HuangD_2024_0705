@@ -82,4 +82,13 @@ grow_horizontal = 2
 grow_vertical = 2
 tooltip_text = "Current country is player not allow start dip"
 
+[node name="DateMask" type="Panel" parent="VBoxContainer/HBoxContainer/Interactions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+tooltip_text = "Dip is trigged please wailt next turn"
+
 [connection signal="pressed" from="VBoxContainer/Label/Button" to="." method="set_visible" binds= [false]]

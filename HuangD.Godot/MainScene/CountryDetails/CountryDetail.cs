@@ -10,7 +10,7 @@ public partial class CountryDetail : ViewControl
     public Label Label => GetNode<Label>("VBoxContainer/Label");
 
     public Control PlayerMask => GetNode<Control>("VBoxContainer/HBoxContainer/Interactions/PlayerMask");
-    public Control OutDateMask => GetNode<Control>("VBoxContainer/Label");
+    public Control DateMask => GetNode<Control>("VBoxContainer/HBoxContainer/Interactions/DateMask");
 
     public ICountry Country
     {
@@ -44,8 +44,9 @@ public partial class CountryDetail : ViewControl
         Label.Text = Country.Name;
 
         PlayerMask.Visible = Country == Session.Player;
+        DateMask.Visible = Country.IsInteractionDateOut;
 
-        if (!PlayerMask.Visible)
+        if (!PlayerMask.Visible && !DateMask.Visible)
         {
             CountryIteractions.Refresh(Country.Interactions.Select(x => (object)x).ToHashSet());
         }
