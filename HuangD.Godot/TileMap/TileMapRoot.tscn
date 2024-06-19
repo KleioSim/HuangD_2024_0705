@@ -1,10 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://bcoh17c7hnevt"]
+[gd_scene load_steps=9 format=3 uid="uid://bcoh17c7hnevt"]
 
 [ext_resource type="Script" path="res://TileMap/TileMapRoot.cs" id="1_injv2"]
 [ext_resource type="PackedScene" uid="uid://2pokaljqhtrn" path="res://TileMap/TerrainMap/TerrainMap.tscn" id="2_w3gyn"]
 [ext_resource type="PackedScene" uid="uid://beerkild18pm7" path="res://TileMap/PopMap/TileMapPopCount.tscn" id="3_wykof"]
 [ext_resource type="PackedScene" uid="uid://b2qbtw71qp1ws" path="res://TileMap/ProvinceMap/TileMapProvince.tscn" id="4_h3h4i"]
 [ext_resource type="PackedScene" uid="uid://b22rjrpo2goh3" path="res://TileMap/CountryMap/TileMapCountry.tscn" id="5_ohrph"]
+[ext_resource type="PackedScene" uid="uid://c7wnrw0br0jdu" path="res://TileMap/PawnMap/ProvincePawn.tscn" id="6_0tb5p"]
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_owu1a"]
+scenes/1/scene = ExtResource("6_0tb5p")
+
+[sub_resource type="TileSet" id="TileSet_brpsu"]
+tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetScenesCollectionSource_owu1a")
 
 [node name="TileMapRoot" type="Node2D"]
 modulate = Color(1, 1, 1, 0.235294)
@@ -22,3 +30,8 @@ visible = false
 
 [node name="CountryMap" parent="." instance=ExtResource("5_ohrph")]
 modulate = Color(1, 1, 1, 0.196078)
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_brpsu")
+format = 2
+layer_0/tile_data = PackedInt32Array(0, 0, 65536, 1, 0, 65536, 65537, 0, 65536, 65538, 0, 65536)
