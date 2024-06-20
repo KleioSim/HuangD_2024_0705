@@ -51,6 +51,8 @@ public partial class InitialScene : ViewControl
     private void BuildGame()
     {
         SessionBuilder.BuildGame(Seed.Text);
+
+        SendCommand(new Message_UIRefresh());
     }
 
     private void ConfirmPlayCountry()

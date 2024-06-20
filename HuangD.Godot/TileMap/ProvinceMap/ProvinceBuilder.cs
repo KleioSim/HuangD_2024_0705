@@ -8,6 +8,7 @@ internal class ProvinceBlock
 {
     public readonly string id;
 
+    public Vector2I CenterCell { get; set; }
     public IEnumerable<ProvinceBlock> Neighbors => _neighbors;
     public IEnumerable<Vector2I> Edges => _edges;
     public IEnumerable<Vector2I> Cells => _cells;
@@ -29,6 +30,17 @@ internal class ProvinceBlock
 
         var needRemove = _edges.Where(x => tilemap.GetNeighborCells_4(x).Values.All(neighor => _cells.Contains(neighor))).ToArray();
         _edges.ExceptWith(needRemove);
+
+        var distane = int.MinValue;
+        foreach (var cell in _cells)
+        {
+            var minDist = (int)_edges.Select(e => (e - cell).Length()).Min();
+            if (minDist > distane)
+            {
+                distane = minDist;
+                CenterCell = cell;
+            }
+        }
     }
 
     internal void AddRange(TileMap tilemap, IEnumerable<Vector2I> cells)

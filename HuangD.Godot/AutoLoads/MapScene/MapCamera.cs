@@ -12,6 +12,9 @@ public partial class MapCamera : Camera2D
     [Export]
     public float ZoomStep { get; set; }
 
+    [Signal]
+    public delegate void OnZoomedEventHandler(Vector2 value);
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton eventKey)
@@ -43,6 +46,9 @@ public partial class MapCamera : Camera2D
             && Zoom + changed >= ZoomMin * Vector2.One)
         {
             Zoom += changed;
+
+            EmitSignal(SignalName.OnZoomed, Zoom);
         }
+
     }
 }

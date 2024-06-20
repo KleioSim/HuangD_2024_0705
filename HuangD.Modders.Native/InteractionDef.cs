@@ -48,6 +48,10 @@ public class CountryInteractionDef_Peace : InteractionDef
     public override IEnumerable<(bool flag, string desc)> GetVaildGroups(IEntity owner, ISession session)
     {
         var country = owner as ICountry;
-        return new[] { (country.Wars.Any(x => x.From == session.Player || x.To == session.Player), "alreay in war") };
+        return new[]
+        {
+            (country.Wars.Any(x => x.From == session.Player || x.To == session.Player), "alreay in war"),
+            (country.WarWeary > 3, $"peace attitude {country.WarWeary} must > 3"),
+        };
     }
 }

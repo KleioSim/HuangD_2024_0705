@@ -17,5 +17,8 @@ public partial class SessionBuilder : Node2D
             GetNode<Global>("/root/Chrona_Global").Chroncle.Modder.InteractionDefs);
 
         GetNode<Global>("/root/Chrona_Global").Chroncle.Session = session;
+
+
+
     }
 }

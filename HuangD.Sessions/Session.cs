@@ -94,6 +94,17 @@ public class War : IWar
     public ICountry To { get; init; }
 }
 
+public class Army : IArmy
+{
+    public IProvince Origin => throw new NotImplementedException();
+
+    public IProvince Local => throw new NotImplementedException();
+
+    public IProvince Target => throw new NotImplementedException();
+
+    public ICountry Owner => throw new NotImplementedException();
+}
+
 public class Country : ICountry
 {
     static int count;
@@ -105,6 +116,7 @@ public class Country : ICountry
     public static Func<Country, IEnumerable<Province>> FindEdges;
     public static Func<Country, Province> FindCapital;
     public static Func<Country, IEnumerable<War>> FindWars;
+    public static Func<Country, IEnumerable<Army>> FindArmys;
 
     public string Name { get; private set; }
     public IEnumerable<IProvince> Provinces => FindProvinces(this);
@@ -116,6 +128,10 @@ public class Country : ICountry
     public bool IsInteractionDateOut { get; set; }
     public IEnumerable<IInteraction> Interactions { get; }
 
+    public float WarWeary { get; private set; }
+
+    public IEnumerable<IArmy> Armies => throw new NotImplementedException();
+
     public Country(string id, IEnumerable<IInteractionDef> interactionDefs)
     {
         this.id = id;
@@ -123,6 +139,11 @@ public class Country : ICountry
         count++;
 
         Interactions = interactionDefs.Select(def => new Interaction(def, this));
+    }
+
+    public void OnNextTurn()
+    {
+        WarWeary += 1;
     }
 
 

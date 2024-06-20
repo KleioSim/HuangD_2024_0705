@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ksgrcihga71w"]
+[gd_scene load_steps=6 format=3 uid="uid://ksgrcihga71w"]
 
-[ext_resource type="PackedScene" uid="uid://bcoh17c7hnevt" path="res://TileMap/TileMapRoot.tscn" id="1_2x2o3"]
+[ext_resource type="PackedScene" uid="uid://6ynw53vhamfr" path="res://TileMap/TileMapRoot.tscn" id="1_2x2o3"]
 [ext_resource type="Script" path="res://AutoLoads/MapScene/MapCamera.cs" id="1_eqpeg"]
 [ext_resource type="Script" path="res://AutoLoads/MapScene/MapScene.cs" id="1_ras6g"]
 [ext_resource type="Script" path="res://addons/CameraMoveControl/CameraMoveControl.cs" id="2_iakxp"]
+[ext_resource type="PackedScene" uid="uid://w5dfacbywtxv" path="res://AutoLoads/MapScene/PawnScene/PawnScene.tscn" id="4_op8sj"]
 
 [node name="MapScene" type="Control"]
 layout_mode = 3
@@ -26,6 +27,8 @@ ZoomStep = 0.01
 [node name="TileMapRoot" parent="CanvasLayer" node_paths=PackedStringArray("Camera") instance=ExtResource("1_2x2o3")]
 Camera = NodePath("../Camera2D")
 
+[node name="PawnScene" parent="CanvasLayer" instance=ExtResource("4_op8sj")]
+
 [node name="CanvasLayer2" type="CanvasLayer" parent="."]
 layer = 99
 
@@ -38,3 +41,5 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_iakxp")
 Camera = NodePath("../../CanvasLayer/Camera2D")
+
+[connection signal="OnZoomed" from="CanvasLayer/Camera2D" to="CanvasLayer/PawnScene" method="OnCameraZoomed"]

@@ -5,6 +5,7 @@ using HuangD.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HuangD.Sessions.Interfaces;
 
 public partial class MapScene : Control
 {
@@ -12,6 +13,8 @@ public partial class MapScene : Control
     public delegate void MapClickEventHandler(Vector2I index, string provinceName, string country);
 
     public TileMapRoot MapRoot => GetNode<TileMapRoot>("CanvasLayer/TileMapRoot");
+    public PawnScene PawnScene => GetNode<PawnScene>("CanvasLayer/PawnScene");
+
     public Global Global => GetNode<Global>("/root/Chrona_Global");
 
     public override void _Ready()
@@ -132,6 +135,12 @@ public partial class MapScene : Control
 
             return false;
 
+        };
+
+        ProvincePawnItem.GetPawnPosition = (prov) =>
+        {
+            var provBlock = MapRoot.ProvinceBlocks[prov.id];
+            return MapRoot.ProvinceMap.MapToLocal(provBlock.CenterCell);
         };
     }
 }
