@@ -28,7 +28,7 @@ internal class ProvinceBlock
 
         _edges.Add(index);
 
-        var needRemove = _edges.Where(x => tilemap.GetNeighborCells_4(x).Values.All(neighor => _cells.Contains(neighor))).ToArray();
+        var needRemove = _edges.Where(x => tilemap.GetNeighborCells_8(x).Values.All(neighor => _cells.Contains(neighor))).ToArray();
         _edges.ExceptWith(needRemove);
 
         var distane = int.MinValue;

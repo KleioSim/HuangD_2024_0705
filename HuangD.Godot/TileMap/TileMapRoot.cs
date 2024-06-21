@@ -45,7 +45,7 @@ public partial class TileMapRoot : Node2D
         ProvinceBlocks = ProvinceBlock.Builder.Build(ProvinceMap, Pops, random);
         GD.Print($"total provCount:{ProvinceBlocks.Count()}, max provSize {ProvinceBlocks.Values.Max(x => x.Cells.Count())}, min provSize {ProvinceBlocks.Values.Min(x => x.Cells.Count())}");
 
-        CountryBlocks = CountryBlock.Builder.Build(ProvinceBlocks.Values, random);
+        CountryBlocks = CountryBlock.Builder.Build(CountryMap, ProvinceBlocks.Values, random);
         GD.Print($"total countryCount:{CountryBlocks.Count()}, max countrySize {CountryBlocks.Values.Max(x => x.Provinces.Count())}, min countrySize {CountryBlocks.Values.Min(x => x.Provinces.Count())}");
 
 

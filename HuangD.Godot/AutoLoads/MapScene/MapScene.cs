@@ -148,8 +148,7 @@ public partial class MapScene : Control
         {
             var coutryBlock = MapRoot.CountryBlocks[country.id];
 
-            var countryCells = coutryBlock.Provinces.SelectMany(x => x.Cells);
-
+            var countryCells = coutryBlock.Provinces.SelectMany(x => x.Cells).ToHashSet();
             var maxX = countryCells.Select(c => c.X).Max();
             var maxY = countryCells.Select(c => c.Y).Max();
             var minX = countryCells.Select(c => c.X).Min();
@@ -157,7 +156,27 @@ public partial class MapScene : Control
 
             var center = new Vector2I((maxX - minX) / 2 + minX, (maxY - minY) / 2 + minY);
 
-            return MapRoot.ProvinceMap.MapToLocal(center);
+            var edgeCells = coutryBlock.Provinces.SelectMany(x => x.Edges).Where(x => MapRoot.ProvinceMap.GetNeighborCells_8(x).All(p => countryCells.Contains(p.Value)));
+
+
+            Vector2I labelCell = countryCells.First();
+            var maxFactor = -1;
+
+            foreach (var cell in countryCells)
+            {
+                var centerDist = (cell - center).LengthSquared();
+                var egdeDist = edgeCells.Select(x => (cell - x).LengthSquared()).Min();
+
+                var factor = egdeDist * 100 + centerDist;
+                if (maxFactor < factor)
+                {
+                    maxFactor = factor;
+                    labelCell = cell;
+                }
+            }
+
+
+            return MapRoot.ProvinceMap.MapToLocal(labelCell);
         };
     }
 }

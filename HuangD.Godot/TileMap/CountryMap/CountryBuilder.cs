@@ -14,7 +14,6 @@ class CountryBlock
     private HashSet<ProvinceBlock> _province = new HashSet<ProvinceBlock>();
     private HashSet<ProvinceBlock> _edges = new HashSet<ProvinceBlock>();
 
-
     internal void Add(ProvinceBlock provinceBlock)
     {
         if (_province.Count == 0)
@@ -27,6 +26,7 @@ class CountryBlock
 
         var needRemove = _edges.Where(x => x.Neighbors.Except(_province).Count() == 0).ToArray();
         _edges.ExceptWith(needRemove);
+
     }
 
     internal void Remove(ProvinceBlock provinceBlock)
@@ -47,7 +47,7 @@ class CountryBlock
     public static class Builder
     {
 
-        internal static Dictionary<string, CountryBlock> Build(IEnumerable<ProvinceBlock> provinceBlocks, Random random)
+        internal static Dictionary<string, CountryBlock> Build(TileMap tilemap, IEnumerable<ProvinceBlock> provinceBlocks, Random random)
         {
 
             var blockList = provinceBlocks.ToList();
