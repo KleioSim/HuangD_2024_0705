@@ -55,5 +55,13 @@ public partial class PawnScene : ViewControl
                 item.Scale = Vector2.One / zoom;
             }
         }
+
+        if (countryContainer != null)
+        {
+            foreach (var item in countryContainer.GetCurrentItems())
+            {
+                item.Scale = Vector2.One / zoom;
+            }
+        }
     }
 }
