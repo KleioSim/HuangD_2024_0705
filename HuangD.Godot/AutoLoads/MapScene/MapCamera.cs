@@ -49,6 +49,10 @@ public partial class MapCamera : Camera2D
 
             EmitSignal(SignalName.OnZoomed, Zoom);
         }
+    }
 
+    public override void _Ready()
+    {
+        EmitSignal(SignalName.OnZoomed, Zoom);
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HuangD.Sessions.Interfaces;
+using System.Diagnostics.Metrics;
 
 public partial class MapScene : Control
 {
@@ -141,6 +142,12 @@ public partial class MapScene : Control
         {
             var provBlock = MapRoot.ProvinceBlocks[prov.id];
             return MapRoot.ProvinceMap.MapToLocal(provBlock.CenterCell);
+        };
+
+        CountryPawnItem.GetPawnPosition = (country) =>
+        {
+            var coutryBlock = MapRoot.CountryBlocks[country.id];
+            return MapRoot.ProvinceMap.MapToLocal(coutryBlock.Capital.CenterCell);
         };
     }
 }

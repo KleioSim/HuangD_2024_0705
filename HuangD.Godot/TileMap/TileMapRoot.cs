@@ -79,7 +79,6 @@ public partial class TileMapRoot : Node2D
         if (Camera != null)
         {
             Camera.Position = TerrainMap.MapToLocal(TerrainMap.GetUsedRect().GetCenter());
-            Camera.Zoom = new Vector2(0.5f, 0.5f);
         }
 
     }

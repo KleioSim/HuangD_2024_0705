@@ -1,11 +1,15 @@
 ﻿using Chrona.Engine.Godot;
 using Godot;
 using HuangD.Sessions.Interfaces;
+using System;
 using System.Linq;
 
 public partial class PawnScene : ViewControl
 {
     public ItemContainer<ProvincePawnItem> provinceContainer;
+    public ItemContainer<CountryPawnItem> countryContainer;
+
+    private Vector2 zoom = Vector2.One;
 
     protected override void Initialize()
     {
@@ -13,6 +17,19 @@ public partial class PawnScene : ViewControl
         {
             return GetNode<InstancePlaceholder>("ProvincePawnItem");
         });
+
+        countryContainer = new ItemContainer<CountryPawnItem>(() =>
+        {
+            return GetNode<InstancePlaceholder>("CountryPawnItem");
+        });
+
+        provinceContainer.OnAddedItem = OnAddedItem;
+        countryContainer.OnAddedItem = OnAddedItem;
+    }
+
+    private void OnAddedItem(ViewControl item)
+    {
+        item.Scale = Vector2.One / zoom;
     }
 
     protected override void Update()
@@ -24,13 +41,19 @@ public partial class PawnScene : ViewControl
 
         var session = Session as HuangD.Sessions.Session;
         provinceContainer.Refresh(session.Provinces.Select(x => x as object).ToHashSet());
+        countryContainer.Refresh(session.Countries.Select(x => x as object).ToHashSet());
     }
 
     public void OnCameraZoomed(Vector2 value)
     {
-        foreach (var item in provinceContainer.GetCurrentItems())
+        zoom = value;
+
+        if (provinceContainer != null)
         {
-            item.Scale = Vector2.One / value;
+            foreach (var item in provinceContainer.GetCurrentItems())
+            {
+                item.Scale = Vector2.One / zoom;
+            }
         }
     }
 }

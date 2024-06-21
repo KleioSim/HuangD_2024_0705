@@ -11,5 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xpknd")
 
+[node name="CountryPawnItem" parent="." instance_placeholder="res://AutoLoads/MapScene/PawnScene/CountryPawnItem.tscn"]
+
 [node name="ProvincePawnItem" parent="." instance_placeholder="res://AutoLoads/MapScene/PawnScene/ProvincePawnItem.tscn"]
 layout_mode = 0

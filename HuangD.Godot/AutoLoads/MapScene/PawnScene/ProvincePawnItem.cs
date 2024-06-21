@@ -10,20 +10,17 @@ public partial class ProvincePawnItem : ViewControl, IItemView
 
     public object Id { get; set; }
 
+    private Province Province => Id as Province;
     private Label Label => GetNode<Label>("Label");
 
     protected override void Initialize()
     {
-        var province = Id as Province;
-        Label.Text = province.Name;
-
-        this.Position = GetPawnPosition(province);
+        Label.Text = Province.Name;
+        this.Position = GetPawnPosition(Province);
     }
 
     protected override void Update()
     {
-        var province = Id as Province;
-        Label.Text = province.Name;
-
+        Label.Text = Province.Name;
     }
 }
