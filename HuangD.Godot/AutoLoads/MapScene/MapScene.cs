@@ -147,7 +147,17 @@ public partial class MapScene : Control
         CountryPawnItem.GetPawnPosition = (country) =>
         {
             var coutryBlock = MapRoot.CountryBlocks[country.id];
-            return MapRoot.ProvinceMap.MapToLocal(coutryBlock.Capital.CenterCell);
+
+            var countryCells = coutryBlock.Provinces.SelectMany(x => x.Cells);
+
+            var maxX = countryCells.Select(c => c.X).Max();
+            var maxY = countryCells.Select(c => c.Y).Max();
+            var minX = countryCells.Select(c => c.X).Min();
+            var minY = countryCells.Select(c => c.Y).Min();
+
+            var center = new Vector2I((maxX - minX) / 2 + minX, (maxY - minY) / 2 + minY);
+
+            return MapRoot.ProvinceMap.MapToLocal(center);
         };
     }
 }

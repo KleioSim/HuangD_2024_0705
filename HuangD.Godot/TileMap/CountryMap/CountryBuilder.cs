@@ -17,23 +17,16 @@ class CountryBlock
 
     internal void Add(ProvinceBlock provinceBlock)
     {
+        if (_province.Count == 0)
+        {
+            Capital = provinceBlock;
+        }
 
         _province.Add(provinceBlock);
         _edges.Add(provinceBlock);
 
         var needRemove = _edges.Where(x => x.Neighbors.Except(_province).Count() == 0).ToArray();
         _edges.ExceptWith(needRemove);
-
-        var distane = int.MinValue;
-        foreach (var prov in _province)
-        {
-            var minDist = (int)_edges.Select(e => (e.CenterCell - prov.CenterCell).Length()).Min();
-            if (minDist > distane)
-            {
-                distane = minDist;
-                Capital = prov;
-            }
-        }
     }
 
     internal void Remove(ProvinceBlock provinceBlock)

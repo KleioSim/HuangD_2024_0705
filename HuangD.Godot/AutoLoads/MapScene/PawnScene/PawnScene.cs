@@ -15,12 +15,12 @@ public partial class PawnScene : ViewControl
     {
         provinceContainer = new ItemContainer<ProvincePawnItem>(() =>
         {
-            return GetNode<InstancePlaceholder>("ProvincePawnItem");
+            return GetNode<InstancePlaceholder>("ProvincePawns/Item");
         });
 
         countryContainer = new ItemContainer<CountryPawnItem>(() =>
         {
-            return GetNode<InstancePlaceholder>("CountryPawnItem");
+            return GetNode<InstancePlaceholder>("CountryPawns/Item");
         });
 
         provinceContainer.OnAddedItem = OnAddedItem;
