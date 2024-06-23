@@ -50,6 +50,8 @@ class CountryBlock
         internal static Dictionary<string, CountryBlock> Build(TileMap tilemap, IEnumerable<ProvinceBlock> provinceBlocks, Random random)
         {
 
+            CountryBlock.count = 0;
+
             var blockList = provinceBlocks.ToList();
             var countryBlocks = new List<CountryBlock>();
             while (blockList.Count > 0)

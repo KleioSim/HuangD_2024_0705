@@ -49,7 +49,7 @@ public partial class TileMapRoot : Node2D
 
         block2LayerId.Clear();
 
-        var random  = new Random();
+        var random  = new Random(hash);
         var colors = new HashSet<Color>();
         while (colors.Count < CountryBlocks.Count)
         {
