@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://b22rjrpo2goh3" path="res://TileMap/CountryMap/TileMapCountry.tscn" id="5_ohrph"]
 
 [node name="TileMapRoot" type="Node2D"]
-modulate = Color(1, 1, 1, 0.235294)
 script = ExtResource("1_injv2")
 
 [node name="TerrainMap" parent="." instance=ExtResource("2_w3gyn")]
@@ -21,4 +20,3 @@ modulate = Color(1, 1, 1, 0.196078)
 visible = false
 
 [node name="CountryMap" parent="." instance=ExtResource("5_ohrph")]
-modulate = Color(1, 1, 1, 0.196078)

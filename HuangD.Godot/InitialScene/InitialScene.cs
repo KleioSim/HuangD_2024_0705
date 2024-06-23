@@ -26,11 +26,13 @@ public partial class InitialScene : ViewControl
         BuildMap.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.BuildGame));
         ConfirmCountry.Connect(Button.SignalName.Pressed, new Callable(this, MethodName.ConfirmPlayCountry));
         MapScene.Connect(MapScene.SignalName.MapClick, new Callable(this, MethodName.SelectCountry));
+
+        Seed.Text = random.Next().ToString();
     }
 
     protected override void Update()
     {
-        Seed.Text = random.Next().ToString();
+
         if (Session == null || Session.Player == null)
         {
             ConfirmCountry.Disabled = true;

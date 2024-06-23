@@ -49,6 +49,9 @@ public class Session : ABSSession
 
     public Session(IEnumerable<string> provinceIds, IEnumerable<string> countryIds, IReadOnlyDictionary<Type, IEnumerable<IInteractionDef>> interactionDefs)
     {
+        Country.count = 0;
+        Province.count = 0;
+
         Country.FindWars = (country) => wars.Where(x => x.From == country || x.To == country);
 
         player = null;
@@ -107,7 +110,7 @@ public class Army : IArmy
 
 public class Country : ICountry
 {
-    static int count;
+    internal static int count;
 
     public readonly string id;
 
@@ -181,7 +184,7 @@ public class Country : ICountry
 
 public class Province : IProvince
 {
-    static int count;
+    internal static int count;
 
     public readonly string id;
 

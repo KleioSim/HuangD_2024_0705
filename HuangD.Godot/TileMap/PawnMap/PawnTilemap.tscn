@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ovrnrh2b6b0c"]
 
-[ext_resource type="PackedScene" uid="uid://c7wnrw0br0jdu" path="res://TileMap/PawnMap/ProvincePawn.tscn" id="1_sseex"]
+[ext_resource type="PackedScene" uid="uid://djacwm57u21ht" path="res://TileMap/PawnMap/ProvincePawn.tscn" id="1_sseex"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_vkhbu"]
 scenes/2/scene = ExtResource("1_sseex")

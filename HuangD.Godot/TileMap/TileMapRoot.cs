@@ -36,16 +36,16 @@ public partial class TileMapRoot : Node2D
 
         var random = new Random(hash);
 
-        Terrains = TerrainBuilder.Build(TerrainMap, random);
+        Terrains = TerrainBuilder.Build(TerrainMap, new Random(hash));
         GD.Print(String.Join(",", Terrains.GroupBy(x => x.Value).Select(group => $"{group.Key}:{group.Count()}")));
 
-        Pops = PopCountBuilder.Build(PopCountMap, Terrains, random);
+        Pops = PopCountBuilder.Build(PopCountMap, Terrains, new Random(hash));
         GD.Print($"total popCount:{Pops.Values.Sum()}, max popCount {Pops.Values.Max()}, min popCount {Pops.Values.Min()}");
 
-        ProvinceBlocks = ProvinceBlock.Builder.Build(ProvinceMap, Pops, random);
+        ProvinceBlocks = ProvinceBlock.Builder.Build(ProvinceMap, Pops, new Random(hash));
         GD.Print($"total provCount:{ProvinceBlocks.Count()}, max provSize {ProvinceBlocks.Values.Max(x => x.Cells.Count())}, min provSize {ProvinceBlocks.Values.Min(x => x.Cells.Count())}");
 
-        CountryBlocks = CountryBlock.Builder.Build(CountryMap, ProvinceBlocks.Values, random);
+        CountryBlocks = CountryBlock.Builder.Build(CountryMap, ProvinceBlocks.Values, new Random(hash));
         GD.Print($"total countryCount:{CountryBlocks.Count()}, max countrySize {CountryBlocks.Values.Max(x => x.Provinces.Count())}, min countrySize {CountryBlocks.Values.Min(x => x.Provinces.Count())}");
 
 
