@@ -64,7 +64,7 @@ class TerrainBuilder
         BuildLand(tilemap, startPoint, random);
         BuildMountion(tilemap, startPoint, random);
         BuildHill(tilemap, startPoint, random);
-        BuildSteppe(tilemap, startPoint, random);
+        //BuildSteppe(tilemap, startPoint, random);
 
         return tilemap.GetUsedCells(tile2LayerId[TerrainType.Water]).ToDictionary(k => k, v =>
         {
@@ -96,7 +96,7 @@ class TerrainBuilder
         int mountSourceId = tile2sourceId[TerrainType.Mount];
 
         var mountions = tilemap.GetUsedCells(layerId);
-        var cellQueue = new Queue<Vector2I>(mountions.OrderBy(_ => random.Next()));
+        var cellQueue = new Queue<Vector2I>(mountions.OrderBy(x=>x.ToString()).OrderBy(_ => random.Next()));
         int addCount = 0;
         while (true)
         {
@@ -205,8 +205,10 @@ class TerrainBuilder
     {
         int layerId = tile2LayerId[TerrainType.Mount];
 
-        var cellQueue = new Queue<Vector2I>(mountions.OrderBy(_ => random.Next()));
+        var cellQueue = new Queue<Vector2I>(mountions.OrderBy(x=>x.ToString()).OrderBy(_=>random.Next()));
         int addCount = 0;
+
+        var eraserIndexs = new HashSet<Vector2>();
         while (true)
         {
             var currentIndex = cellQueue.Dequeue();
@@ -217,7 +219,7 @@ class TerrainBuilder
 
             foreach (var index in tilemap.Expend(currentIndex, 3))
             {
-                if (!tilemap.IsCellUsed(layerId, currentIndex))
+                if (!tilemap.IsCellUsed(layerId, index))
                 {
                     continue;
                 }
@@ -225,15 +227,18 @@ class TerrainBuilder
                 {
                     continue;
                 }
-                if (random.Next(0, 100) < 50)
+
+                var randomValue = random.Next(0, 100);
+                if (randomValue < 50)
                 {
                     continue;
                 }
 
                 tilemap.EraseCell(layerId, index);
                 addCount++;
+                eraserIndexs.Add(index);
 
-                if (addCount > mountions.Count() * 0.4)
+                if (addCount > mountions.Count() * 0.25)
                 {
                     return;
                 }
@@ -246,7 +251,7 @@ class TerrainBuilder
         int layerId = tile2LayerId[TerrainType.Mount];
         int sourceId = tile2sourceId[TerrainType.Mount];
 
-        var cellQueue = new Queue<Vector2I>(plainCells.OrderBy(_ => random.Next()));
+        var cellQueue = new Queue<Vector2I>(plainCells.OrderBy(x => x.ToString()).OrderBy(_ => random.Next()));
         int addCount = 0;
         while (true)
         {
@@ -266,7 +271,7 @@ class TerrainBuilder
                 {
                     continue;
                 }
-                if (random.Next(0, 100) < 50)
+                if (random.Next(0, 100) < 30)
                 {
                     continue;
                 }
@@ -274,7 +279,7 @@ class TerrainBuilder
                 tilemap.SetCellEx(layerId, index, sourceId);
                 addCount++;
 
-                if (addCount > plainCells.Count() * 0.25)
+                if (addCount > plainCells.Count() * 0.35)
                 {
                     return;
                 }
@@ -343,7 +348,7 @@ class TerrainBuilder
         {
             var eraserIndexs = new List<Vector2I>();
 
-            foreach (var index in edgeFactors.Keys.OrderBy(x=>x.LengthSquared()).ToArray())
+            foreach (var index in edgeFactors.Keys.OrderBy(x=>x.ToString()).ToArray())
             {
                 var factor = edgeFactors[index];
 
