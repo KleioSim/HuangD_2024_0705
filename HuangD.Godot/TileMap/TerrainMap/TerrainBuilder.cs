@@ -316,9 +316,10 @@ class TerrainBuilder
 
     private static void FlushLandEdge(TileMap tilemap, int layerId, Vector2I startPoint, Random random)
     {
+        GD.Print($"{layerId} {startPoint}");
         var usedSize = tilemap.GetUsedRect().Size;
 
-        Dictionary<Vector2I, int> edgeIndexs = tilemap.GetUsedCells(layerId).Where(index =>
+        Dictionary<Vector2I, int> edgeFactors = tilemap.GetUsedCells(layerId).Where(index =>
         {
             if (startPoint.X == index.X && index.Y != Math.Abs(startPoint.X - (usedSize.X - 1))
             || startPoint.Y == index.Y && index.X != Math.Abs(startPoint.X - (usedSize.Y - 1)))
@@ -342,13 +343,13 @@ class TerrainBuilder
         {
             var eraserIndexs = new List<Vector2I>();
 
-            foreach (var index in edgeIndexs.Keys.ToArray())
+            foreach (var index in edgeFactors.Keys.OrderBy(x=>x.LengthSquared()).ToArray())
             {
-                var factor = edgeIndexs[index];
+                var factor = edgeFactors[index];
 
                 if (tilemap.IsConnectNode(layerId, index))
                 {
-                    edgeIndexs.Remove(index);
+                    edgeFactors.Remove(index);
                     continue;
 
                 }
@@ -356,14 +357,14 @@ class TerrainBuilder
                 var factor2 = tilemap.GetNeighborCells_8(index).Values.Where(x => tilemap.IsCellUsed(layerId, x)).Count();
                 if (factor2 <= 3 || random.Next(0, 10000) <= 3000 / factor)
                 {
-                    edgeIndexs.Remove(index);
+                    edgeFactors.Remove(index);
                     tilemap.EraseCell(layerId, index);
                     eraseCount++;
                     eraserIndexs.Add(index);
                 }
                 else
                 {
-                    edgeIndexs[index]++;
+                    edgeFactors[index]++;
                 }
 
             }
@@ -373,7 +374,7 @@ class TerrainBuilder
                 var neighbors = tilemap.GetNeighborCells_4(index).Values.Where(x => tilemap.IsCellUsed(layerId, x));
                 foreach (var neighbor in neighbors)
                 {
-                    edgeIndexs.TryAdd(neighbor, 1);
+                    edgeFactors.TryAdd(neighbor, 1);
                 }
             }
 

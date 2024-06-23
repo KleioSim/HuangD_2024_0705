@@ -34,8 +34,6 @@ public partial class TileMapRoot : Node2D
         var algo = SHA1.Create();
         var hash = BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(seed)), 0);
 
-        var random = new Random(hash);
-
         Terrains = TerrainBuilder.Build(TerrainMap, new Random(hash));
         GD.Print(String.Join(",", Terrains.GroupBy(x => x.Value).Select(group => $"{group.Key}:{group.Count()}")));
 
@@ -51,6 +49,7 @@ public partial class TileMapRoot : Node2D
 
         block2LayerId.Clear();
 
+        var random  = new Random();
         var colors = new HashSet<Color>();
         while (colors.Count < CountryBlocks.Count)
         {

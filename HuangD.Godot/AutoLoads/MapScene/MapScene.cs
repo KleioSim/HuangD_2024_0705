@@ -156,18 +156,19 @@ public partial class MapScene : Control
 
             var center = new Vector2I((maxX - minX) / 2 + minX, (maxY - minY) / 2 + minY);
 
-            var edgeCells = coutryBlock.Provinces.SelectMany(x => x.Edges).Where(x => MapRoot.ProvinceMap.GetNeighborCells_8(x).All(p => countryCells.Contains(p.Value)));
+            var edgeCells = coutryBlock.Provinces.SelectMany(x => x.Edges).Where(x => MapRoot.ProvinceMap.GetNeighborCells_8(x).Any(p => !countryCells.Contains(p.Value)));
 
 
             Vector2I labelCell = countryCells.First();
-            var maxFactor = -1;
+            var maxFactor =int.MinValue;
 
             foreach (var cell in countryCells)
             {
                 var centerDist = (cell - center).LengthSquared();
+                //var centerDist = 0;
                 var egdeDist = edgeCells.Select(x => (cell - x).LengthSquared()).Min();
-
-                var factor = egdeDist * 100 + centerDist;
+                //var egdeDist =0;
+                var factor = egdeDist * 100 + 100/(centerDist+1);
                 if (maxFactor < factor)
                 {
                     maxFactor = factor;
