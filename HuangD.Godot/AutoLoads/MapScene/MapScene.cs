@@ -8,7 +8,7 @@ using System.Linq;
 using HuangD.Sessions.Interfaces;
 using System.Diagnostics.Metrics;
 
-public partial class MapScene : Control
+public partial class MapScene : Node2D
 {
     [Signal]
     public delegate void MapClickEventHandler(Vector2I index, string provinceName, string country);

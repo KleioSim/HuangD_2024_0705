@@ -6,14 +6,7 @@
 [ext_resource type="Script" path="res://addons/CameraMoveControl/CameraMoveControl.cs" id="2_iakxp"]
 [ext_resource type="PackedScene" uid="uid://w5dfacbywtxv" path="res://AutoLoads/MapScene/PawnScene/PawnScene.tscn" id="4_op8sj"]
 
-[node name="MapScene" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+[node name="MapScene" type="Node2D"]
 script = ExtResource("1_ras6g")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
