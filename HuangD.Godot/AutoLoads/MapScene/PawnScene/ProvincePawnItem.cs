@@ -22,5 +22,6 @@ public partial class ProvincePawnItem : ViewControl, IItemView
     protected override void Update()
     {
         Label.Text = Province.Name;
+        this.Position = GetPawnPosition(Province);
     }
 }

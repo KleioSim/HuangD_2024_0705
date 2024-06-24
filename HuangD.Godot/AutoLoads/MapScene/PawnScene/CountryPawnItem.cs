@@ -21,5 +21,6 @@ public partial class CountryPawnItem : ViewControl, IItemView
     protected override void Update()
     {
         Label.Text = Country.Name;
+        this.Position = GetPawnPosition(Country);
     }
 }
