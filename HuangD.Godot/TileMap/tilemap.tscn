@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dt82a71estys7"]
 
 [ext_resource type="Script" path="res://TileMap/TerrainMap/TilemapTest.cs" id="1_n7lco"]
-[ext_resource type="PackedScene" uid="uid://bcoh17c7hnevt" path="res://TileMap/TileMapRoot.tscn" id="2_hqg2m"]
+[ext_resource type="PackedScene" uid="uid://6ynw53vhamfr" path="res://TileMap/TileMapRoot.tscn" id="2_hqg2m"]
 
 [node name="Test2" type="Control"]
 layout_mode = 3
