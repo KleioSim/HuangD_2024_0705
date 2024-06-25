@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using static HuangD.Sessions.Map;
 
 namespace HuangD.Sessions;
 
@@ -232,8 +233,96 @@ public class Province : IProvince
     }
 }
 
+public class SquareIndexMethods : IIndexMethods
+{
+    Dictionary<Map.Direction, (int x, int y)> Direction2Index = new Dictionary<Direction, (int x, int y)>()
+    {
+        { Map.Direction.TopSide, (0,-1) },
+        { Map.Direction.TopLeftCorner, (-1, -1) },
+        { Map.Direction.LeftSide,(-1, 0) },
+        { Map.Direction.BottomLeftCorner,(-1, 1)},
+        { Map.Direction.BottomSide,(0, 1)},
+        { Map.Direction.BottomRightCorner,(1, 1)},
+        { Map.Direction.RightSide,(1, 0)},
+        { Map.Direction.TopRightCorner,(1, -1)}
+    };
+    (int x, int y)[] Neighbors = new (int x, int y)[]
+    {
+        (1,0),
+        (0,1),
+        (-1,0),
+        (0,-1),
+        (1,-1),
+        (-1,1),
+        (-1,-1),
+        (1,1)
+    };
+
+    public Dictionary<Map.Direction, Map.Index> GetNeighborCells(Map.Index index)
+    {
+        return Direction2Index.ToDictionary(n => n.Key, m=> new Map.Index(index.X + m.Value.x, index.Y + m.Value.y));
+    }
+
+    public bool IsConnectNode(Map.Index index, HashSet<Map.Index> indexs)
+    {
+        var neighbors = GetNeighborCells(index);
+
+        if (indexs.Contains(neighbors[Map.Direction.LeftSide]) && indexs.Contains(neighbors[Map.Direction.RightSide])
+            && !indexs.Contains(neighbors[Map.Direction.BottomSide]) && !indexs.Contains(neighbors[Map.Direction.TopSide]))
+        {
+            return true;
+        }
+        if (!indexs.Contains(neighbors[Map.Direction.LeftSide]) && !indexs.Contains(neighbors[Map.Direction.RightSide])
+            && indexs.Contains(neighbors[Map.Direction.BottomSide]) && indexs.Contains(neighbors[Map.Direction.TopSide]))
+        {
+            return true;
+        }
+        if (indexs.Contains(neighbors[Map.Direction.LeftSide]) && indexs.Contains(neighbors[Map.Direction.BottomSide])
+            && !indexs.Contains(neighbors[Map.Direction.BottomLeftCorner]))
+        {
+            return true;
+        }
+        if (indexs.Contains(neighbors[Map.Direction.LeftSide]) && indexs.Contains(neighbors[Map.Direction.TopSide])
+            && !indexs.Contains(neighbors[Map.Direction.TopLeftCorner]))
+        {
+            return true;
+        }
+        if (indexs.Contains(neighbors[Map.Direction.RightSide]) && indexs.Contains(neighbors[Map.Direction.BottomSide])
+            && !indexs.Contains(neighbors[Map.Direction.BottomRightCorner]))
+        {
+            return true;
+        }
+        if (indexs.Contains(neighbors[Map.Direction.RightSide]) && indexs.Contains(neighbors[Map.Direction.TopSide])
+            && !indexs.Contains(neighbors[Map.Direction.TopRightCorner]))
+        {
+            return true;
+        }
+
+        return false;
+    }
+}
+
 public class Map
 {
+    public enum Direction
+    {
+        TopSide,
+        TopLeftCorner,
+        LeftSide,
+        BottomLeftCorner,
+        BottomSide,
+        BottomRightCorner,
+        RightSide,
+        TopRightCorner,
+    }
+    public interface IIndexMethods
+    {
+        Dictionary<Map.Direction, Map.Index> GetNeighborCells(Map.Index index);
+        bool IsConnectNode(Index index, HashSet<Index> indexs);
+    }
+
+    public static IIndexMethods IndexMethods { get; set; } = new SquareIndexMethods();
+
     public struct Index
     {
         public Index(int x, int y)
@@ -276,28 +365,109 @@ public class Map
     {
         public static Dictionary<Index, TerrainType> Build(int maxSize, string seed)
         {
-            var dict = Enumerable.Range(0, maxSize).SelectMany(x => Enumerable.Range(0, maxSize).Select(y => new Index(x, y)))
-                .ToDictionary(k => k, _ => TerrainType.Water);
+            var seaIndexs = BuildSea(maxSize);
 
-            BuildLand(ref dict, maxSize - 1, seed);
-            return dict;
+            var landIndexs = BuildLand(maxSize - 1, seed);
+
+            var rslt = new Dictionary<Index, TerrainType>();
+            foreach(var index in seaIndexs)
+            {
+                rslt[index] = TerrainType.Water;
+            }
+
+            foreach (var index in landIndexs)
+            {
+                rslt[index] = TerrainType.Land;
+            }
+
+            return rslt;
         }
 
-        private static void BuildLand(ref Dictionary<Index, TerrainType> dict, int landSize, string seed)
+        private static HashSet<Index> BuildSea(int maxSize)
         {
+            return Enumerable.Range(0, maxSize).SelectMany(x => Enumerable.Range(0, maxSize).Select(y => new Index(x, y))).ToHashSet();
+        }
+
+        private static HashSet<Index> BuildLand(int landSize, string seed)
+        {
+            var startPoint = new Index(0, 0);
+
+            var rslt  = new HashSet<Index>();
             for (int i = 0; i < landSize; i++)
             {
                 for (int j = 0; j < landSize; j++)
                 {
-                    var index = new Index(Math.Abs(0 - i), Math.Abs(0 - j));
-                    if (!dict.ContainsKey(index))
-                    {
-                        throw new Exception();
-                    }
-
-                    dict[index] = TerrainType.Land;
+                    var index = new Index(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j));
+                    rslt.Add(index);
                 }
             }
+
+            return FlushLandEdge(rslt, startPoint, seed);
+        }
+
+        private static HashSet<Index>  FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed)
+        {
+            var random = new Random();
+            Dictionary<Index, int> edgeFactors = indexs.Where(index =>
+            {
+                if (startPoint.X == index.X|| startPoint.Y == index.Y)
+                {
+                    return false;
+                }
+
+                var neighbors = Map.IndexMethods.GetNeighborCells(index).Values;
+                if (neighbors.All(x => indexs.Contains(x)))
+                {
+                    return false;
+                }
+
+                return true;
+
+            }).ToDictionary(k => k, v => 1); ;
+
+            int eraseCount = 0;
+            var gCount = indexs.Count();
+            while (eraseCount * 100 / gCount < 25)
+            {
+                var eraserIndexs = new List<Index>();
+
+                foreach (var index in edgeFactors.Keys.OrderBy(x => x.ToString()).ToArray())
+                {
+                    var factor = edgeFactors[index];
+
+                    if (Map.IndexMethods.IsConnectNode(index, indexs))
+                    {
+                        edgeFactors.Remove(index);
+                        continue;
+                    }
+
+                    var factor2 = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => indexs.Contains(x)).Count();
+                    if (factor2 <=3 || random.Next(0, 10000) <= 1800 / factor)
+                    {
+                        edgeFactors.Remove(index);
+                        indexs.Remove(index);
+                        eraseCount++;
+                        eraserIndexs.Add(index);
+                    }
+                    else
+                    {
+                        edgeFactors[index]++;
+                    }
+
+                }
+
+                foreach (var index in eraserIndexs)
+                {
+                    var neighbors = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => indexs.Contains(x));
+                    foreach (var neighbor in neighbors)
+                    {
+                        edgeFactors.TryAdd(neighbor, 1);
+                    }
+                }
+
+            }
+
+            return indexs;
         }
     }
 }

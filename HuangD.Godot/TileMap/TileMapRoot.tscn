@@ -11,13 +11,13 @@ modulate = Color(1, 1, 1, 0.0196078)
 script = ExtResource("1_injv2")
 
 [node name="TerrainMap" parent="." instance=ExtResource("2_w3gyn")]
-visible = false
 
 [node name="PopCountMap" parent="." instance=ExtResource("3_wykof")]
 visible = false
 modulate = Color(1, 1, 1, 0.196078)
 
 [node name="ProvinceMap" parent="." instance=ExtResource("4_h3h4i")]
+visible = false
 
 [node name="CountryMap" parent="." instance=ExtResource("5_ohrph")]
 visible = false
