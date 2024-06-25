@@ -3,6 +3,7 @@ using Godot;
 using HuangD.Sessions;
 using HuangD.Sessions.Interfaces;
 using System;
+using System.Linq;
 
 public partial class ProvincePawnItem : ViewControl, IItemView
 {
@@ -24,7 +25,9 @@ public partial class ProvincePawnItem : ViewControl, IItemView
     private object id;
 
     private Province Province => Id as Province;
-    private Label Label => GetNode<Label>("Label");
+
+    private Label Label => GetNode<Label>("VBoxContainer/Label");
+    private Label ArmyCount => GetNode<Label>("VBoxContainer/ArmyCount");
 
     protected override void Initialize()
     {
@@ -34,6 +37,7 @@ public partial class ProvincePawnItem : ViewControl, IItemView
     protected override void Update()
     {
         Label.Text = Province.Name;
+        ArmyCount.Text = Province.LocalArmies.Count().ToString();
         this.Name = Province.Name;
     }
 }

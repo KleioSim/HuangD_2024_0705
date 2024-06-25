@@ -34,6 +34,7 @@ public class Session : ABSSession
 
     public IEnumerable<Province> Provinces => provinces;
     public IEnumerable<Country> Countries => countries;
+    public IEnumerable<Army> Armies => armies;
 
     public Country player { get; set; }
     public Date Date { get; set; }
@@ -45,7 +46,7 @@ public class Session : ABSSession
     private List<Country> countries = new List<Country>();
     private List<Province> provinces = new List<Province>();
     private List<War> wars = new List<War>();
-
+    private List<Army> armies = new List<Army>();
 
     public Session(IEnumerable<string> provinceIds, IEnumerable<string> countryIds, IReadOnlyDictionary<Type, IEnumerable<IInteractionDef>> interactionDefs)
     {
@@ -53,12 +54,20 @@ public class Session : ABSSession
         Province.count = 0;
 
         Country.FindWars = (country) => wars.Where(x => x.From == country || x.To == country);
-
+        Country.FindArmys = (country) => armies.Where(x => x.Owner == country);
+        Province.FindLocationArmies = (province) => armies.Where(x => x.Local == province);
         player = null;
         Date = new Date();
 
         countries.AddRange(countryIds.Select(id => new Country(id, interactionDefs[typeof(Country)])));
         provinces.AddRange(provinceIds.Select(id => new Province(id)));
+
+        foreach (var province in provinces)
+        {
+            var army = new Army();
+            army.Local = province;
+            armies.Add(army);
+        }
     }
 
     [MessageProcess]
@@ -99,13 +108,13 @@ public class War : IWar
 
 public class Army : IArmy
 {
-    public IProvince Origin => throw new NotImplementedException();
+    public IProvince Origin { get; internal set; }
 
-    public IProvince Local => throw new NotImplementedException();
+    public IProvince Local { get; internal set; }
 
-    public IProvince Target => throw new NotImplementedException();
+    public IProvince Target { get; private set; }
 
-    public ICountry Owner => throw new NotImplementedException();
+    public ICountry Owner { get; internal set; }
 }
 
 public class Country : ICountry
@@ -184,6 +193,8 @@ public class Country : ICountry
 
 public class Province : IProvince
 {
+    public static Func<Province, IEnumerable<Army>> FindLocationArmies { get; set; }
+
     internal static int count;
 
     public readonly string id;
@@ -198,6 +209,8 @@ public class Province : IProvince
     public bool IsConnectToCapital => CheckIsConnectToCapital(this);
 
     public string Name { get; private set; }
+
+    public IEnumerable<Army> LocalArmies => FindLocationArmies(this);
 
     public Province(string id)
     {

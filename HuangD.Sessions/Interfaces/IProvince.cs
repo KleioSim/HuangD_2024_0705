@@ -7,4 +7,5 @@ public interface IProvince
     int PopCount { get; }
     IEnumerable<IProvince> Neighbors { get; }
     ICountry Owner { get; }
+    IEnumerable<Army> LocalArmies { get; }
 }
