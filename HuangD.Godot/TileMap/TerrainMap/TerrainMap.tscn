@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://2pokaljqhtrn"]
+[gd_scene load_steps=3 format=3 uid="uid://2pokaljqhtrn"]
 
 [ext_resource type="TileSet" uid="uid://dq3oh6vm4up2s" path="res://tilesets128_2.tres" id="1_2hb0o"]
+[ext_resource type="Script" path="res://TileMap/TerrainMap/TerrainMap.cs" id="2_xlfnd"]
 
 [node name="TileMapTerrain" type="TileMap"]
 tile_set = ExtResource("1_2hb0o")
@@ -16,3 +17,4 @@ layer_3/enabled = false
 layer_3/tile_data = PackedInt32Array()
 layer_4/name = "hill"
 layer_4/tile_data = PackedInt32Array()
+script = ExtResource("2_xlfnd")

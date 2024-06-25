@@ -4,6 +4,7 @@ using Chrona.Engine.Core.Interfaces;
 using Chrona.Engine.Core.Sessions;
 using HuangD.Sessions.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,6 +70,17 @@ public class Session : ABSSession
             armies.Add(army);
         }
     }
+
+    //public class Builder
+    //{
+    //    public Session Build(string seed)
+    //    {
+    //        var session = new Session(seed);
+    //        session.Map = Map.Builder.Build(seed);
+    //        session.Provinces = Province.Builder.Build(session.Map.Cell2PopCount);
+    //        session.Countries = Country.Builder.Build(session.Provinces);
+    //    }
+    //}
 
     [MessageProcess]
     public void TestStart(Message_Start msg)
@@ -217,5 +229,75 @@ public class Province : IProvince
         this.id = id;
         Name = $"P{count}";
         count++;
+    }
+}
+
+public class Map
+{
+    public struct Index
+    {
+        public Index(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public int X { get; init; }
+        public int Y { get; init; }
+    }
+
+    public enum TerrainType
+    {
+        Water,
+        Land,
+        Mount,
+        Steppe,
+        Hill
+    }
+
+    public Dictionary<Index, TerrainType> Cell2Terrain { get; init; }
+    public Dictionary<Index, int> Cell2PopCount { get; init; }
+    public Dictionary<Index, string> Cell2ProvinceId { get; init; }
+
+    public static class Builder
+    {
+        public static Map Build(int maxSize, int landSize, string seed)
+        {
+            var map = new Map()
+            {
+                Cell2Terrain = TerrainBuilder.Build(maxSize, seed)
+            };
+            return map;
+        }
+
+    }
+
+    public static class TerrainBuilder
+    {
+        public static Dictionary<Index, TerrainType> Build(int maxSize, string seed)
+        {
+            var dict = Enumerable.Range(0, maxSize).SelectMany(x => Enumerable.Range(0, maxSize).Select(y => new Index(x, y)))
+                .ToDictionary(k => k, _ => TerrainType.Water);
+
+            BuildLand(ref dict, maxSize - 1, seed);
+            return dict;
+        }
+
+        private static void BuildLand(ref Dictionary<Index, TerrainType> dict, int landSize, string seed)
+        {
+            for (int i = 0; i < landSize; i++)
+            {
+                for (int j = 0; j < landSize; j++)
+                {
+                    var index = new Index(Math.Abs(0 - i), Math.Abs(0 - j));
+                    if (!dict.ContainsKey(index))
+                    {
+                        throw new Exception();
+                    }
+
+                    dict[index] = TerrainType.Land;
+                }
+            }
+        }
     }
 }
