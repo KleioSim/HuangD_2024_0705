@@ -411,7 +411,7 @@ public class Map
                 }
             }
 
-            return rslt;
+            return FlushLandEdge(rslt, startPoint, seed, 0.25);
         }
 
         private static HashSet<Index> BuildSea(int maxSize)
@@ -432,10 +432,10 @@ public class Map
                 }
             }
 
-            return FlushLandEdge(rslt, startPoint, seed);
+            return FlushLandEdge(rslt, startPoint, seed, 0.25);
         }
 
-        private static HashSet<Index> FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed)
+        private static HashSet<Index> FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed, double percent)
         {
             var random = new Random();
             Dictionary<Index, int> edgeFactors = indexs.Where(index =>
@@ -479,7 +479,7 @@ public class Map
                         eraseCount++;
                         eraserIndexs.Add(index);
 
-                        if (eraseCount * 100 / gCount > 25)
+                        if (eraseCount * 1.0 / gCount > percent)
                         {
                             return indexs;
                         }
