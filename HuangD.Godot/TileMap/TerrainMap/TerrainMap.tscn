@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://TileMap/TerrainMap/TerrainMap.cs" id="2_xy5am"]
 
 [node name="TileMapTerrain" type="TileMap"]
+scale = Vector2(0.1, 0.1)
 tile_set = ExtResource("1_2hb0o")
 format = 2
 layer_0/name = "sea"

@@ -258,6 +258,18 @@ public class SquareIndexMethods : IIndexMethods
         (1,1)
     };
 
+    public IEnumerable<Map.Index> Expend(Map.Index index, int Length)
+    {
+        for (int i = -Length; i<= Length; i++)
+        {
+            for (int j = -Length; j <= Length; j++)
+            {
+                if(i==0 && j==0) continue;
+                yield return new Map.Index(index.X - i, index.Y- j);
+            }
+        }
+    }
+
     public Dictionary<Map.Direction, Map.Index> GetNeighborCells(Map.Index index)
     {
         return Direction2Index.ToDictionary(n => n.Key, m => new Map.Index(index.X + m.Value.x, index.Y + m.Value.y));
@@ -317,8 +329,9 @@ public class Map
     }
     public interface IIndexMethods
     {
-        Dictionary<Map.Direction, Map.Index> GetNeighborCells(Map.Index index);
+        Dictionary<Direction, Index> GetNeighborCells(Index index);
         bool IsConnectNode(Index index, HashSet<Index> indexs);
+        IEnumerable<Index> Expend(Index currentIndex, int v);
     }
 
     public static IIndexMethods IndexMethods { get; set; } = new SquareIndexMethods();
@@ -411,7 +424,66 @@ public class Map
                 }
             }
 
-            return FlushLandEdge(rslt, startPoint, seed, 0.25);
+            rslt = FlushLandEdge(rslt, startPoint, seed, 0.25);
+
+
+            var isolatePlains = AddIsolatePlains(rslt, startPoint, seed, 0.25);
+            var isolateHills =  AddIsolateHill(landIndexs.Except(rslt).ToHashSet(), startPoint, seed, 0.25);
+
+            rslt.UnionWith(isolateHills);
+            rslt.ExceptWith(isolatePlains);
+            return rslt;
+        }
+
+        private static HashSet<Index> AddIsolateHill(HashSet<Index> indexs, Index startPoint, string seed, double percent)
+        {
+            var random = new Random();
+
+            var cellQueue = new Queue<Index>(indexs.OrderBy(_=>random.Next()));
+
+            var eraserIndexs = new HashSet<Index>();
+            while (eraserIndexs.Count < indexs.Count * 0.35)
+            {
+                var currentIndex = cellQueue.Dequeue();
+                var expends = Map.IndexMethods.Expend(currentIndex, 3);
+
+                if (random.Next(0, 100) <= expends.Count(e => eraserIndexs.Contains(e))*100.0 / expends.Count())
+                {
+                    eraserIndexs.Add(currentIndex);
+                }
+                else
+                {
+                    cellQueue.Enqueue(currentIndex);
+                }
+            }
+
+            return eraserIndexs;
+        }
+
+        private static HashSet<Index> AddIsolatePlains(HashSet<Index> indexs, Index startPoint, string seed, double percent)
+        {
+
+            var random =new Random();
+
+            var cellQueue = new Queue<Index>(indexs.OrderBy(_ => random.Next()));
+
+            var eraserIndexs = new HashSet<Index>();
+            while (eraserIndexs.Count < indexs.Count * 0.25)
+            {
+                var currentIndex = cellQueue.Dequeue();
+                var expends = Map.IndexMethods.Expend(currentIndex, 3);
+
+                if (random.Next(0, 100) <= expends.Count(e => eraserIndexs.Contains(e)) * 100.0 / expends.Count())
+                {
+                    eraserIndexs.Add(currentIndex);
+                }
+                else
+                {
+                    cellQueue.Enqueue(currentIndex);
+                }
+            }
+
+            return eraserIndexs;
         }
 
         private static HashSet<Index> BuildSea(int maxSize)

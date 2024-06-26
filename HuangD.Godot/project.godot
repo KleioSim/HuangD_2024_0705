@@ -16,6 +16,11 @@ config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
 
+[autoload]
+
+Chrona_Global="*res://addons/Chrona.Engine.Godot/Global.cs"
+CommandConsole="*res://addons/csharpConsole/CommandConsole.cs"
+
 [display]
 
 window/size/viewport_width=1600
