@@ -260,7 +260,7 @@ public class SquareIndexMethods : IIndexMethods
 
     public Dictionary<Map.Direction, Map.Index> GetNeighborCells(Map.Index index)
     {
-        return Direction2Index.ToDictionary(n => n.Key, m=> new Map.Index(index.X + m.Value.x, index.Y + m.Value.y));
+        return Direction2Index.ToDictionary(n => n.Key, m => new Map.Index(index.X + m.Value.x, index.Y + m.Value.y));
     }
 
     public bool IsConnectNode(Map.Index index, HashSet<Map.Index> indexs)
@@ -365,12 +365,14 @@ public class Map
     {
         public static Dictionary<Index, TerrainType> Build(int maxSize, string seed)
         {
-            var seaIndexs = BuildSea(maxSize);
+            var startPoint = new Index(0, 0);
 
-            var landIndexs = BuildLand(maxSize - 1, seed);
+            var seaIndexs = BuildSea(maxSize);
+            var landIndexs = BuildLand(startPoint, maxSize - 1, seed);
+            var hillIndexs = BuildHill(startPoint, landIndexs, seed);
 
             var rslt = new Dictionary<Index, TerrainType>();
-            foreach(var index in seaIndexs)
+            foreach (var index in seaIndexs)
             {
                 rslt[index] = TerrainType.Water;
             }
@@ -378,6 +380,35 @@ public class Map
             foreach (var index in landIndexs)
             {
                 rslt[index] = TerrainType.Land;
+            }
+            foreach (var index in hillIndexs)
+            {
+                rslt[index] = TerrainType.Hill;
+            }
+
+            return rslt;
+        }
+
+        private static HashSet<Index> BuildHill(Index startPoint, HashSet<Index> landIndexs, string seed)
+        {
+            var maxX = landIndexs.Select(index => index.X).Max();
+            var maxY = landIndexs.Select(index => index.Y).Max();
+
+            var baseLength = Math.Min(maxX, maxY);
+
+            var rslt = new HashSet<Index>();
+            for (int i = 0; i < baseLength; i++)
+            {
+                for (int j = 0; j < baseLength * 0.3; j++)
+                {
+                    var indexs = new Index[]
+                    {
+                        new Index(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j)),
+                        new Index(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i))
+                    };
+
+                    rslt.UnionWith(indexs.Where(index => landIndexs.Contains(index)));
+                }
             }
 
             return rslt;
@@ -388,11 +419,10 @@ public class Map
             return Enumerable.Range(0, maxSize).SelectMany(x => Enumerable.Range(0, maxSize).Select(y => new Index(x, y))).ToHashSet();
         }
 
-        private static HashSet<Index> BuildLand(int landSize, string seed)
+        private static HashSet<Index> BuildLand(Index startPoint, int landSize, string seed)
         {
-            var startPoint = new Index(0, 0);
 
-            var rslt  = new HashSet<Index>();
+            var rslt = new HashSet<Index>();
             for (int i = 0; i < landSize; i++)
             {
                 for (int j = 0; j < landSize; j++)
@@ -405,12 +435,12 @@ public class Map
             return FlushLandEdge(rslt, startPoint, seed);
         }
 
-        private static HashSet<Index>  FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed)
+        private static HashSet<Index> FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed)
         {
             var random = new Random();
             Dictionary<Index, int> edgeFactors = indexs.Where(index =>
             {
-                if (startPoint.X == index.X|| startPoint.Y == index.Y)
+                if (startPoint.X == index.X || startPoint.Y == index.Y)
                 {
                     return false;
                 }
@@ -427,7 +457,7 @@ public class Map
 
             int eraseCount = 0;
             var gCount = indexs.Count();
-            while (eraseCount * 100 / gCount < 25)
+            while (true)
             {
                 var eraserIndexs = new List<Index>();
 
@@ -442,12 +472,17 @@ public class Map
                     }
 
                     var factor2 = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => indexs.Contains(x)).Count();
-                    if (factor2 <=3 || random.Next(0, 10000) <= 1800 / factor)
+                    if (factor2 <= 3 || random.Next(0, 10000) <= 1800 / factor)
                     {
                         edgeFactors.Remove(index);
                         indexs.Remove(index);
                         eraseCount++;
                         eraserIndexs.Add(index);
+
+                        if (eraseCount * 100 / gCount > 25)
+                        {
+                            return indexs;
+                        }
                     }
                     else
                     {
@@ -466,8 +501,6 @@ public class Map
                 }
 
             }
-
-            return indexs;
         }
     }
 }

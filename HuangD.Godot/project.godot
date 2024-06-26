@@ -11,16 +11,10 @@ config_version=5
 [application]
 
 config/name="HuangD.Godot"
-run/main_scene="res://InitialScene/InitialScene.tscn"
+run/main_scene="res://TileMap/TerrainMap/TerrainMap.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
-
-[autoload]
-
-MapScene="*res://AutoLoads/MapScene/MapScene.tscn"
-CommandConsole="*res://addons/csharpConsole/CommandConsole.cs"
-Chrona_Global="*res://addons/Chrona.Engine.Godot/Global.cs"
 
 [display]
 

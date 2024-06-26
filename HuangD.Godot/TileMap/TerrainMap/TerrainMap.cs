@@ -1,5 +1,7 @@
 ﻿using Godot;
 using Godot.Collections;
+using System.Diagnostics;
+using System.Linq;
 
 public partial class TerrainMap : TileMap
 {
@@ -17,12 +19,14 @@ public partial class TerrainMap : TileMap
         { HuangD.Sessions.Map.TerrainType.Land, 1 },
         { HuangD.Sessions.Map.TerrainType.Steppe, 3 },
         { HuangD.Sessions.Map.TerrainType.Mount, 2 },
+        { HuangD.Sessions.Map.TerrainType.Hill, 2 },
         { HuangD.Sessions.Map.TerrainType.Water, 0 }
     };
 
     public override void _Ready()
     {
         var dict = HuangD.Sessions.Map.TerrainBuilder.Build(64, "Test");
+        GD.Print(string.Join(",", dict.Values.GroupBy(x => x).Select(g => $"{g.Key}:{g.Count()}")));
 
         foreach (var pair in dict)
         {
