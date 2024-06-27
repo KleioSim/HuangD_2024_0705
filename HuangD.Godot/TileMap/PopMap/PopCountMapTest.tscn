@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://diacrl2dcwr8j"]
+
+[ext_resource type="Script" path="res://TileMap/PopMap/PopCountMapTest.cs" id="1_1mc67"]
+[ext_resource type="PackedScene" uid="uid://2pokaljqhtrn" path="res://TileMap/TerrainMap/TerrainMap.tscn" id="1_ml5vy"]
+[ext_resource type="PackedScene" uid="uid://beerkild18pm7" path="res://TileMap/PopMap/TileMapPopCount.tscn" id="2_hc0qs"]
+
+[node name="PopCountMapTest" type="Node2D"]
+script = ExtResource("1_1mc67")
+
+[node name="TileMapTerrain" parent="." instance=ExtResource("1_ml5vy")]
+modulate = Color(1, 1, 1, 0)
+
+[node name="TileMapPopCount" parent="." instance=ExtResource("2_hc0qs")]
+modulate = Color(1, 1, 1, 0.0784314)

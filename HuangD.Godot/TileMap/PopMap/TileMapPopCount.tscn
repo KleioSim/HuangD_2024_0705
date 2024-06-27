@@ -1,8 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://beerkild18pm7"]
+[gd_scene load_steps=3 format=3 uid="uid://beerkild18pm7"]
 
 [ext_resource type="TileSet" uid="uid://dxpsh7numnhc6" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_4nokr"]
+[ext_resource type="Script" path="res://TileMap/PopMap/TileMapPopCount.cs" id="2_aqmko"]
 
 [node name="TileMapPopCount" type="TileMap"]
+modulate = Color(1, 1, 1, 0.0392157)
+scale = Vector2(0.1, 0.1)
 tile_set = ExtResource("1_4nokr")
 format = 2
 layer_0/tile_data = PackedInt32Array(0, 0, 0)
+script = ExtResource("2_aqmko")
