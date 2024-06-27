@@ -260,12 +260,12 @@ public class SquareIndexMethods : IIndexMethods
 
     public IEnumerable<Map.Index> Expend(Map.Index index, int Length)
     {
-        for (int i = -Length; i<= Length; i++)
+        for (int i = -Length; i <= Length; i++)
         {
             for (int j = -Length; j <= Length; j++)
             {
-                if(i==0 && j==0) continue;
-                yield return new Map.Index(index.X - i, index.Y- j);
+                if (i == 0 && j == 0) continue;
+                yield return new Map.Index(index.X - i, index.Y - j);
             }
         }
     }
@@ -383,13 +383,13 @@ public class Map
             var seaIndexs = BuildSea(maxSize);
             var landIndexs = BuildLand(startPoint, maxSize - 1, seed);
             var hillIndexs = BuildHill(startPoint, landIndexs, seed);
+            var mountionIndexs = BuildMountion(startPoint, hillIndexs, seed);
 
             var rslt = new Dictionary<Index, TerrainType>();
             foreach (var index in seaIndexs)
             {
                 rslt[index] = TerrainType.Water;
             }
-
             foreach (var index in landIndexs)
             {
                 rslt[index] = TerrainType.Land;
@@ -398,40 +398,96 @@ public class Map
             {
                 rslt[index] = TerrainType.Hill;
             }
+            foreach (var index in mountionIndexs)
+            {
+                rslt[index] = TerrainType.Mount;
+            }
 
             return rslt;
         }
 
+        private static HashSet<Index> BuildMountion(Index startPoint, HashSet<Index> hillIndexs, string seed)
+        {
+            //var rslt = FlushLandEdge(hillIndexs, startPoint, seed, 0.7, false);
+            //return rslt;
+
+            var random = new Random();
+
+            var cellQueue = new Queue<Index>(hillIndexs.OrderBy(_ => random.Next()));
+
+            var mountionIndexs = new HashSet<Index>();
+            while (cellQueue.Count != 0 && mountionIndexs.Count < hillIndexs.Count * 0.35)
+            {
+                var currentIndex = cellQueue.Dequeue();
+                var expends = Map.IndexMethods.Expend(currentIndex, 1);
+
+                var factor = 2 * expends.Count(x => mountionIndexs.Contains(x)) - expends.Count(x => !hillIndexs.Contains(x));
+
+                if (random.Next(0, 100) <= factor)
+                {
+                    mountionIndexs.Add(currentIndex);
+                }
+                else
+                {
+                    cellQueue.Enqueue(currentIndex);
+                }
+            }
+
+            return mountionIndexs;
+        }
+
         private static HashSet<Index> BuildHill(Index startPoint, HashSet<Index> landIndexs, string seed)
+        {
+
+            var baseHills = AddBaseHill(landIndexs, startPoint, 1);
+
+            var rslt = FlushLandEdge(baseHills, startPoint, seed, 0.4, true);
+            rslt = FlushLandEdge(rslt, startPoint, seed, 0.2, false);
+
+            //var isolatePlains = AddIsolatePlains(rslt, startPoint, seed, 0.25);
+            //var isolateHills =  AddIsolateHill(landIndexs.Except(rslt).ToHashSet(), startPoint, seed, 0.25);
+
+            //rslt.UnionWith(isolateHills);
+            //rslt.ExceptWith(isolatePlains);
+            return rslt;
+        }
+
+        private static HashSet<Index> AddBaseHill(HashSet<Index> landIndexs, Index startPoint, double percent)
         {
             var maxX = landIndexs.Select(index => index.X).Max();
             var maxY = landIndexs.Select(index => index.Y).Max();
 
-            var baseLength = Math.Min(maxX, maxY);
+            var baseLength = Math.Max(maxX, maxY);
 
             var rslt = new HashSet<Index>();
             for (int i = 0; i < baseLength; i++)
             {
-                for (int j = 0; j < baseLength * 0.3; j++)
+                for (int j = 0; j < baseLength; j++)
                 {
-                    var indexs = new Index[]
+                    var index = new Index(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j));
+                    if (landIndexs.Contains(index))
                     {
-                        new Index(Math.Abs(startPoint.X - i), Math.Abs(startPoint.Y - j)),
-                        new Index(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i))
-                    };
+                        rslt.Add(index);
+                        if (rslt.Count() > landIndexs.Count() * percent)
+                        {
+                            return rslt;
+                        }
+                    }
 
-                    rslt.UnionWith(indexs.Where(index => landIndexs.Contains(index)));
+                    index = new Index(Math.Abs(startPoint.X - j), Math.Abs(startPoint.Y - i));
+                    if (landIndexs.Contains(index))
+                    {
+
+                        rslt.Add(index);
+                        if (rslt.Count() > landIndexs.Count() * percent)
+                        {
+                            return rslt;
+                        }
+                    }
+
                 }
             }
 
-            rslt = FlushLandEdge(rslt, startPoint, seed, 0.25);
-
-
-            var isolatePlains = AddIsolatePlains(rslt, startPoint, seed, 0.25);
-            var isolateHills =  AddIsolateHill(landIndexs.Except(rslt).ToHashSet(), startPoint, seed, 0.25);
-
-            rslt.UnionWith(isolateHills);
-            rslt.ExceptWith(isolatePlains);
             return rslt;
         }
 
@@ -439,7 +495,7 @@ public class Map
         {
             var random = new Random();
 
-            var cellQueue = new Queue<Index>(indexs.OrderBy(_=>random.Next()));
+            var cellQueue = new Queue<Index>(indexs.OrderBy(_ => random.Next()));
 
             var eraserIndexs = new HashSet<Index>();
             while (eraserIndexs.Count < indexs.Count * 0.35)
@@ -447,7 +503,7 @@ public class Map
                 var currentIndex = cellQueue.Dequeue();
                 var expends = Map.IndexMethods.Expend(currentIndex, 3);
 
-                if (random.Next(0, 100) <= expends.Count(e => eraserIndexs.Contains(e))*100.0 / expends.Count())
+                if (random.Next(0, 100) <= expends.Count(e => eraserIndexs.Contains(e)) * 100.0 / expends.Count())
                 {
                     eraserIndexs.Add(currentIndex);
                 }
@@ -463,7 +519,7 @@ public class Map
         private static HashSet<Index> AddIsolatePlains(HashSet<Index> indexs, Index startPoint, string seed, double percent)
         {
 
-            var random =new Random();
+            var random = new Random();
 
             var cellQueue = new Queue<Index>(indexs.OrderBy(_ => random.Next()));
 
@@ -504,10 +560,10 @@ public class Map
                 }
             }
 
-            return FlushLandEdge(rslt, startPoint, seed, 0.25);
+            return FlushLandEdge(rslt, startPoint, seed, 0.25, false);
         }
 
-        private static HashSet<Index> FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed, double percent)
+        private static HashSet<Index> FlushLandEdge(HashSet<Index> indexs, Index startPoint, string seed, double percent, bool allowIsland)
         {
             var random = new Random();
             Dictionary<Index, int> edgeFactors = indexs.Where(index =>
@@ -527,8 +583,10 @@ public class Map
 
             }).ToDictionary(k => k, v => 1); ;
 
+            var rslt = new HashSet<Index>(indexs);
+
             int eraseCount = 0;
-            var gCount = indexs.Count();
+            var gCount = rslt.Count();
             while (true)
             {
                 var eraserIndexs = new List<Index>();
@@ -537,23 +595,26 @@ public class Map
                 {
                     var factor = edgeFactors[index];
 
-                    if (Map.IndexMethods.IsConnectNode(index, indexs))
+                    if (!allowIsland)
                     {
-                        edgeFactors.Remove(index);
-                        continue;
+                        if (Map.IndexMethods.IsConnectNode(index, rslt))
+                        {
+                            edgeFactors.Remove(index);
+                            continue;
+                        }
                     }
 
-                    var factor2 = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => indexs.Contains(x)).Count();
-                    if (factor2 <= 3 || random.Next(0, 10000) <= 1800 / factor)
+                    var factor2 = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => rslt.Contains(x)).Count();
+                    if ((!allowIsland && factor2 <= 3) || random.Next(0, 10000) <= 1800 / factor)
                     {
                         edgeFactors.Remove(index);
-                        indexs.Remove(index);
+                        rslt.Remove(index);
                         eraseCount++;
                         eraserIndexs.Add(index);
 
                         if (eraseCount * 1.0 / gCount > percent)
                         {
-                            return indexs;
+                            return rslt;
                         }
                     }
                     else
@@ -565,7 +626,7 @@ public class Map
 
                 foreach (var index in eraserIndexs)
                 {
-                    var neighbors = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => indexs.Contains(x));
+                    var neighbors = Map.IndexMethods.GetNeighborCells(index).Values.Where(x => rslt.Contains(x));
                     foreach (var neighbor in neighbors)
                     {
                         edgeFactors.TryAdd(neighbor, 1);
