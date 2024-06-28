@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://TileMap/PopMap/TileMapPopCount.cs" id="2_aqmko"]
 
 [node name="TileMapPopCount" type="TileMap"]
-modulate = Color(1, 1, 1, 0.0392157)
+modulate = Color(1, 1, 1, 0.392157)
 scale = Vector2(0.1, 0.1)
 tile_set = ExtResource("1_4nokr")
 format = 2

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://TileMap/TerrainMap/TerrainMap.cs" id="2_xy5am"]
 
 [node name="TileMapTerrain" type="TileMap"]
-modulate = Color(1, 1, 1, 0.0392157)
+modulate = Color(1, 1, 1, 0.117647)
 scale = Vector2(0.1, 0.1)
 tile_set = ExtResource("1_2hb0o")
 format = 2

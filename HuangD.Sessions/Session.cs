@@ -337,7 +337,7 @@ public class Map
 
     public static IIndexMethods IndexMethods { get; set; } = new SquareIndexMethods();
 
-    public struct Index
+    public class Index
     {
         public Index(int x, int y)
         {
@@ -384,7 +384,7 @@ public class Map
             var seaIndexs = BuildSea(maxSize);
             var landIndexs = BuildLand(startPoint, maxSize - 1, seed);
             var hillIndexs = BuildHill(startPoint, landIndexs, seed);
-            var mountionIndexs = BuildMountion(startPoint, hillIndexs, seed);
+            //var mountionIndexs = BuildMountion(startPoint, hillIndexs, seed);
 
             var rslt = new Dictionary<Index, TerrainType>();
             foreach (var index in seaIndexs)
@@ -399,10 +399,10 @@ public class Map
             {
                 rslt[index] = TerrainType.Hill;
             }
-            foreach (var index in mountionIndexs)
-            {
-                rslt[index] = TerrainType.Mount;
-            }
+            //foreach (var index in mountionIndexs)
+            //{
+            //    rslt[index] = TerrainType.Mount;
+            //}
 
             return rslt;
         }
@@ -442,8 +442,8 @@ public class Map
 
             var baseHills = AddBaseHill(landIndexs, startPoint, 1);
 
-            var rslt = FlushLandEdge(baseHills, startPoint, seed, 0.4, true);
-            rslt = FlushLandEdge(rslt, startPoint, seed, 0.2, false);
+            var rslt = FlushLandEdge(baseHills, startPoint, seed, 0.35, true);
+            rslt = FlushLandEdge(rslt, startPoint, seed, 0.15, false);
 
             //var isolatePlains = AddIsolatePlains(rslt, startPoint, seed, 0.25);
             //var isolateHills =  AddIsolateHill(landIndexs.Except(rslt).ToHashSet(), startPoint, seed, 0.25);
@@ -620,7 +620,7 @@ public class Map
                     }
                     else
                     {
-                        edgeFactors[index]++;
+                        edgeFactors[index] += 3;
                     }
 
                 }
@@ -659,7 +659,7 @@ public class Map
                         popCount = random.Next(100, 200);
                         break;
                     case TerrainType.Mount:
-                        popCount = random.Next(0, 50);
+                        popCount = random.Next(10, 50);
                         break;
                 }
 
@@ -696,6 +696,57 @@ public class Map
 
                 return currValue * Math.Min(1, (int)(neighorValues.Average()) / 1000);
             });
+        }
+    }
+
+    public static class ProvinceMapBuilder
+    {
+        public static Dictionary<Index, string> Build(Dictionary<Index, int> popDict, string seed, int maxPopCount, int maxIndexCount)
+        {
+            var indexs = popDict.Keys.ToHashSet();
+
+            var rslt = new Dictionary<Index, string>();
+
+            while (indexs.Count != 0)
+            {
+                var maxPopIndex = indexs.MaxBy(k => popDict[k]);
+                indexs.Remove(maxPopIndex);
+
+                string currentId = Guid.NewGuid().ToString();
+                var currentGroup = new HashSet<Index>() { maxPopIndex };
+                var neighbors = Map.IndexMethods.GetNeighborCells(maxPopIndex).Values.Intersect(indexs).ToHashSet();
+
+                while (neighbors.Count != 0)
+                {
+                    var next = neighbors.Where(k => Map.IndexMethods.GetNeighborCells(k).Values.Intersect(indexs).Count() == 0).FirstOrDefault();
+                    if (next == null)
+                    {
+                        next = neighbors.MaxBy(k => popDict[k]);
+                    }
+
+                    currentGroup.Add(next);
+                    if (currentGroup.Count >= maxIndexCount)
+                    {
+                        break;
+                    }
+                    if (currentGroup.Sum(k => popDict[k]) >= maxPopCount)
+                    {
+                        break;
+                    }
+
+                    neighbors.Remove(next);
+                    indexs.Remove(next);
+
+                    neighbors.UnionWith(Map.IndexMethods.GetNeighborCells(next).Values.Intersect(indexs));
+                }
+
+                foreach (var index in currentGroup)
+                {
+                    rslt.Add(index, currentId);
+                }
+            }
+
+            return rslt;
         }
     }
 }
