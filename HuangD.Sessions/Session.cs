@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using static HuangD.Sessions.Map;
 
 namespace HuangD.Sessions;
@@ -347,6 +348,21 @@ public class Map
 
         public int X { get; init; }
         public int Y { get; init; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            var c = (Index)obj;
+            if (c == null)
+                return false;
+            return X == c.X && Y == c.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return (X, Y).GetHashCode();
+        }
     }
 
     public enum TerrainType
