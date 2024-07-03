@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://b2qbtw71qp1ws"]
+[gd_scene load_steps=3 format=3 uid="uid://b2qbtw71qp1ws"]
 
 [ext_resource type="TileSet" uid="uid://dxpsh7numnhc6" path="res://TileMap/PopMap/tilesets_popcount.tres" id="1_kfwtp"]
+[ext_resource type="Script" path="res://TileMap/ProvinceMap/ProvinceMap.cs" id="2_mijyi"]
 
 [node name="TileMapProvince" type="TileMap"]
+scale = Vector2(0.1, 0.1)
 tile_set = ExtResource("1_kfwtp")
 format = 2
 layer_0/tile_data = PackedInt32Array(0, 0, 0)
+script = ExtResource("2_mijyi")

@@ -272,6 +272,11 @@ public class SquareIndexMethods : IIndexMethods
         }
     }
 
+    public Map.Index GetNeighborCell(Map.Index index, Direction direction)
+    {
+        return new Map.Index(index.X + Direction2Index[direction].x, index.Y + Direction2Index[direction].y);
+    }
+
     public Dictionary<Map.Direction, Map.Index> GetNeighborCells(Map.Index index)
     {
         return Direction2Index.ToDictionary(n => n.Key, m => new Map.Index(index.X + m.Value.x, index.Y + m.Value.y));
@@ -332,6 +337,9 @@ public class Map
     public interface IIndexMethods
     {
         Dictionary<Direction, Index> GetNeighborCells(Index index);
+
+        Index GetNeighborCell(Index index, Direction direction);
+
         bool IsConnectNode(Index index, HashSet<Index> indexs);
         IEnumerable<Index> Expend(Index currentIndex, int v);
     }
@@ -400,7 +408,7 @@ public class Map
             var seaIndexs = BuildSea(maxSize);
             var landIndexs = BuildLand(startPoint, maxSize - 1, seed);
             var hillIndexs = BuildHill(startPoint, landIndexs, seed);
-            //var mountionIndexs = BuildMountion(startPoint, hillIndexs, seed);
+            var mountionIndexs = BuildMountion(startPoint, hillIndexs, seed);
 
             var rslt = new Dictionary<Index, TerrainType>();
             foreach (var index in seaIndexs)
@@ -415,10 +423,10 @@ public class Map
             {
                 rslt[index] = TerrainType.Hill;
             }
-            //foreach (var index in mountionIndexs)
-            //{
-            //    rslt[index] = TerrainType.Mount;
-            //}
+            foreach (var index in mountionIndexs)
+            {
+                rslt[index] = TerrainType.Mount;
+            }
 
             return rslt;
         }
@@ -723,6 +731,9 @@ public class Map
 
             var rslt = new Dictionary<Index, string>();
 
+            var directions = new[] { Direction.LeftSide, Direction.RightSide, Direction.TopSide, Direction.BottomSide };
+
+            var random = new Random();
             while (indexs.Count != 0)
             {
                 var maxPopIndex = indexs.MaxBy(k => popDict[k]);
@@ -730,17 +741,23 @@ public class Map
 
                 string currentId = Guid.NewGuid().ToString();
                 var currentGroup = new HashSet<Index>() { maxPopIndex };
-                var neighbors = Map.IndexMethods.GetNeighborCells(maxPopIndex).Values.Intersect(indexs).ToHashSet();
+
+                var neighbors = directions.Select(x=> Map.IndexMethods.GetNeighborCell(maxPopIndex, x))
+                    .Intersect(indexs).ToHashSet();
 
                 while (neighbors.Count != 0)
                 {
-                    var next = neighbors.Where(k => Map.IndexMethods.GetNeighborCells(k).Values.Intersect(indexs).Count() == 0).FirstOrDefault();
+                    var next = neighbors.Where(k => directions.Select(x => Map.IndexMethods.GetNeighborCell(k, x)).Intersect(indexs).Count() != 0)
+                        .OrderBy(x=>random.Next()).FirstOrDefault();
                     if (next == null)
                     {
                         next = neighbors.MaxBy(k => popDict[k]);
                     }
 
                     currentGroup.Add(next);
+                    neighbors.Remove(next);
+                    indexs.Remove(next);
+
                     if (currentGroup.Count >= maxIndexCount)
                     {
                         break;
@@ -749,9 +766,6 @@ public class Map
                     {
                         break;
                     }
-
-                    neighbors.Remove(next);
-                    indexs.Remove(next);
 
                     neighbors.UnionWith(Map.IndexMethods.GetNeighborCells(next).Values.Intersect(indexs));
                 }
